@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/main_rc_control"
+        android:title="@string/main_rc_control"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/throttle_rc_control"
+        android:title="@string/throttle_rc_control"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/roll_rc_control"
+        android:title="@string/roll_rc_control"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/pitch_rc_control"
+        android:title="@string/pitch_rc_control"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/yaw_rc_control"
+        android:title="@string/yaw_rc_control"
+        android:showAsAction="ifRoom"/>
+</menu>

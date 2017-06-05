@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">DroneRemoteController</string>
+    <string name="app_name">Drone Remote Controller</string>
+
+    <string name="main_rc_control">Main Controller</string>
+    <string name="throttle_rc_control">throttle test</string>
+    <string name="roll_rc_control">roll test</string>
+    <string name="pitch_rc_control">pitch test</string>
+    <string name="yaw_rc_control">yaw test</string>
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
