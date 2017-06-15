@@ -33,6 +33,9 @@ import android.bluetooth.BluetoothDevice;
 import android.support.v4.content.LocalBroadcastManager;
 
 import android.widget.Toast;
+import android.widget.LinearLayout;
+
+import android.graphics.Color;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -114,9 +117,19 @@ public class MainRemoteControllerActivity extends AppCompatActivity {
             finish();
             return;
         }
+//        setContentView(R.layout.activity_main);
 
-        setContentView(R.layout.activity_main_remote_controller);
+        LinearLayout linear = new LinearLayout(this);
+        linear.setOrientation(LinearLayout.VERTICAL);
+        linear.setBackgroundColor(Color.WHITE);
 
+        JoystickView view = new JoystickView(this);
+
+        linear.addView(view);
+        setContentView(linear);
+
+
+/*
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
@@ -137,8 +150,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity {
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
         service_init();
-
-
+*/
     }
 
     private void service_init() {
@@ -270,11 +282,13 @@ public class MainRemoteControllerActivity extends AppCompatActivity {
     };
 
     private void toggle() {
+/*
         if (mVisible) {
             hide();
         } else {
             show();
         }
+*/
     }
 
     private void hide() {
@@ -346,8 +360,8 @@ public class MainRemoteControllerActivity extends AppCompatActivity {
      * previously scheduled calls.
      */
     private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+//        mHideHandler.removeCallbacks(mHideRunnable);
+//        mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
     @Override
