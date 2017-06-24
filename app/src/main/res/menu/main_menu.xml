@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/main_rc_control"
+        android:title="@string/main_rc_control"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/joystick_rc_control"
+        android:title="@string/joystick_control"
+        android:showAsAction="ifRoom"/>
     <item android:id="@+id/throttle_rc_control"
         android:title="@string/throttle_rc_control"
         android:showAsAction="ifRoom"/>
