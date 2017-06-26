@@ -56,6 +56,9 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 fragmentTransaction.commit();
                 break;
             case R.id.throttle_rc_control :
+                fr = new MainScreenFragment();
+                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
+                fragmentTransaction.commit();
                 break;
             case R.id.roll_rc_control :
                 break;
@@ -89,7 +92,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 
         // called after setContentView()
         ActionBar actionbar = getSupportActionBar();
-        actionbar.hide();
+//        actionbar.hide();
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();

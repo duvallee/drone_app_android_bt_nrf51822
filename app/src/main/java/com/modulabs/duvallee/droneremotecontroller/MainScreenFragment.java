@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
 
 /**
@@ -13,12 +14,24 @@ import android.os.Bundle;
 
 public class MainScreenFragment extends Fragment
 {
-    public MainScreenFragment() {
+    private LinearLayout layout;
+    public MainScreenFragment()
+    {
         // Required empty public constructor }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+//        layout = new LinearLayout(getActivity());
+//        layout.addView(new MainScreenView());
+//        view = new MainScreenView(getActivity());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_mainscreen, container, false);
+        return (new MainScreenView(getActivity()));
+//        return inflater.inflate(R.layout.fragment_mainscreen, container, false);
     }
 }
