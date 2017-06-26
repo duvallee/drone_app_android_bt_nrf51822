@@ -1,5 +1,6 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.res.Configuration;
@@ -12,8 +13,11 @@ import android.content.Intent;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 
 import android.content.pm.ActivityInfo;
+import android.view.Window;
+import android.view.WindowManager;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -43,12 +47,12 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         {
             case R.id.main_rc_control :
                 fr = new fragmentB();
-                fragmentTransaction.replace(R.id.fragmentBorC, fr);
+                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
                 fragmentTransaction.commit();
                 break;
             case R.id.joystick_rc_control :
                 fr = new fragmentC();
-                fragmentTransaction.replace(R.id.fragmentBorC, fr);
+                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
                 fragmentTransaction.commit();
                 break;
             case R.id.throttle_rc_control :
@@ -65,20 +69,32 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         return true;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        // called before setContentView()
+        // start : for full screen
+        // title bar : battery, rssi of lte ...
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // or
+//        setTheme(android.R.style.Theme_NoTitleBar_Fullscreen);
+        // end : for full screen
+
         setContentView(R.layout.activity_main);
+
+        // called after setContentView()
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.hide();
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.add(R.id.fragmentBorC, new fragmentB());
+        fragmentTransaction.add(R.id.fragment_main_frame, new MainScreenFragment());
         fragmentTransaction.commit();
-
-
     }
 
     @Override

@@ -10,25 +10,10 @@
     tools:context="com.modulabs.duvallee.droneremotecontroller.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragmentA"
-        android:name="com.modulabs.duvallee.droneremotecontroller.FragmentA"
-        android:layout_weight="1"
-        tools:layout="@layout/activity_main" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/fragmentBorC" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Switch Fragment"
-        android:textSize="20sp" />
+        android:id="@+id/fragment_main_frame" />
 
 </LinearLayout>
