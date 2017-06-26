@@ -33,11 +33,6 @@
             android:name=".UartService"
             android:enabled="true" />
 
-        <activity android:name=".JoystickControllerActivity" />
-        <activity android:name=".ThrottleControllerActivity" />
-        <activity android:name=".RollControllerActivity" />
-        <activity android:name=".PitchControllerActivity" />
-        <activity android:name=".YawControllerActivity"></activity>
     </application>
 
 </manifest>

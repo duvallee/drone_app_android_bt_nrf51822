@@ -9,6 +9,10 @@ import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.content.Intent;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+
 import android.content.pm.ActivityInfo;
 
 /**
@@ -18,7 +22,7 @@ import android.content.pm.ActivityInfo;
 public class MainRemoteControllerActivity extends AppCompatActivity
 {
 
-    public static final String TAG = "DronRemoteControl";
+    public static final String TAG = "DroneRemoteControl";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -31,14 +35,21 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        Fragment fr;
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
         // Handle item selection
         switch (item.getItemId())
         {
             case R.id.main_rc_control :
+                fr = new fragmentB();
+                fragmentTransaction.replace(R.id.fragmentBorC, fr);
+                fragmentTransaction.commit();
                 break;
             case R.id.joystick_rc_control :
-                Intent Joystick_Intent = new Intent(this, JoystickControllerActivity.class);
-                startActivity(Joystick_Intent);
+                fr = new fragmentC();
+                fragmentTransaction.replace(R.id.fragmentBorC, fr);
+                fragmentTransaction.commit();
                 break;
             case R.id.throttle_rc_control :
                 break;
@@ -59,7 +70,15 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         setContentView(R.layout.activity_main);
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.add(R.id.fragmentBorC, new fragmentB());
+        fragmentTransaction.commit();
+
+
     }
 
     @Override
