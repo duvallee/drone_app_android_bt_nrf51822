@@ -28,6 +28,20 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 
     public static final String TAG = "DroneRemoteControl";
 
+    public void active_view_b()
+    {
+        Fragment fr;
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+
+        fr = new fragmentB();
+        fragmentTransaction.replace(R.id.fragment_main_frame, fr);
+        fragmentTransaction.commit();
+
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {

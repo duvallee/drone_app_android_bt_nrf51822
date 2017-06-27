@@ -22,8 +22,8 @@
             android:text="Fragment A"
             android:textSize="30sp"
             tools:layout_editor_absoluteY="63dp"
-            android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="14dp"
             android:layout_alignBaseline="@+id/button"
             android:layout_alignBottom="@+id/button"
             android:layout_toEndOf="@+id/button" />
