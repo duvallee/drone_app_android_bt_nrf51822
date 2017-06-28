@@ -25,66 +25,100 @@ import android.view.WindowManager;
  */
 public class MainRemoteControllerActivity extends AppCompatActivity
 {
-
     public static final String TAG = "DroneRemoteControl";
 
-    public void active_view_b()
+    public final int VIEW_SPLASHCONNECTSCREEN_INDEX = 1;
+    public final int VIEW_MAINSCREEN_INDEX = 2;
+    public final int VIEW_JOYSTICKCONTROOLER_INDEX = 3;
+    public final int VIEW_THROTTLECONTROLLER_INDEX = 4;
+    public final int VIEW_YAWCONTROLLER_INDEX = 5;
+    public final int VIEW_PITCHCONTROLLER_INDEX = 6;
+    public final int VIEW_ROLLCONTROLLER_INDEX = 7;
+    public final int VIEW_SETTING_INDEX = 8;
+
+    public void switch_view(int view_index)
     {
-        Fragment fr;
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
-        fr = new fragmentB();
-        fragmentTransaction.replace(R.id.fragment_main_frame, fr);
-        fragmentTransaction.commit();
-
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        Fragment fr;
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        // Handle item selection
-        switch (item.getItemId())
+        switch (view_index)
         {
-            case R.id.main_rc_control :
-                fr = new fragmentB();
-                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
+            case VIEW_SPLASHCONNECTSCREEN_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new SplashConnectScreen(this));
                 fragmentTransaction.commit();
                 break;
-            case R.id.joystick_rc_control :
-                fr = new fragmentC();
-                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
+
+            case VIEW_MAINSCREEN_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new MainScreenFragment());
                 fragmentTransaction.commit();
                 break;
-            case R.id.throttle_rc_control :
-                fr = new MainScreenFragment();
-                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
-                fragmentTransaction.commit();
+
+            case VIEW_JOYSTICKCONTROOLER_INDEX :
                 break;
-            case R.id.roll_rc_control :
+
+            case VIEW_THROTTLECONTROLLER_INDEX :
                 break;
-            case R.id.pitch_rc_control :
+
+            case VIEW_YAWCONTROLLER_INDEX :
                 break;
-            case R.id.yaw_rc_control :
+
+            case VIEW_PITCHCONTROLLER_INDEX :
                 break;
-            default :
+
+            case VIEW_ROLLCONTROLLER_INDEX :
+                break;
+
+            case VIEW_SETTING_INDEX :
                 break;
         }
-        return true;
+
+//        ActionBar actionbar = getSupportActionBar();
+//        actionbar.show();
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu)
+//    {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.main_menu, menu);
+//        return true;
+//    }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item)
+//    {
+//        Fragment fr;
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+//        // Handle item selection
+//        switch (item.getItemId())
+//        {
+//            case R.id.main_rc_control :
+//                fr = new fragmentB();
+//                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
+//                fragmentTransaction.commit();
+//                break;
+//            case R.id.joystick_rc_control :
+//                fr = new fragmentC();
+//                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
+//                fragmentTransaction.commit();
+//                break;
+//            case R.id.throttle_rc_control :
+//                fr = new MainScreenFragment();
+//                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
+//                fragmentTransaction.commit();
+//                break;
+//            case R.id.roll_rc_control :
+//                break;
+//            case R.id.pitch_rc_control :
+//                break;
+//            case R.id.yaw_rc_control :
+//                break;
+//            default :
+//                break;
+//        }
+//        return true;
+//    }
 
 
     @Override
@@ -106,11 +140,12 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 
         // called after setContentView()
         ActionBar actionbar = getSupportActionBar();
-//        actionbar.hide();
+        actionbar.hide();
 
+        // display slash screen for connect to drone controller ...
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_main_frame, new MainScreenFragment());
+        fragmentTransaction.add(R.id.fragment_main_frame, new SplashConnectScreen(this));
         fragmentTransaction.commit();
     }
 

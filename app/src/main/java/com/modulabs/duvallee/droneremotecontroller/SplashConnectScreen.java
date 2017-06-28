@@ -1,45 +1,44 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Bundle;
 import android.widget.RelativeLayout;
 
-
 /**
- * Created by duval on 2017-06-26.
+ * Created by duval on 2017-06-28.
  */
 
-public class MainScreenFragment extends Fragment
+public class SplashConnectScreen extends Fragment
 {
-    private MainScreenView view;
-    public MainScreenFragment()
+    private MainRemoteControllerActivity parrent;
+    private SplashConnectScreenView splash_view;
+
+    public SplashConnectScreen(MainRemoteControllerActivity p)
     {
-        // Required empty public constructor }
+        parrent = p;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        view = new MainScreenView(getActivity());
-
+        // use parrent instead of getActivity
+        splash_view = new SplashConnectScreenView(parrent);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
         // -----------------------------------------------------------------------------------------
         // case 4
-        RelativeLayout relativelayout = new RelativeLayout(getActivity());
-
-        relativelayout.addView(view);
+//        RelativeLayout relativelayout = new RelativeLayout(parrent);
+//        relativelayout.addView(splash_view);
 
 //        int width = relativelayout.
 
-        return (relativelayout);
+//        return (relativelayout);
 
         // -----------------------------------------------------------------------------------------
         // case 3
@@ -58,6 +57,7 @@ public class MainScreenFragment extends Fragment
 
         // -----------------------------------------------------------------------------------------
         // case 1
-        // return (view);
+        return (splash_view);
     }
+
 }
