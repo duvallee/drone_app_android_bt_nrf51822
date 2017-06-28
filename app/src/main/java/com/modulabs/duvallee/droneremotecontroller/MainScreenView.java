@@ -35,6 +35,10 @@ public class MainScreenView extends View
     private final int SUB_MENU_ROLL_INDEX = 4;
     private final int SUB_MENU_MAX = 5;
 
+    private final int MAIN_MENU_INDEX = 5;
+    private final int MAIN_DISPLAY_INDEX = 6;
+
+
     private final int grid_x = 33;
     private final int grid_y = 19;
 
@@ -298,6 +302,7 @@ public class MainScreenView extends View
         DrawButton(canvas, subButton_rect[SUB_MENU_ROLL_INDEX], SUB_MENU_ROLL_TITLE);
 
 
+
 //        paint.setColor(Color.BLACK);
 //        canvas.drawRect(mainDisplay_rect, paint);
 //        canvas.drawRect(mainButton_rect, paint);
@@ -339,7 +344,99 @@ public class MainScreenView extends View
     public boolean onTouchEvent(MotionEvent event)
     {
         int actionPerformed = event.getAction();
-        activity.switch_view(activity.VIEW_SPLASHCONNECTSCREEN_INDEX);
-        return true;
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        int select_object = -1;
+
+         if (mainDisplay_rect.contains(x, y) == true)
+        {
+            select_object = MAIN_DISPLAY_INDEX;
+        }
+        else if (mainButton_rect.contains(x, y) == true)
+        {
+            select_object = MAIN_MENU_INDEX;
+        }
+        else
+        {
+            int i;
+            for (i = 0; i < SUB_MENU_MAX; i++)
+            {
+                if (subButton_rect[i].contains(x, y) == true)
+                {
+                    select_object = i;
+                    break;
+                }
+            }
+        }
+        if (select_object < 0)
+        {
+            invalidate();
+            return super.onTouchEvent(event);
+        }
+
+        if (actionPerformed == MotionEvent.ACTION_DOWN)
+        {
+//            switch(select_object)
+//            {
+//                case SUB_MENU_SETTING_INDEX:
+//                    activity.switch_view(activity.VIEW_SETTING_INDEX);
+//                    break;
+//                case SUB_MENU_THROTTLE_INDEX:
+//                    activity.switch_view(activity.VIEW_THROTTLECONTROLLER_INDEX);
+//                    break;
+//                case SUB_MENU_YAW_INDEX:
+//                    activity.switch_view(activity.VIEW_YAWCONTROLLER_INDEX);
+//                    break;
+//                case SUB_MENU_PITCH_INDEX:
+//                    activity.switch_view(activity.VIEW_PITCHCONTROLLER_INDEX);
+//                    break;
+//                case SUB_MENU_ROLL_INDEX:
+//                    activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
+//                    break;
+//                case MAIN_MENU_INDEX:
+//                    activity.switch_view(activity.VIEW_JOYSTICKCONTROOLER_INDEX);
+//                    break;
+//                case MAIN_DISPLAY_INDEX:
+//                    activity.switch_view(activity.VIEW_SPLASHCONNECTSCREEN_INDEX);
+//                    break;
+//            }
+        }
+        else if (actionPerformed == MotionEvent.ACTION_MOVE)
+        {
+
+        }
+        else if (actionPerformed == MotionEvent.ACTION_UP)
+        {
+            switch(select_object)
+            {
+                case SUB_MENU_SETTING_INDEX :
+                    activity.switch_view(activity.VIEW_SETTING_INDEX);
+                    break;
+                case SUB_MENU_THROTTLE_INDEX :
+                    activity.switch_view(activity.VIEW_THROTTLECONTROLLER_INDEX);
+                    break;
+                case SUB_MENU_YAW_INDEX :
+                    activity.switch_view(activity.VIEW_YAWCONTROLLER_INDEX);
+                    break;
+                case SUB_MENU_PITCH_INDEX :
+                    activity.switch_view(activity.VIEW_PITCHCONTROLLER_INDEX);
+                    break;
+                case SUB_MENU_ROLL_INDEX :
+                    activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
+                    break;
+                case MAIN_MENU_INDEX :
+                    activity.switch_view(activity.VIEW_JOYSTICKCONTROOLER_INDEX);
+                    break;
+                case MAIN_DISPLAY_INDEX :
+                    activity.switch_view(activity.VIEW_SPLASHCONNECTSCREEN_INDEX);
+                    break;
+            }
+        }
+        else
+        {
+
+        }
+        invalidate();
+        return super.onTouchEvent(event);
     }
 }
