@@ -1,5 +1,6 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
+import android.bluetooth.BluetoothAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.support.v7.app.ActionBar;
 import android.content.pm.ActivityInfo;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -27,6 +29,8 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 {
     public static final String TAG = "DroneRemoteControl";
 
+    // ---------------------------------------------------------------------------------------------
+    // view index
     public final int VIEW_SPLASHCONNECTSCREEN_INDEX = 1;
     public final int VIEW_MAINSCREEN_INDEX = 2;
     public final int VIEW_JOYSTICKCONTROOLER_INDEX = 3;
@@ -35,6 +39,17 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     public final int VIEW_PITCHCONTROLLER_INDEX = 6;
     public final int VIEW_ROLLCONTROLLER_INDEX = 7;
     public final int VIEW_SETTING_INDEX = 8;
+
+    // ---------------------------------------------------------------------------------------------
+    // for BT Dialog
+    private static final int REQUEST_SELECT_DEVICE = 1;
+    private static final int REQUEST_ENABLE_BT = 2;
+
+    // ---------------------------------------------------------------------------------------------
+    // for BT Device
+    private BluetoothAdapter mBtAdapter = null;
+
+
 
     public void switch_view(int view_index)
     {
@@ -49,7 +64,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 break;
 
             case VIEW_MAINSCREEN_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new MainScreenFragment());
+                fragmentTransaction.replace(R.id.fragment_main_frame, new MainScreenFragment(this));
                 fragmentTransaction.commit();
                 break;
 
@@ -69,6 +84,16 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 break;
 
             case VIEW_SETTING_INDEX :
+                if (!mBtAdapter.isEnabled())
+                {
+                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+                }
+                else
+                {
+                    Intent newIntent = new Intent(MainRemoteControllerActivity.this, DeviceListActivity.class);
+                    startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
+                }
                 break;
         }
 
@@ -127,6 +152,17 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        // ----------------------------------------------------------------------------------------
+        // get default bluetooth adater ....
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBtAdapter == null)
+        {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        // ----------------------------------------------------------------------------------------
         // called before setContentView()
         // start : for full screen
         // title bar : battery, rssi of lte ...

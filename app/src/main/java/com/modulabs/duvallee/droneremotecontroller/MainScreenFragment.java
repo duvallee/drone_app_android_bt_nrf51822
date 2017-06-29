@@ -14,10 +14,12 @@ import android.widget.RelativeLayout;
 
 public class MainScreenFragment extends Fragment
 {
+    private MainRemoteControllerActivity parrent;
     private MainScreenView view;
-    public MainScreenFragment()
+    public MainScreenFragment(MainRemoteControllerActivity p)
     {
         // Required empty public constructor }
+        parrent = p;
     }
 
     @Override

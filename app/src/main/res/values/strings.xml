@@ -1,16 +1,24 @@
 <resources>
     <string name="app_name">Drone Remote Controller</string>
 
+    <!-- menu : not used  -->
     <string name="main_rc_control">main</string>
     <string name="joystick_control">joystick</string>
     <string name="throttle_rc_control">throttle test</string>
     <string name="roll_rc_control">roll test</string>
     <string name="pitch_rc_control">pitch test</string>
     <string name="yaw_rc_control">yaw test</string>
+    <!-- menu : not used  -->
 
-    <string name="appbar_scrolling_view_behavior">scrolling</string>
+
+    <!-- for Device Dialog  -->
+    <string name="select_device">Select a device</string>
+    <string name="scanning">Scanning for devices...</string>
+    <string name="ble_not_supported">Bluetooth Low Energy not supported</string>
+    <string name="scan">Scan</string>
+    <string name="cancel">Cancel</string>
+    <string name="paired">paired</string>
+    <!-- for Device Dialog  -->
 
 
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
