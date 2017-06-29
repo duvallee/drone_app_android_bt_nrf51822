@@ -64,7 +64,7 @@ public class SplashConnectScreenView extends View
         int measureHeight = measureHeight(hHeasureSpec);
         int measureWidth = MeasuredWidth(wMeasureSpec);
 
-        setBackgroundResource(R.mipmap.main_screen);
+        setBackgroundResource(R.mipmap.splash_screen);
         // must be called setMeasuredDimension
         // if not called, occurred run-time error !!!
         setMeasuredDimension(measureWidth, measureHeight);
@@ -111,16 +111,16 @@ public class SplashConnectScreenView extends View
         int width = getMeasuredWidth();
 
         int px = width / 2;
-        int py = height / 2;
+        int py = (int)((float)height * 0.9);
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.MAGENTA);
-        paint.setTextSize(100f);
+        paint.setTextSize(80f);
 
         String displayText = "Drone Remote Controller for embedded lab";
         float textWidth = paint.measureText(displayText);
 
-        canvas.drawText(displayText, px - (textWidth / 2), (py + (py / 2)), paint);
+        canvas.drawText(displayText, px - (textWidth / 2), py, paint);
     }
 
 

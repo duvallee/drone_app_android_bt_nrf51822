@@ -1,17 +1,20 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.content.Context;
 import android.util.AttributeSet;
-
+import android.widget.Toast;
 
 
 /**
@@ -22,31 +25,43 @@ public class MainScreenView extends View
 {
     private MainRemoteControllerActivity activity;
 
-    private final String SUB_MENU_SETTING_TITLE = "Setting";
-    private final String SUB_MENU_THROTTLE_TITLE = "Throttle";
-    private final String SUB_MENU_YAW_TITLE = "Yaw";
-    private final String SUB_MENU_PITCH_TITLE = "Pitch";
-    private final String SUB_MENU_ROLL_TITLE = "Roll";
+    private final String MENU_MAIN_TITLE = "RC Controller";
+    private final String MENU_SETTING_TITLE = "Setting";
+    private final String MENU_THROTTLE_TITLE = "Throttle";
+    private final String MENU_YAW_TITLE = "Yaw";
+    private final String MENU_PITCH_TITLE = "Pitch";
+    private final String MENU_ROLL_TITLE = "Roll";
 
-    private final int SUB_MENU_SETTING_INDEX = 0;
-    private final int SUB_MENU_THROTTLE_INDEX = 1;
-    private final int SUB_MENU_YAW_INDEX = 2;
-    private final int SUB_MENU_PITCH_INDEX = 3;
-    private final int SUB_MENU_ROLL_INDEX = 4;
-    private final int SUB_MENU_MAX = 5;
+    private final int MENU_MAIN_INDEX = 0;
+    private final int MENU_SETTING_INDEX = 1;
+    private final int MENU_THROTTLE_INDEX = 2;
+    private final int MENU_YAW_INDEX = 3;
+    private final int MENU_PITCH_INDEX = 4;
+    private final int MENU_ROLL_INDEX = 5;
+    private final int MENU_MAX = 6;
 
-    private final int MAIN_MENU_INDEX = 5;
-    private final int MAIN_DISPLAY_INDEX = 6;
+    // ---------------------------------------------------------------------------
+    // constant ( grid coordinate ... )
+    private final Rect MENU_MAIN_RECT = new Rect(11, 7, 23, 16);
+    private final Rect MENU_SETTING_RECT = new Rect(27, 3, 31, 5);
+    private final Rect MENU_THROTTLE_RECT = new Rect(3, 7, 7, 11);
+    private final Rect MENU_YAW_RECT = new Rect(3, 12, 7, 16);
+    private final Rect MENU_PITCH_RECT = new Rect(27, 12, 31, 16);
+    private final Rect MENU_ROLL_RECT = new Rect(27, 7, 31, 11);
 
+    // ---------------------------------------------------------------------------
+    private int select_menu_index = -1;
 
-    private final int grid_x = 33;
-    private final int grid_y = 19;
+    // one grid : 80 x 80 in xxxhdpi mode (2560 x 1440)
+    private final int grid_x_divide = 32;
+    private final int grid_y_divide = 18;
 
-    private Rect mainDisplay_rect;
-    private Rect mainButton_rect;
+    private Rect[] menu_rect;
 
-    private Rect[] subButton_rect;
+    private Bitmap[] menu_unselect_Image;
+    private Bitmap[] menu_select_Image;
 
+    private String[] menu_title;
 
     // ---------------------------------------------------------------------------
     // constructor
@@ -73,17 +88,46 @@ public class MainScreenView extends View
 
     public void InitView()
     {
-        mainDisplay_rect = new Rect();
-        mainButton_rect = new Rect();
+        // -----------------------------------------------------------------------------------------
+        // allocate memory ...
+        menu_rect = new Rect[MENU_MAX];
+        menu_unselect_Image = new Bitmap[MENU_MAX];
+        menu_select_Image = new Bitmap[MENU_MAX];
+        menu_title = new String[MENU_MAX];
 
-        subButton_rect = new Rect[SUB_MENU_MAX];
+        // -----------------------------------------------------------------------------------------
+        // allocate menu title
+        menu_title[MENU_MAIN_INDEX] = new String(MENU_MAIN_TITLE);
+        menu_title[MENU_SETTING_INDEX] = new String(MENU_SETTING_TITLE);
+        menu_title[MENU_THROTTLE_INDEX] = new String(MENU_THROTTLE_TITLE);
+        menu_title[MENU_YAW_INDEX] = new String(MENU_YAW_TITLE);
+        menu_title[MENU_PITCH_INDEX] = new String(MENU_PITCH_TITLE);
+        menu_title[MENU_ROLL_INDEX] = new String(MENU_ROLL_TITLE);
 
-        subButton_rect[SUB_MENU_SETTING_INDEX] = new Rect();
-        subButton_rect[SUB_MENU_THROTTLE_INDEX] = new Rect();
-        subButton_rect[SUB_MENU_YAW_INDEX] = new Rect();
-        subButton_rect[SUB_MENU_PITCH_INDEX] = new Rect();
-        subButton_rect[SUB_MENU_ROLL_INDEX] = new Rect();
+        // -----------------------------------------------------------------------------------------
+        // load image from resource
+        Resources resources = activity.getResources();
 
+        menu_unselect_Image[MENU_MAIN_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_main_menu);
+        menu_select_Image[MENU_MAIN_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_main_menu);
+
+        menu_unselect_Image[MENU_SETTING_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_setup_menu);
+        menu_select_Image[MENU_SETTING_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_setup_menu);
+
+        menu_unselect_Image[MENU_THROTTLE_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_throttle_menu);
+        menu_select_Image[MENU_THROTTLE_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_throttle_menu);
+
+        menu_unselect_Image[MENU_YAW_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_yaw_menu);
+        menu_select_Image[MENU_YAW_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_yaw_menu);
+
+        menu_unselect_Image[MENU_PITCH_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_pitch_menu);
+        menu_select_Image[MENU_PITCH_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_pitch_menu);
+
+        menu_unselect_Image[MENU_ROLL_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_roll_menu);
+        menu_select_Image[MENU_ROLL_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_roll_menu);
+
+        // -----------------------------------------------------------------------------------------
+        // hide action bar
         setBackgroundColor(Color.BLACK);
         ActionBar actionbar = activity.getSupportActionBar();
         actionbar.hide();
@@ -96,58 +140,47 @@ public class MainScreenView extends View
         Resources resource = getResources();
     }
 
-//    private final int grid_x = 33;
-//    private final int grid_y = 19;
     @Override
     protected void onMeasure(int wMeasureSpec, int hHeasureSpec)
     {
         int measureHeight = measureHeight(hHeasureSpec);
         int measureWidth = MeasuredWidth(wMeasureSpec);
 
-        int one_grid_x = measureWidth / grid_x;
-        int one_grid_y = measureHeight / grid_y;
+        int one_grid_x = measureWidth / grid_x_divide;
+        int one_grid_y = measureHeight / grid_y_divide;
 
-        // width : 24, height = 2,
-        // start x : 1, start y = 1
-        mainDisplay_rect.set(one_grid_x, one_grid_y, one_grid_x + (one_grid_x * 24), one_grid_y + (one_grid_y * 2));
+        // -----------------------------------------------------------------------------------------
+        // allocate menu title
+        menu_rect[MENU_MAIN_INDEX] = new Rect(one_grid_x * MENU_MAIN_RECT.left,
+                one_grid_y * MENU_MAIN_RECT.top,
+                one_grid_x * MENU_MAIN_RECT.right,
+                one_grid_y * MENU_MAIN_RECT.bottom);
+        menu_rect[MENU_SETTING_INDEX] = new Rect(one_grid_x * MENU_SETTING_RECT.left,
+                one_grid_y * MENU_SETTING_RECT.top,
+                one_grid_x * MENU_SETTING_RECT.right,
+                one_grid_y * MENU_SETTING_RECT.bottom);
+        menu_rect[MENU_THROTTLE_INDEX] = new Rect(one_grid_x * MENU_THROTTLE_RECT.left,
+                one_grid_y * MENU_THROTTLE_RECT.top,
+                one_grid_x * MENU_THROTTLE_RECT.right,
+                one_grid_y * MENU_THROTTLE_RECT.bottom);
+        menu_rect[MENU_YAW_INDEX] = new Rect(one_grid_x * MENU_YAW_RECT.left,
+                one_grid_y * MENU_YAW_RECT.top,
+                one_grid_x * MENU_YAW_RECT.right,
+                one_grid_y * MENU_YAW_RECT.bottom);
+        menu_rect[MENU_PITCH_INDEX] = new Rect(one_grid_x * MENU_PITCH_RECT.left,
+                one_grid_y * MENU_PITCH_RECT.top,
+                one_grid_x * MENU_PITCH_RECT.right,
+                one_grid_y * MENU_PITCH_RECT.bottom);
+        menu_rect[MENU_ROLL_INDEX] = new Rect(one_grid_x * MENU_ROLL_RECT.left,
+                one_grid_y * MENU_ROLL_RECT.top,
+                one_grid_x * MENU_ROLL_RECT.right,
+                one_grid_y * MENU_ROLL_RECT.bottom);
 
-        // width : 24, height = 14,
-        // start x : 1, start y : 4
-        mainButton_rect.set(one_grid_x, (one_grid_y * 4), one_grid_x + (one_grid_x * 24), (one_grid_y * 4) + (one_grid_y * 14));
-
-
-        // width : 6, height = 2,
-        // start x : 26, start y : 1
-        subButton_rect[SUB_MENU_SETTING_INDEX].set((one_grid_x * 26),
-                (one_grid_y * 1),
-                (one_grid_x * 26) + (one_grid_x * 6),
-                (one_grid_y * 1) + (one_grid_y * 2));
-        // width : 6, height = 2,
-        // start x : 26, start y : 7
-        subButton_rect[SUB_MENU_THROTTLE_INDEX].set((one_grid_x * 26),
-                (one_grid_y * 7),
-                (one_grid_x * 26) + (one_grid_x * 6),
-                (one_grid_y * 7) + (one_grid_y * 2));
-        // width : 6, height = 2,
-        // start x : 26, start y : 10
-        subButton_rect[SUB_MENU_YAW_INDEX].set((one_grid_x * 26),
-                (one_grid_y * 10),
-                (one_grid_x * 26) + (one_grid_x * 6),
-                (one_grid_y * 10) + (one_grid_y * 2));
-        // width : 6, height = 2,
-        // start x : 26, start y : 13
-        subButton_rect[SUB_MENU_PITCH_INDEX].set((one_grid_x * 26),
-                (one_grid_y * 13),
-                (one_grid_x * 26) + (one_grid_x * 6),
-                (one_grid_y * 13) + (one_grid_y * 2));
-        // width : 6, height = 2,
-        // start x : 26, start y : 16
-        subButton_rect[SUB_MENU_ROLL_INDEX].set((one_grid_x * 26),
-                (one_grid_y * 16),
-                (one_grid_x * 26) + (one_grid_x * 6),
-                (one_grid_y * 16) + (one_grid_y * 2));
-
+        // -----------------------------------------------------------------------------------------
+        // set background image
         setBackgroundResource(R.mipmap.main_screen);
+
+        // -----------------------------------------------------------------------------------------
         // must be called setMeasuredDimension
         // if not called, occurred run-time error !!!
         setMeasuredDimension(measureWidth, measureHeight);
@@ -187,88 +220,136 @@ public class MainScreenView extends View
         return specSize;
     }
 
-    public void DrawButton(Canvas canvas, Rect rect, String btn_text)
+    public void DrawButton(Canvas canvas, Rect rect, String btn_text, boolean selected)
     {
-        int one_grid_x = (rect.right - rect.left) / 32;
-        int one_grid_y = (rect.bottom - rect.top) / 16;
+//        int one_grid_x = (rect.right - rect.left) / 32;
+//        int one_grid_y = (rect.bottom - rect.top) / 16;
+//
+//        Paint thin_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        Paint thick_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        Paint text_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//
+//        if (selected == true)
+//        {
+//            thin_paint.setColor(Color.BLUE);
+//            thick_paint.setColor(Color.LTGRAY);
+//            text_paint.setColor(Color.DKGRAY);
+//        }
+//        else
+//        {
+//            thin_paint.setColor(Color.CYAN);
+//            thick_paint.setColor(Color.WHITE);
+//            text_paint.setColor(Color.MAGENTA);
+//        }
+//        thin_paint.setStrokeWidth(5);
+//        thick_paint.setStrokeWidth(18);
+//        text_paint.setTextSize(80f);
+//
+//        // thick line for left - top
+//        canvas.drawLine(rect.left,
+//                rect.top + (one_grid_y * 14),
+//                rect.left,
+//                rect.top + (one_grid_y * 2), thick_paint);
+//
+//        //
+//        canvas.drawLine(rect.left,
+//                rect.top + (one_grid_y * 2),
+//                rect.left + (one_grid_x * 2),
+//                rect.top, thick_paint);
+//
+//        canvas.drawLine(rect.left + (one_grid_x * 2),
+//                rect.top,
+//                rect.left + (one_grid_x * 31),
+//                rect.top, thick_paint);
+//
+//        // thick line for right - bottom
+//        canvas.drawLine(rect.right,
+//                rect.bottom - (one_grid_y * 14),
+//                rect.right,
+//                rect.bottom - (one_grid_y * 2), thick_paint);
+//
+//        //
+//        canvas.drawLine(rect.right,
+//                rect.bottom - (one_grid_y * 2),
+//                rect.right - (one_grid_x * 2),
+//                rect.bottom, thick_paint);
+//
+//        canvas.drawLine(rect.right - (one_grid_x * 2),
+//                rect.bottom,
+//                rect.right - (one_grid_x * 31),
+//                rect.bottom, thick_paint);
+//
+//        // thin line for left - bottom
+//        canvas.drawLine(rect.left,
+//                rect.top + (one_grid_y * 14),
+//                rect.left,
+//                rect.bottom, thin_paint);
+//
+//        canvas.drawLine(rect.left,
+//                rect.bottom,
+//                rect.left + (one_grid_x * 2),
+//                rect.bottom, thin_paint);
+//
+//        // thin line for right - top
+//        canvas.drawLine(rect.left + (one_grid_x * 31),
+//                rect.top,
+//                rect.right,
+//                rect.top, thin_paint);
+//
+//        canvas.drawLine(rect.right,
+//                rect.top,
+//                rect.right,
+//                rect.top + (one_grid_y * 2), thin_paint);
+//
+//        float textWidth = text_paint.measureText(btn_text);
+//
+////        // minus value, height from baseline to top
+////        float textAscent = text_paint.ascent();
+////        // plus value, height from baseline to bottom
+////        float textDescent = text_paint.descent();
+//
+//        float height = Math.abs(text_paint.ascent() + text_paint.descent());
+//
+//        float start_text_x = (rect.left + (rect.width() / 2) - (textWidth / 2));
+//        float start_text_y = rect.top + (rect.height() / 2) + (height / 2);
+//        canvas.drawText(btn_text, start_text_x, start_text_y, text_paint);
+    }
 
-        Paint thin_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Paint thick_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    public void DrawImageButton(Canvas canvas, int menu_index, boolean selected)
+    {
+        int width = menu_unselect_Image[menu_index].getWidth();
+        int height = menu_unselect_Image[menu_index].getHeight();
+
+        Paint line_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Paint text_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        thin_paint.setColor(Color.LTGRAY);
-        thin_paint.setStrokeWidth(5);
+        line_paint.setColor(Color.CYAN);
+        line_paint.setStrokeWidth(5);
+        text_paint.setTextSize(50f);
 
-        thick_paint.setColor(Color.WHITE);
-        thick_paint.setStrokeWidth(18);
+        Rect src = new Rect(0, 0, width, height);
+        if (selected == true)
+        {
+            canvas.drawBitmap(menu_select_Image[menu_index], src, menu_rect[menu_index], null);
+            float textWidth = text_paint.measureText(menu_title[menu_index]);
 
-        text_paint.setColor(Color.BLACK);
-        text_paint.setTextSize(80f);
+            // minus value, height from baseline to top
+            float textAscent = text_paint.ascent();
+            // plus value, height from baseline to bottom
+            float textDescent = text_paint.descent();
 
-        // thick line for left - top
-        canvas.drawLine(rect.left,
-                rect.top + (one_grid_y * 14),
-                rect.left,
-                rect.top + (one_grid_y * 2), thick_paint);
+    //        float height = Math.abs(text_paint.ascent() + text_paint.descent());
 
-        //
-        canvas.drawLine(rect.left,
-                rect.top + (one_grid_y * 2),
-                rect.left + (one_grid_x * 2),
-                rect.top, thick_paint);
+            float start_text_x = (menu_rect[menu_index].left + (menu_rect[menu_index].width() / 2) - (textWidth / 2));
+            float start_text_y = menu_rect[menu_index].bottom - textDescent;
 
-        canvas.drawLine(rect.left + (one_grid_x * 2),
-                rect.top,
-                rect.left + (one_grid_x * 31),
-                rect.top, thick_paint);
-
-        // thick line for right - bottom
-        canvas.drawLine(rect.right,
-                rect.bottom - (one_grid_y * 14),
-                rect.right,
-                rect.bottom - (one_grid_y * 2), thick_paint);
-
-        //
-        canvas.drawLine(rect.right,
-                rect.bottom - (one_grid_y * 2),
-                rect.right - (one_grid_x * 2),
-                rect.bottom, thick_paint);
-
-        canvas.drawLine(rect.right - (one_grid_x * 2),
-                rect.bottom,
-                rect.right - (one_grid_x * 31),
-                rect.bottom, thick_paint);
-
-        // thin line for left - bottom
-        canvas.drawLine(rect.left,
-                rect.top + (one_grid_y * 14),
-                rect.left,
-                rect.bottom, thin_paint);
-
-        canvas.drawLine(rect.left,
-                rect.bottom,
-                rect.left + (one_grid_x * 2),
-                rect.bottom, thin_paint);
-
-        // thin line for right - top
-        canvas.drawLine(rect.left + (one_grid_x * 31),
-                rect.top,
-                rect.right,
-                rect.top, thin_paint);
-
-        canvas.drawLine(rect.right,
-                rect.top,
-                rect.right,
-                rect.top + (one_grid_y * 2), thin_paint);
-
-
-//        canvas.drawLine(rect.left, rect.top, rect.right, rect.top, thin_paint);
-//        canvas.drawLine(rect.right, rect.top, rect.right, rect.bottom, thin_paint);
-//        canvas.drawLine(rect.right, rect.bottom, rect.left, rect.bottom, thin_paint);
-//        canvas.drawLine(rect.left, rect.bottom, rect.left, rect.top, thin_paint);
-
-        float textWidth = text_paint.measureText(btn_text);
-        canvas.drawText(btn_text, (rect.left + (rect.width() / 2) - (textWidth / 2)), rect.top + (rect.height() / 2) + (rect.height() / 4), text_paint);
+//            text_paint.setTypeface(Typeface.create(Typeface.SANS_SERIF,Typeface.SANS_SERIF));
+            canvas.drawText(menu_title[menu_index], start_text_x, start_text_y, text_paint);
+        }
+        else
+        {
+            canvas.drawBitmap(menu_unselect_Image[menu_index], src, menu_rect[menu_index], null);
+        }
     }
 
     // 2,560 x 1,440       (Galaxy Note 4)
@@ -277,48 +358,10 @@ public class MainScreenView extends View
     @Override
     public void onDraw(Canvas canvas)
     {
-        int height = getMeasuredHeight();
-        int width = getMeasuredWidth();
-
-        int px = width / 2;
-        int py = height / 2;
-
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.YELLOW);
-        paint.setTextSize(100f);
-
-//        String displayText = "Drone Remote Controller for embedded lab";
-//        float textWidth = paint.measureText(displayText);
-//
-//        canvas.drawText(displayText, px - (textWidth / 2), (py + (py / 2)), paint);
-
-//        DrawButton(canvas, mainDisplay_rect, "Information");
-//        DrawButton(canvas, mainButton_rect, "Main Controller");
-
-        DrawButton(canvas, subButton_rect[SUB_MENU_SETTING_INDEX], SUB_MENU_SETTING_TITLE);
-        DrawButton(canvas, subButton_rect[SUB_MENU_THROTTLE_INDEX], SUB_MENU_THROTTLE_TITLE);
-        DrawButton(canvas, subButton_rect[SUB_MENU_YAW_INDEX], SUB_MENU_YAW_TITLE);
-        DrawButton(canvas, subButton_rect[SUB_MENU_PITCH_INDEX], SUB_MENU_PITCH_TITLE);
-        DrawButton(canvas, subButton_rect[SUB_MENU_ROLL_INDEX], SUB_MENU_ROLL_TITLE);
-
-
-
-//        paint.setColor(Color.BLACK);
-//        canvas.drawRect(mainDisplay_rect, paint);
-//        canvas.drawRect(mainButton_rect, paint);
-//
-//        canvas.drawRect(subButton_rect[SUB_MENU_SETTING_INDEX], paint);
-//        canvas.drawRect(subButton_rect[SUB_MENU_THROTTLE_INDEX], paint);
-//        canvas.drawRect(subButton_rect[SUB_MENU_YAW_INDEX], paint);
-//        canvas.drawRect(subButton_rect[SUB_MENU_PITCH_INDEX], paint);
-//        canvas.drawRect(subButton_rect[SUB_MENU_ROLL_INDEX], paint);
-
-//        paint.setAntiAlias(true);
-//        paint.setStyle(Paint.Style.STROKE);
-//        paint.setStrokeWidth(100);
-//        paint.setColor(Color.RED);
-//        paint.setStyle(Paint.Style.FILL);
-//        canvas.drawCircle(75, 75, 100, paint);
+        for (int i = 0; i < MENU_MAX; i++)
+        {
+            DrawImageButton(canvas, i, (select_menu_index == i) ? true : false);
+        }
     }
 
     @Override
@@ -343,100 +386,64 @@ public class MainScreenView extends View
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        int actionPerformed = event.getAction();
+        int action = event.getAction();
         int x = (int) event.getX();
         int y = (int) event.getY();
-        int select_object = -1;
 
-         if (mainDisplay_rect.contains(x, y) == true)
+        for (int i = 0; i < MENU_MAX; i++)
         {
-            select_object = MAIN_DISPLAY_INDEX;
-        }
-        else if (mainButton_rect.contains(x, y) == true)
-        {
-            select_object = MAIN_MENU_INDEX;
-        }
-        else
-        {
-            int i;
-            for (i = 0; i < SUB_MENU_MAX; i++)
+            if (menu_rect[i].contains(x, y) == true)
             {
-                if (subButton_rect[i].contains(x, y) == true)
-                {
-                    select_object = i;
-                    break;
-                }
+                select_menu_index = i;
+                break;
             }
         }
-        if (select_object < 0)
+
+        if (select_menu_index < 0)
         {
             invalidate();
-            return super.onTouchEvent(event);
+            // Must be return is true because should be received the ACTION_MOVE, ACTION_UP event
+            return true;
         }
 
-        if (actionPerformed == MotionEvent.ACTION_DOWN)
+        if (action == MotionEvent.ACTION_UP)
         {
-//            switch(select_object)
-//            {
-//                case SUB_MENU_SETTING_INDEX:
-//                    activity.switch_view(activity.VIEW_SETTING_INDEX);
-//                    break;
-//                case SUB_MENU_THROTTLE_INDEX:
-//                    activity.switch_view(activity.VIEW_THROTTLECONTROLLER_INDEX);
-//                    break;
-//                case SUB_MENU_YAW_INDEX:
-//                    activity.switch_view(activity.VIEW_YAWCONTROLLER_INDEX);
-//                    break;
-//                case SUB_MENU_PITCH_INDEX:
-//                    activity.switch_view(activity.VIEW_PITCHCONTROLLER_INDEX);
-//                    break;
-//                case SUB_MENU_ROLL_INDEX:
-//                    activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
-//                    break;
-//                case MAIN_MENU_INDEX:
-//                    activity.switch_view(activity.VIEW_JOYSTICKCONTROOLER_INDEX);
-//                    break;
-//                case MAIN_DISPLAY_INDEX:
-//                    activity.switch_view(activity.VIEW_SPLASHCONNECTSCREEN_INDEX);
-//                    break;
-//            }
-        }
-        else if (actionPerformed == MotionEvent.ACTION_MOVE)
-        {
-
-        }
-        else if (actionPerformed == MotionEvent.ACTION_UP)
-        {
-            switch(select_object)
-            {
-                case SUB_MENU_SETTING_INDEX :
-                    activity.switch_view(activity.VIEW_SETTING_INDEX);
-                    break;
-                case SUB_MENU_THROTTLE_INDEX :
-                    activity.switch_view(activity.VIEW_THROTTLECONTROLLER_INDEX);
-                    break;
-                case SUB_MENU_YAW_INDEX :
-                    activity.switch_view(activity.VIEW_YAWCONTROLLER_INDEX);
-                    break;
-                case SUB_MENU_PITCH_INDEX :
-                    activity.switch_view(activity.VIEW_PITCHCONTROLLER_INDEX);
-                    break;
-                case SUB_MENU_ROLL_INDEX :
-                    activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
-                    break;
-                case MAIN_MENU_INDEX :
+            switch(select_menu_index) {
+                case MENU_MAIN_INDEX:
                     activity.switch_view(activity.VIEW_JOYSTICKCONTROOLER_INDEX);
+                    Toast.makeText(activity, MENU_MAIN_TITLE, Toast.LENGTH_SHORT).show();
                     break;
-                case MAIN_DISPLAY_INDEX :
-                    activity.switch_view(activity.VIEW_SPLASHCONNECTSCREEN_INDEX);
+
+                case MENU_SETTING_INDEX:
+                    activity.switch_view(activity.VIEW_SETTING_INDEX);
+                    Toast.makeText(activity, MENU_SETTING_TITLE, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case MENU_THROTTLE_INDEX:
+                    activity.switch_view(activity.VIEW_THROTTLECONTROLLER_INDEX);
+                    Toast.makeText(activity, MENU_THROTTLE_TITLE, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case MENU_YAW_INDEX:
+                    activity.switch_view(activity.VIEW_YAWCONTROLLER_INDEX);
+                    Toast.makeText(activity, MENU_YAW_TITLE, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case MENU_PITCH_INDEX:
+                    activity.switch_view(activity.VIEW_PITCHCONTROLLER_INDEX);
+                    Toast.makeText(activity, MENU_PITCH_TITLE, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case MENU_ROLL_INDEX:
+                    activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
+                    Toast.makeText(activity, MENU_ROLL_TITLE, Toast.LENGTH_SHORT).show();
                     break;
             }
+            select_menu_index = -1;
         }
-        else
-        {
 
-        }
         invalidate();
-        return super.onTouchEvent(event);
+        // Must be return is true because should be received the ACTION_MOVE, ACTION_UP event
+        return true;
     }
 }
