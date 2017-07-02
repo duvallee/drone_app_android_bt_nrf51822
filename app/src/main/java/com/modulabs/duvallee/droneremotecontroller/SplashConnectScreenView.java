@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.v7.app.ActionBar;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -18,6 +19,13 @@ import android.view.View;
 public class SplashConnectScreenView extends View
 {
     private MainRemoteControllerActivity activity;
+
+    // 2560 x 1440
+    private final int TEXT_OUT_Y_2560x1440_COORDINAGE = 1246;
+    // 1920 x 1080
+    private final int TEXT_OUT_Y_1920x1080_COORDINAGE = 935;
+
+    private int TEXT_OUT_Y_COORDINAGE = 0;
 
     public SplashConnectScreenView(Context context)
     {
@@ -65,6 +73,17 @@ public class SplashConnectScreenView extends View
         int measureWidth = MeasuredWidth(wMeasureSpec);
 
         setBackgroundResource(R.mipmap.splash_screen);
+
+        if (measureHeight > 1080)   // QUHD
+        {
+            TEXT_OUT_Y_COORDINAGE = TEXT_OUT_Y_2560x1440_COORDINAGE;
+        }
+        else
+        {
+            // Full-HD
+            TEXT_OUT_Y_COORDINAGE = TEXT_OUT_Y_1920x1080_COORDINAGE;
+        }
+
         // must be called setMeasuredDimension
         // if not called, occurred run-time error !!!
         setMeasuredDimension(measureWidth, measureHeight);
@@ -111,7 +130,6 @@ public class SplashConnectScreenView extends View
         int width = getMeasuredWidth();
 
         int px = width / 2;
-        int py = (int)((float)height * 0.9);
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.MAGENTA);
@@ -120,7 +138,7 @@ public class SplashConnectScreenView extends View
         String displayText = "Drone Remote Controller for embedded lab";
         float textWidth = paint.measureText(displayText);
 
-        canvas.drawText(displayText, px - (textWidth / 2), py, paint);
+        canvas.drawText(displayText, px - (textWidth / 2), TEXT_OUT_Y_COORDINAGE, paint);
     }
 
 

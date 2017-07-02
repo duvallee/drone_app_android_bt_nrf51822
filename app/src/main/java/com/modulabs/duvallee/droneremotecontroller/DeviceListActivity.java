@@ -4,6 +4,12 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanSettings;
+import android.content.BroadcastReceiver;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -39,12 +45,17 @@ public class DeviceListActivity extends Activity
     public static final String TAG = "DeviceListActivity";
 
     // ---------------------------------------------------------------------------------------------
+    // result for startActivityForResult()
+    public final int DISCOVERY_REQUEST = 1;
+
+    // ---------------------------------------------------------------------------------------------
     private Handler mHandler;
 
     // ---------------------------------------------------------------------------------------------
     // for Bluetooth
     private BluetoothAdapter mBluetoothAdapter;
     private DeviceAdapter deviceAdapter;
+    private BluetoothLeScanner mBLEScanner;
 
     // ---------------------------------------------------------------------------------------------
     // list for Bluetooth device's
@@ -87,6 +98,15 @@ public class DeviceListActivity extends Activity
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
+//        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled())
+        {
+            mBluetoothAdapter.enable();
+        }
+
+
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null)
         {
@@ -94,6 +114,31 @@ public class DeviceListActivity extends Activity
             finish();
             return;
         }
+
+        // -----------------------------------------------------------------------------------------
+        // Start : changed more than SDK level 21
+        mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        // Checks if Bluetooth LE Scanner is available.
+        if (mBLEScanner == null)
+        {
+            Toast.makeText(this, "Can not find BLE Scanner", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        // End : changed more than SDK level 21
+        // -----------------------------------------------------------------------------------------
+
+//        ScanSettings settings = new ScanSettings.Builder()
+//                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+//                .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+//                .build();
+//        List<ScanFilter> filters = new ArrayList<ScanFilter>();
+
+//        // -----------------------------------------------------------------------------------------
+//        // get scanmod for bluetooth
+//        String sDiscoverable = BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE;
+//        startActivityForResult(new Intent(sDiscoverable), DISCOVERY_REQUEST);
+
         populateList();
         mEmptyList = (TextView) findViewById(R.id.empty);
         Button cancelButton = (Button) findViewById(R.id.btn_cancel);
@@ -115,6 +160,10 @@ public class DeviceListActivity extends Activity
         });
     }
 
+    // -----------------------------------------------------------------------------------------
+    //
+    //
+    // -----------------------------------------------------------------------------------------
     private void populateList()
     {
         /* Initialize device list container */
@@ -131,6 +180,10 @@ public class DeviceListActivity extends Activity
 
     }
 
+    // -----------------------------------------------------------------------------------------
+    //
+    //
+    // -----------------------------------------------------------------------------------------
     private void scanLeDevice(final boolean enable)
     {
         final Button cancelButton = (Button) findViewById(R.id.btn_cancel);
@@ -143,41 +196,111 @@ public class DeviceListActivity extends Activity
                 public void run()
                 {
                     mScanning = false;
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    // -----------------------------------------------------------------------------------------
+                    // Start : changed more than SDK level 21
+                    mBLEScanner.stopScan(mLeScanCallback);
+                    // End : changed more than SDK level 21
+                    // -----------------------------------------------------------------------------------------
+
+                    // not supported at SDK level 21
+                    // mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     cancelButton.setText(R.string.scan);
                 }
             }, SCAN_PERIOD);
 
             mScanning = true;
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+
+            // -----------------------------------------------------------------------------------------
+            // Start : changed more than SDK level 21
+            mBLEScanner.startScan(mLeScanCallback); // mBluetoothAdapter.startLeScan() 부분
+            // End : changed more than SDK level 21
+            // -----------------------------------------------------------------------------------------
+
+            // not supported at SDK level 21
+            // mBluetoothAdapter.startLeScan(mLeScanCallback);
+
             cancelButton.setText(R.string.cancel);
         }
         else
         {
             mScanning = false;
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+
+            // -----------------------------------------------------------------------------------------
+            // Start : changed more than SDK level 21
+            mBLEScanner.stopScan(mLeScanCallback);
+            // End : changed more than SDK level 21
+            // -----------------------------------------------------------------------------------------
+
+            // not supported at SDK level 21
+            // mBluetoothAdapter.stopLeScan(mLeScanCallback);
             cancelButton.setText(R.string.scan);
         }
-
     }
 
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-        new BluetoothAdapter.LeScanCallback()
-        {
-            @Override
-            public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord)
-            {
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        addDevice(device,rssi);
-                    }
-                });
-            }
-        };
+    // -----------------------------------------------------------------------------------------
+    // Start : changed more than SDK level 21
+    // does not supported
+    // private BluetoothAdapter.LeScanCallback mLeScanCallback =
+    //    new BluetoothAdapter.LeScanCallback()
+    //    {
+    //        @Override
+    //        public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord)
+    //        {
+    //            runOnUiThread(new Runnable()
+    //            {
+    //                @Override
+    //                public void run()
+    //                {
+    //                    addDevice(device,rssi);
+    //                }
+    //            });
+    //        }
+    //    };
+    // End : changed more than SDK level 21
+    // -----------------------------------------------------------------------------------------
 
+
+    // -----------------------------------------------------------------------------------------
+    // Start : changed more than SDK level 21
+    // use ScanCallback instead of BluetoothAdapter.LeScanCallback
+    private ScanCallback mLeScanCallback = new ScanCallback()
+    {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result)
+        {
+            processResult(result);
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results)
+        {
+            for (ScanResult result : results)
+            {
+                processResult(result);
+            }
+        }
+
+        @Override
+        public void onScanFailed(int errorCode)
+        {
+        }
+
+        private void processResult(final ScanResult result)
+        {
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    BluetoothDevice device = result.getDevice();
+                    addDevice(device, result.getRssi());
+                }
+            });
+        }
+    };
+
+    // ---------------------------------------------------------------------------------------------
+    //
     private void addDevice(BluetoothDevice device, int rssi)
     {
         boolean deviceFound = false;
@@ -198,6 +321,21 @@ public class DeviceListActivity extends Activity
         }
     }
 
+//    @Override
+//    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+//        return super.registerReceiver(receiver, filter);
+//    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == DISCOVERY_REQUEST)
+        {
+            boolean isDiscoverable = resultCode > 0;
+            int discoverableDuration = resultCode;
+        }
+    }
+
     @Override
     public void onStart()
     {
@@ -205,20 +343,57 @@ public class DeviceListActivity extends Activity
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+        // from stckoverflow
+        this.registerReceiver(mReceiver, filter);
     }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            String action = intent.getAction();
+
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action))
+            {
+                //do something
+            }
+
+            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action))
+            {
+                //do something else
+            }
+        }
+    };
 
     @Override
     public void onStop()
     {
         super.onStop();
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        // -----------------------------------------------------------------------------------------
+        // Start : changed more than SDK level 21
+        mBLEScanner.stopScan(mLeScanCallback);
+        // End : changed more than SDK level 21
+        // -----------------------------------------------------------------------------------------
+
+        // not supported at SDK level 21
+        // mBluetoothAdapter.stopLeScan(mLeScanCallback);
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        // -----------------------------------------------------------------------------------------
+        // Start : changed more than SDK level 21
+        mBLEScanner.stopScan(mLeScanCallback);
+        // End : changed more than SDK level 21
+        // -----------------------------------------------------------------------------------------
+
+        // not supported at SDK level 21
+        // mBluetoothAdapter.stopLeScan(mLeScanCallback);
     }
 
     private OnItemClickListener mDeviceClickListener = new OnItemClickListener()
@@ -227,7 +402,14 @@ public class DeviceListActivity extends Activity
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
             BluetoothDevice device = deviceList.get(position);
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            // -----------------------------------------------------------------------------------------
+            // Start : changed more than SDK level 21
+            mBLEScanner.stopScan(mLeScanCallback);
+            // End : changed more than SDK level 21
+            // -----------------------------------------------------------------------------------------
+
+            // not supported at SDK level 21
+            // mBluetoothAdapter.stopLeScan(mLeScanCallback);
 
             Bundle b = new Bundle();
             b.putString(BluetoothDevice.EXTRA_DEVICE, deviceList.get(position).getAddress());
