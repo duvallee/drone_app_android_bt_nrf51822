@@ -345,22 +345,14 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item)
 //    {
-//        Fragment fr;
-//        FragmentManager fm = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fm.beginTransaction();
 //        // Handle item selection
 //        switch (item.getItemId())
 //        {
 //            case R.id.main_rc_control :
 //                break;
 //            case R.id.joystick_rc_control :
-//                fr = new fragmentC();
-//                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
-//                fragmentTransaction.commit();
 //                break;
 //            case R.id.throttle_rc_control :
-//                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
-//                fragmentTransaction.commit();
 //                break;
 //            case R.id.roll_rc_control :
 //                break;

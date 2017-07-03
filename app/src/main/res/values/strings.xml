@@ -20,5 +20,8 @@
     <string name="paired">paired</string>
     <!-- for Device Dialog  -->
 
+    <string name="demo_min_label">Min</string>
+    <string name="demo_max_label">Max</string>
+
 
 </resources>
