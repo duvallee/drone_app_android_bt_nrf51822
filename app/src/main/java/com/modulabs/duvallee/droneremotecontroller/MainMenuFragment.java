@@ -1,22 +1,21 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Bundle;
 import android.widget.RelativeLayout;
 
-
 /**
- * Created by duval on 2017-06-26.
+ * Created by duval on 2017-07-03.
  */
 
-public class MainScreenFragment extends Fragment
+public class MainMenuFragment extends Fragment
 {
     private MainRemoteControllerActivity parrent;
-    private MainScreenView view;
-    public MainScreenFragment(MainRemoteControllerActivity p)
+    private MainMenuView view;
+    public MainMenuFragment(MainRemoteControllerActivity p)
     {
         // Required empty public constructor }
         parrent = p;
@@ -26,7 +25,7 @@ public class MainScreenFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        view = new MainScreenView(getActivity());
+        view = new MainMenuView(getActivity());
 
     }
 

@@ -53,8 +53,8 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     // ---------------------------------------------------------------------------------------------
     // view index
     public final int VIEW_SPLASHCONNECTSCREEN_INDEX = 1;
-    public final int VIEW_MAINSCREEN_INDEX = 2;
-    public final int VIEW_JOYSTICKCONTROOLER_INDEX = 3;
+    public final int VIEW_MAIN_MENU_SCREEN_INDEX = 2;
+    public final int VIEW_JOYSTICKCONTROLLER_INDEX = 3;
     public final int VIEW_THROTTLECONTROLLER_INDEX = 4;
     public final int VIEW_YAWCONTROLLER_INDEX = 5;
     public final int VIEW_PITCHCONTROLLER_INDEX = 6;
@@ -63,6 +63,17 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     public final int VIEW_SEARCHING_INDEX = 9;
 
     public final int VIEW_MAX_INDEX = 10;
+
+    // tag for view
+    private final String VIEW_SPLASHCONNECTSCREEN_TAG = "SPLASH_CONNECT_SCREEN_TAG";
+    private final String VIEW_MAIN_MENU_SCREEN_TAG = "MAIN_MENU_SCREEN_TAG";
+    private final String VIEW_JOYSTICK_CONTROLLER_TAG = "JOYSTICK_CONTROLLER_TAG";
+    private final String VIEW_THROTTLE_CONTROLLER_TAG = "THROTTLE_CONTROLLER_TAG";
+    private final String VIEW_YAW_CONTROLLER_TAG = "YAW_CONTROLLER_TAG";
+    private final String VIEW_PITCH_CONTROLLER_TAG = "PITCH_CONTROLLER_TAG";
+    private final String VIEW_ROLL_CONTROLLER_TAG = "ROLL_CONTROLLER_TAG";
+    private final String VIEW_SETTING_TAG = "SETTING_TAG";
+    private final String VIEW_SEARCHING_TAG = "SEARCHING_TAG";
 
     private String[] mFlagmentTag;
 
@@ -198,16 +209,18 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         switch (view_index)
         {
             case VIEW_SPLASHCONNECTSCREEN_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new SplashConnectScreen(this));
+                fragmentTransaction.replace(R.id.fragment_main_frame, new SplashConnectScreenFragment(this), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
-            case VIEW_MAINSCREEN_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new MainScreenFragment(this));
+            case VIEW_MAIN_MENU_SCREEN_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new MainMenuFragment(this), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
-            case VIEW_JOYSTICKCONTROOLER_INDEX :
+            case VIEW_JOYSTICKCONTROLLER_INDEX :
+                // ---------------------------------------------------------------------------------
+                // start : for test code
                 if (mDroneTransmitterBtService != null)
                 {
                     if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
@@ -224,24 +237,43 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 {
                     showMessage("not initialize !!!");
                 }
+                // end : for test code
+                // ---------------------------------------------------------------------------------
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Joystick_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
                 break;
 
             case VIEW_THROTTLECONTROLLER_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Throttle_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
                 break;
 
             case VIEW_YAWCONTROLLER_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Yaw_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
                 break;
 
             case VIEW_PITCHCONTROLLER_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Pitch_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
                 break;
 
             case VIEW_ROLLCONTROLLER_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Roll_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
                 break;
 
             case VIEW_SETTING_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
                 break;
+
             case VIEW_SEARCHING_INDEX :
                 searching_drone_transmitter();
+                break;
+
+            default :
+                showMessage("unknown view index : " + String.valueOf(view_index));
                 break;
         }
     }
@@ -285,51 +317,21 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     {
         FragmentManager fragmentManager = getFragmentManager();
 
-//        for (int i = 0; i < VIEW_MAX_INDEX; i++)
-//        {
-//            Fragment fragment = fragmentManager.findFragmentById(i);
-//            if (fragment != null)
-//            {
-//                if(fragment != null && fragment.isVisible())
-//                {
-//                    View view = fragment.getView();
-//                    if (view != null)
-//                    {
-//                        view.invalidate();
-//                    }
-//                }
-//            }
-//        }
-
-//        Fragment fragment = fragmentManager.findFragmentByTag("");
-//        if (fragment != null)
-//        {
-//            if(fragment != null && fragment.isVisible())
-//            {
-//                View view = fragment.getView();
-//                if (view != null)
-//                {
-//                    view.invalidate();
-//                }
-//            }
-//
-//        }
-
-//        List<Fragment> fragments = fragmentManager.getFragment();
-//        if(fragments != null)
-//        {
-//            for(Fragment fragment : fragments)
-//            {
-//                if(fragment != null && fragment.isVisible())
-//                {
-//                    View view = fragment.getView();
-//                    if (view != null)
-//                    {
-//                        view.invalidate();
-//                    }
-//                }
-//            }
-//        }
+        for (int i = 0; i < VIEW_MAX_INDEX; i++)
+        {
+            Fragment fragment = fragmentManager.findFragmentByTag(mFlagmentTag[i]);
+            if (fragment != null)
+            {
+                if(fragment != null && fragment.isVisible())
+                {
+                    View view = fragment.getView();
+                    if (view != null)
+                    {
+                        view.invalidate();
+                    }
+                }
+            }
+        }
     }
 
 //    @Override
@@ -350,9 +352,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 //        switch (item.getItemId())
 //        {
 //            case R.id.main_rc_control :
-//                fr = new fragmentB();
-//                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
-//                fragmentTransaction.commit();
 //                break;
 //            case R.id.joystick_rc_control :
 //                fr = new fragmentC();
@@ -360,7 +359,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 //                fragmentTransaction.commit();
 //                break;
 //            case R.id.throttle_rc_control :
-//                fr = new MainScreenFragment();
 //                fragmentTransaction.replace(R.id.fragment_main_frame, fr);
 //                fragmentTransaction.commit();
 //                break;
@@ -391,6 +389,16 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         // ----------------------------------------------------------------------------------------
         // allocate memory
         mFlagmentTag = new String[VIEW_MAX_INDEX];
+
+        mFlagmentTag[VIEW_SPLASHCONNECTSCREEN_INDEX] = VIEW_SPLASHCONNECTSCREEN_TAG;
+        mFlagmentTag[VIEW_MAIN_MENU_SCREEN_INDEX] = VIEW_MAIN_MENU_SCREEN_TAG;
+        mFlagmentTag[VIEW_JOYSTICKCONTROLLER_INDEX] = VIEW_JOYSTICK_CONTROLLER_TAG;
+        mFlagmentTag[VIEW_THROTTLECONTROLLER_INDEX] = VIEW_THROTTLE_CONTROLLER_TAG;
+        mFlagmentTag[VIEW_YAWCONTROLLER_INDEX] = VIEW_YAW_CONTROLLER_TAG;
+        mFlagmentTag[VIEW_PITCHCONTROLLER_INDEX] = VIEW_PITCH_CONTROLLER_TAG;
+        mFlagmentTag[VIEW_ROLLCONTROLLER_INDEX] = VIEW_ROLL_CONTROLLER_TAG;
+        mFlagmentTag[VIEW_SETTING_INDEX] = VIEW_SETTING_TAG;
+        mFlagmentTag[VIEW_SEARCHING_INDEX] = VIEW_SEARCHING_TAG;
 
         // ----------------------------------------------------------------------------------------
         // check permission ...
@@ -478,11 +486,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         actionbar.hide();
 
         // display slash screen for connect to drone controller ...
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        SplashConnectScreen flagsment = new SplashConnectScreen(this);
-        fragmentTransaction.add(R.id.fragment_main_frame, flagsment);
-        fragmentTransaction.commit();
+        switch_view(VIEW_SPLASHCONNECTSCREEN_INDEX);
 
         // ----------------------------------------------------------------------------------------
         // init service for UART

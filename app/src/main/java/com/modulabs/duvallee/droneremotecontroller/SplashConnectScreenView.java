@@ -165,7 +165,7 @@ public class SplashConnectScreenView extends View
     public boolean onTouchEvent(MotionEvent event)
     {
         int actionPerformed = event.getAction();
-        activity.switch_view(activity.VIEW_MAINSCREEN_INDEX);
+        activity.switch_view(activity.VIEW_MAIN_MENU_SCREEN_INDEX);
         return true;
     }
 }

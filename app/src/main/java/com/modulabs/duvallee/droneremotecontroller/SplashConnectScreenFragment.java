@@ -5,18 +5,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 /**
- * Created by duval on 2017-06-28.
+ * Created by duval on 2017-07-03.
  */
 
-public class SplashConnectScreen extends Fragment
+public class SplashConnectScreenFragment extends Fragment
 {
     private MainRemoteControllerActivity parrent;
     private SplashConnectScreenView splash_view;
 
-    public SplashConnectScreen(MainRemoteControllerActivity p)
+    public SplashConnectScreenFragment(MainRemoteControllerActivity p)
     {
         parrent = p;
     }
@@ -59,5 +58,4 @@ public class SplashConnectScreen extends Fragment
         // case 1
         return (splash_view);
     }
-
 }
