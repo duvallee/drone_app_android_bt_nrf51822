@@ -11,10 +11,10 @@
         android:layout_height="60dp">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/unselect_setup_menu" />
+            app:srcCompat="@mipmap/unselect_back_button" />
 
         <TextView
             android:id="@+id/textView3"

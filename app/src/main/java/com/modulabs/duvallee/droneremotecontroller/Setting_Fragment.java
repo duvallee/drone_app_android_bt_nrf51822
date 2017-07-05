@@ -1,12 +1,14 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -15,17 +17,44 @@ import android.widget.TextView;
 
 public class Setting_Fragment extends Fragment
 {
-    private MainRemoteControllerActivity parrent;
+    private MainRemoteControllerActivity mParrent;
+
+    // ****************************************************************************************** //
+    //
+    // constructor
+    //
+    //
+    // ****************************************************************************************** //
     public Setting_Fragment(MainRemoteControllerActivity p)
     {
         // Required empty public constructor }
-        parrent = p;
+        mParrent = p;
     }
 
+
+    // ****************************************************************************************** //
+    //
+    // void onCreate(Bundle savedInstanceState)
+    //
+    //
+    // ****************************************************************************************** //
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+//        LayoutInflater inflater = (LayoutInflater) mParrent.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        LinearLayout mLnearLayout = (LinearLayout) inflater.inflate(R.layout.setting_fragment, null);
+//
+//        mBackButton = (Button) mLnearLayout.findViewById(R.id.backButton);
+//        mBackButton.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+//            }
+//        });
 
 //        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 //        LinearLayout linearLayout = (LinearLayout) inflater.inflate( R.layout.inflate_example, null );
@@ -63,6 +92,7 @@ public class Setting_Fragment extends Fragment
 //        protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
+
 //        mLeft = (Button) findViewById(R.id.btnleft);
 //        mRight = (Button) findViewById(R.id.btnright);
 //
@@ -107,7 +137,23 @@ public class Setting_Fragment extends Fragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        View view = inflater.inflate(R.layout.setting_fragment, container, false);
+        onButtonClicked(view);
 
-        return inflater.inflate(R.layout.setting_fragment, container, false);
+        return view;
+//        return inflater.inflate(R.layout.setting_fragment, container, false);
+    }
+
+    public void onButtonClicked(View view)
+    {
+        if(view.getId() == R.id.backButton)
+        {
+            mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+        }
+//        {
+//            case R.id.backButton :
+//                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+//                break;
+//        }
     }
 }
