@@ -183,6 +183,18 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 
     // ****************************************************************************************** //
     //
+    // DroneRemoteControllerProtocol getProtocol()
+    //
+    //
+    //
+    // ****************************************************************************************** //
+    public DroneRemoteControllerProtocol getProtocol()
+    {
+        return mDroneRemoteControllerProtocol;
+    }
+
+    // ****************************************************************************************** //
+    //
     // void switch_view(int view_index)
     //
     // for view switch
@@ -264,7 +276,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 break;
 
             case VIEW_SETTING_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_1page(this), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 

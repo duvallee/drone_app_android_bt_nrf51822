@@ -77,8 +77,10 @@ public class RangeSeekBar<T extends Number> extends ImageView
     private static final int DEFAULT_TEXT_DISTANCE_TO_TOP_IN_DP = 8;
     private boolean mSingleThumb;
 
-    public RangeSeekBar(Context context) {
+    public RangeSeekBar(Context context, boolean single)
+    {
         super(context);
+        mSingleThumb = single;
         init(context, null);
     }
 

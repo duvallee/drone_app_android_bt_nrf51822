@@ -520,7 +520,6 @@ public class MainMenuView extends View
             switch(select_menu_index) {
                 case MENU_MAIN_INDEX:
                     activity.switch_view(activity.VIEW_JOYSTICKCONTROLLER_INDEX);
-//                    Toast.makeText(activity, "Not supported", Toast.LENGTH_SHORT).show();
                     break;
 
                 case MENU_THROTTLE_INDEX:
@@ -529,17 +528,14 @@ public class MainMenuView extends View
 
                 case MENU_YAW_INDEX:
                     activity.switch_view(activity.VIEW_YAWCONTROLLER_INDEX);
-                    Toast.makeText(activity, "Not supported", Toast.LENGTH_SHORT).show();
                     break;
 
                 case MENU_PITCH_INDEX:
                     activity.switch_view(activity.VIEW_PITCHCONTROLLER_INDEX);
-                    Toast.makeText(activity, "Not supported", Toast.LENGTH_SHORT).show();
                     break;
 
                 case MENU_ROLL_INDEX:
                     activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
-                    Toast.makeText(activity, "Not supported", Toast.LENGTH_SHORT).show();
                     break;
 
                 case MENU_SETTING_INDEX:

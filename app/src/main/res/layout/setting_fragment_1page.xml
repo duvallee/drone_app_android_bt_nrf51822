@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:weightSum="1">
+
+    <!-- title & back button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:layout_height="40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="10"
+            android:layout_height="match_parent">
+            <ImageButton
+                android:id="@+id/backButton"
+                android:background="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/unselect_back_button" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textSettingsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                android:textColor="#7F7F7F"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:textSize="20dp"
+                android:text="Settings"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/backButton" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="10"
+            android:layout_height="match_parent">
+            <ImageButton
+                android:id="@+id/NextButton"
+                android:background="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/next_arrow" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <!-- title & back button -->
+
+
+    <!-- Throttle -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="105dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="15"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textSettingsThrottle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                android:textColor="#7F7F7F"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:textSize="20dp"
+                android:text="Throttle"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/backButton" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/seetings_throttle_linear_layout"
+            android:layout_width="match_parent"
+            android:paddingRight="10dp"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:layout_height="match_parent">
+        </LinearLayout>
+    </LinearLayout>
+    <!-- Throttle -->
+
+    <!-- Yaw -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="105dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="15"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textSettingsYaw"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                android:textColor="#7F7F7F"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:textSize="20dp"
+                android:text="Yaw"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/backButton" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/seetings_Yaw_linear_layout"
+            android:layout_width="match_parent"
+            android:paddingRight="10dp"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:layout_height="match_parent">
+        </LinearLayout>
+    </LinearLayout>
+    <!-- Yaw -->
+
+    <!-- Pitch -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="105dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="15"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textSettingsPitch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                android:textColor="#7F7F7F"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:textSize="20dp"
+                android:text="Pitch"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/backButton" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/seetings_Pitch_linear_layout"
+            android:layout_width="match_parent"
+            android:paddingRight="10dp"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:layout_height="match_parent">
+        </LinearLayout>
+    </LinearLayout>
+    <!-- Pitch -->
+</LinearLayout>
