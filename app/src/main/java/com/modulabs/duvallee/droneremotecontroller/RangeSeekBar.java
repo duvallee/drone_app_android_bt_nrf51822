@@ -19,7 +19,8 @@ import java.math.BigDecimal;
  * Created by duval on 2017-07-03.
  */
 
-public class RangeSeekBar<T extends Number> extends ImageView {
+public class RangeSeekBar<T extends Number> extends ImageView
+{
     public static final Integer DEFAULT_MINIMUM = 0;
     public static final Integer DEFAULT_MAXIMUM = 100;
     public static final int HEIGHT_IN_DP = 30;

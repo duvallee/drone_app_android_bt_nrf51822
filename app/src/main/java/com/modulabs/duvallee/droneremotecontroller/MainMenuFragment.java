@@ -35,10 +35,7 @@ public class MainMenuFragment extends Fragment
         // -----------------------------------------------------------------------------------------
         // case 4
         RelativeLayout relativelayout = new RelativeLayout(getActivity());
-
         relativelayout.addView(view);
-
-//        int width = relativelayout.
 
         return (relativelayout);
 
