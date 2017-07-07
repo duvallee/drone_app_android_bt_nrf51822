@@ -59,10 +59,13 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     public final int VIEW_YAWCONTROLLER_INDEX = 5;
     public final int VIEW_PITCHCONTROLLER_INDEX = 6;
     public final int VIEW_ROLLCONTROLLER_INDEX = 7;
-    public final int VIEW_SETTING_INDEX = 8;
-    public final int VIEW_SEARCHING_INDEX = 9;
+    public final int VIEW_SETTING_PAGE_1_INDEX = 8;
+    public final int VIEW_SETTING_PAGE_2_INDEX = 9;
+    public final int VIEW_SETTING_PAGE_3_INDEX = 10;
+    public final int VIEW_SETTING_PAGE_4_INDEX = 11;
+    public final int VIEW_SEARCHING_INDEX = 12;
 
-    public final int VIEW_MAX_INDEX = 10;
+    public final int VIEW_MAX_INDEX = 13;
 
     // tag for view
     private final String VIEW_SPLASHCONNECTSCREEN_TAG = "SPLASH_CONNECT_SCREEN_TAG";
@@ -72,7 +75,10 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     private final String VIEW_YAW_CONTROLLER_TAG = "YAW_CONTROLLER_TAG";
     private final String VIEW_PITCH_CONTROLLER_TAG = "PITCH_CONTROLLER_TAG";
     private final String VIEW_ROLL_CONTROLLER_TAG = "ROLL_CONTROLLER_TAG";
-    private final String VIEW_SETTING_TAG = "SETTING_TAG";
+    private final String VIEW_SETTING_PAGE_1_TAG = "SETTING_PAGE_1_TAG";
+    private final String VIEW_SETTING_PAGE_2_TAG = "SETTING_PAGE_2_TAG";
+    private final String VIEW_SETTING_PAGE_3_TAG = "SETTING_PAGE_3_TAG";
+    private final String VIEW_SETTING_PAGE_4_TAG = "SETTING_PAGE_4_TAG";
     private final String VIEW_SEARCHING_TAG = "SEARCHING_TAG";
 
     private String[] mFlagmentTag;
@@ -275,8 +281,23 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 fragmentTransaction.commit();
                 break;
 
-            case VIEW_SETTING_INDEX :
+            case VIEW_SETTING_PAGE_1_INDEX :
                 fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_1page(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
+                break;
+
+            case VIEW_SETTING_PAGE_2_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_2page(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
+                break;
+
+            case VIEW_SETTING_PAGE_3_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_3page(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
+                break;
+
+            case VIEW_SETTING_PAGE_4_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_3page(this), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
@@ -401,7 +422,10 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         mFlagmentTag[VIEW_YAWCONTROLLER_INDEX] = VIEW_YAW_CONTROLLER_TAG;
         mFlagmentTag[VIEW_PITCHCONTROLLER_INDEX] = VIEW_PITCH_CONTROLLER_TAG;
         mFlagmentTag[VIEW_ROLLCONTROLLER_INDEX] = VIEW_ROLL_CONTROLLER_TAG;
-        mFlagmentTag[VIEW_SETTING_INDEX] = VIEW_SETTING_TAG;
+        mFlagmentTag[VIEW_SETTING_PAGE_1_INDEX] = VIEW_SETTING_PAGE_1_TAG;
+        mFlagmentTag[VIEW_SETTING_PAGE_2_INDEX] = VIEW_SETTING_PAGE_2_TAG;
+        mFlagmentTag[VIEW_SETTING_PAGE_3_INDEX] = VIEW_SETTING_PAGE_3_TAG;
+        mFlagmentTag[VIEW_SETTING_PAGE_4_INDEX] = VIEW_SETTING_PAGE_4_TAG;
         mFlagmentTag[VIEW_SEARCHING_INDEX] = VIEW_SEARCHING_TAG;
 
         // ----------------------------------------------------------------------------------------

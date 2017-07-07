@@ -517,7 +517,8 @@ public class MainMenuView extends View
 
         if (action == MotionEvent.ACTION_UP)
         {
-            switch(select_menu_index) {
+            switch(select_menu_index)
+            {
                 case MENU_MAIN_INDEX:
                     activity.switch_view(activity.VIEW_JOYSTICKCONTROLLER_INDEX);
                     break;
@@ -538,11 +539,11 @@ public class MainMenuView extends View
                     activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
                     break;
 
-                case MENU_SETTING_INDEX:
-                    activity.switch_view(activity.VIEW_SETTING_INDEX);
+                case MENU_SETTING_INDEX :
+                    activity.switch_view(activity.VIEW_SETTING_PAGE_1_INDEX);
                     break;
 
-                case MENU_SEARCHING_INDEX:
+                case MENU_SEARCHING_INDEX :
                     activity.switch_view(activity.VIEW_SEARCHING_INDEX);
                     break;
             }
