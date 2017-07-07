@@ -206,55 +206,56 @@ public class MainMenuView extends View
         if (measureHeight <= 1080)
         {
             // 1080 / 1440 = 0.75
-            menu_rect[MENU_MAIN_INDEX].left = (int) (menu_rect[MENU_MAIN_INDEX].left * 0.75);
-            menu_rect[MENU_MAIN_INDEX].top = (int) (menu_rect[MENU_MAIN_INDEX].top * 0.75);
-            menu_rect[MENU_MAIN_INDEX].right = (int) (menu_rect[MENU_MAIN_INDEX].right * 0.75);
-            menu_rect[MENU_MAIN_INDEX].bottom = (int) (menu_rect[MENU_MAIN_INDEX].bottom * 0.75);
+            double rate = 0.85;
+            menu_rect[MENU_MAIN_INDEX].left = (int) (menu_rect[MENU_MAIN_INDEX].left * rate);
+            menu_rect[MENU_MAIN_INDEX].top = (int) (menu_rect[MENU_MAIN_INDEX].top * rate);
+            menu_rect[MENU_MAIN_INDEX].right = (int) (menu_rect[MENU_MAIN_INDEX].right * rate);
+            menu_rect[MENU_MAIN_INDEX].bottom = (int) (menu_rect[MENU_MAIN_INDEX].bottom * rate);
 
-            menu_rect[MENU_THROTTLE_INDEX].left = (int) (menu_rect[MENU_THROTTLE_INDEX].left * 0.75);
-            menu_rect[MENU_THROTTLE_INDEX].top = (int) (menu_rect[MENU_THROTTLE_INDEX].top * 0.75);
-            menu_rect[MENU_THROTTLE_INDEX].right = (int) (menu_rect[MENU_THROTTLE_INDEX].right * 0.75);
-            menu_rect[MENU_THROTTLE_INDEX].bottom = (int) (menu_rect[MENU_THROTTLE_INDEX].bottom * 0.75);
+            menu_rect[MENU_THROTTLE_INDEX].left = (int) (menu_rect[MENU_THROTTLE_INDEX].left * rate);
+            menu_rect[MENU_THROTTLE_INDEX].top = (int) (menu_rect[MENU_THROTTLE_INDEX].top * rate);
+            menu_rect[MENU_THROTTLE_INDEX].right = (int) (menu_rect[MENU_THROTTLE_INDEX].right * rate);
+            menu_rect[MENU_THROTTLE_INDEX].bottom = (int) (menu_rect[MENU_THROTTLE_INDEX].bottom * rate);
 
-            menu_rect[MENU_YAW_INDEX].left = (int) (menu_rect[MENU_YAW_INDEX].left * 0.75);
-            menu_rect[MENU_YAW_INDEX].top = (int) (menu_rect[MENU_YAW_INDEX].top * 0.75);
-            menu_rect[MENU_YAW_INDEX].right = (int) (menu_rect[MENU_YAW_INDEX].right * 0.75);
-            menu_rect[MENU_YAW_INDEX].bottom = (int) (menu_rect[MENU_YAW_INDEX].bottom * 0.75);
+            menu_rect[MENU_YAW_INDEX].left = (int) (menu_rect[MENU_YAW_INDEX].left * rate);
+            menu_rect[MENU_YAW_INDEX].top = (int) (menu_rect[MENU_YAW_INDEX].top * rate);
+            menu_rect[MENU_YAW_INDEX].right = (int) (menu_rect[MENU_YAW_INDEX].right * rate);
+            menu_rect[MENU_YAW_INDEX].bottom = (int) (menu_rect[MENU_YAW_INDEX].bottom * rate);
 
-            menu_rect[MENU_PITCH_INDEX].left = (int) (menu_rect[MENU_PITCH_INDEX].left * 0.75);
-            menu_rect[MENU_PITCH_INDEX].top = (int) (menu_rect[MENU_PITCH_INDEX].top * 0.75);
-            menu_rect[MENU_PITCH_INDEX].right = (int) (menu_rect[MENU_PITCH_INDEX].right * 0.75);
-            menu_rect[MENU_PITCH_INDEX].bottom = (int) (menu_rect[MENU_PITCH_INDEX].bottom * 0.75);
+            menu_rect[MENU_PITCH_INDEX].left = (int) (menu_rect[MENU_PITCH_INDEX].left * rate);
+            menu_rect[MENU_PITCH_INDEX].top = (int) (menu_rect[MENU_PITCH_INDEX].top * rate);
+            menu_rect[MENU_PITCH_INDEX].right = (int) (menu_rect[MENU_PITCH_INDEX].right * rate);
+            menu_rect[MENU_PITCH_INDEX].bottom = (int) (menu_rect[MENU_PITCH_INDEX].bottom * rate);
 
-            menu_rect[MENU_ROLL_INDEX].left = (int) (menu_rect[MENU_ROLL_INDEX].left * 0.75);
-            menu_rect[MENU_ROLL_INDEX].top = (int) (menu_rect[MENU_ROLL_INDEX].top * 0.75);
-            menu_rect[MENU_ROLL_INDEX].right = (int) (menu_rect[MENU_ROLL_INDEX].right * 0.75);
-            menu_rect[MENU_ROLL_INDEX].bottom = (int) (menu_rect[MENU_ROLL_INDEX].bottom * 0.75);
+            menu_rect[MENU_ROLL_INDEX].left = (int) (menu_rect[MENU_ROLL_INDEX].left * rate);
+            menu_rect[MENU_ROLL_INDEX].top = (int) (menu_rect[MENU_ROLL_INDEX].top * rate);
+            menu_rect[MENU_ROLL_INDEX].right = (int) (menu_rect[MENU_ROLL_INDEX].right * rate);
+            menu_rect[MENU_ROLL_INDEX].bottom = (int) (menu_rect[MENU_ROLL_INDEX].bottom * rate);
 
-            menu_rect[MENU_SETTING_INDEX].left = (int) (menu_rect[MENU_SETTING_INDEX].left * 0.75);
-            menu_rect[MENU_SETTING_INDEX].top = (int) (menu_rect[MENU_SETTING_INDEX].top * 0.75);
-            menu_rect[MENU_SETTING_INDEX].right = (int) (menu_rect[MENU_SETTING_INDEX].right * 0.75);
-            menu_rect[MENU_SETTING_INDEX].bottom = (int) (menu_rect[MENU_SETTING_INDEX].bottom * 0.75);
+            menu_rect[MENU_SETTING_INDEX].left = (int) (menu_rect[MENU_SETTING_INDEX].left * rate);
+            menu_rect[MENU_SETTING_INDEX].top = (int) (menu_rect[MENU_SETTING_INDEX].top * rate);
+            menu_rect[MENU_SETTING_INDEX].right = (int) (menu_rect[MENU_SETTING_INDEX].right * rate);
+            menu_rect[MENU_SETTING_INDEX].bottom = (int) (menu_rect[MENU_SETTING_INDEX].bottom * rate);
 
-            menu_rect[MENU_SEARCHING_INDEX].left = (int) (menu_rect[MENU_SEARCHING_INDEX].left * 0.75);
-            menu_rect[MENU_SEARCHING_INDEX].top = (int) (menu_rect[MENU_SEARCHING_INDEX].top * 0.75);
-            menu_rect[MENU_SEARCHING_INDEX].right = (int) (menu_rect[MENU_SEARCHING_INDEX].right * 0.75);
-            menu_rect[MENU_SEARCHING_INDEX].bottom = (int) (menu_rect[MENU_SEARCHING_INDEX].bottom * 0.75);
+            menu_rect[MENU_SEARCHING_INDEX].left = (int) (menu_rect[MENU_SEARCHING_INDEX].left * rate);
+            menu_rect[MENU_SEARCHING_INDEX].top = (int) (menu_rect[MENU_SEARCHING_INDEX].top * rate);
+            menu_rect[MENU_SEARCHING_INDEX].right = (int) (menu_rect[MENU_SEARCHING_INDEX].right * rate);
+            menu_rect[MENU_SEARCHING_INDEX].bottom = (int) (menu_rect[MENU_SEARCHING_INDEX].bottom * rate);
 
-            icon_rect[ICON_DRONE_INDEX].left = (int) (icon_rect[ICON_DRONE_INDEX].left * 0.75);
-            icon_rect[ICON_DRONE_INDEX].top = (int) (icon_rect[ICON_DRONE_INDEX].top * 0.75);
-            icon_rect[ICON_DRONE_INDEX].right = (int) (icon_rect[ICON_DRONE_INDEX].right * 0.75);
-            icon_rect[ICON_DRONE_INDEX].bottom = (int) (icon_rect[ICON_DRONE_INDEX].bottom * 0.75);
+            icon_rect[ICON_DRONE_INDEX].left = (int) (icon_rect[ICON_DRONE_INDEX].left * rate);
+            icon_rect[ICON_DRONE_INDEX].top = (int) (icon_rect[ICON_DRONE_INDEX].top * rate);
+            icon_rect[ICON_DRONE_INDEX].right = (int) (icon_rect[ICON_DRONE_INDEX].right * rate);
+            icon_rect[ICON_DRONE_INDEX].bottom = (int) (icon_rect[ICON_DRONE_INDEX].bottom * rate);
 
-            icon_rect[ICON_GPS_INDEX].left = (int) (icon_rect[ICON_GPS_INDEX].left * 0.75);
-            icon_rect[ICON_GPS_INDEX].top = (int) (icon_rect[ICON_GPS_INDEX].top * 0.75);
-            icon_rect[ICON_GPS_INDEX].right = (int) (icon_rect[ICON_GPS_INDEX].right * 0.75);
-            icon_rect[ICON_GPS_INDEX].bottom = (int) (icon_rect[ICON_GPS_INDEX].bottom * 0.75);
+            icon_rect[ICON_GPS_INDEX].left = (int) (icon_rect[ICON_GPS_INDEX].left * rate);
+            icon_rect[ICON_GPS_INDEX].top = (int) (icon_rect[ICON_GPS_INDEX].top * rate);
+            icon_rect[ICON_GPS_INDEX].right = (int) (icon_rect[ICON_GPS_INDEX].right * rate);
+            icon_rect[ICON_GPS_INDEX].bottom = (int) (icon_rect[ICON_GPS_INDEX].bottom * rate);
 
-            icon_rect[ICON_BT_INDEX].left = (int) (icon_rect[ICON_BT_INDEX].left * 0.75);
-            icon_rect[ICON_BT_INDEX].top = (int) (icon_rect[ICON_BT_INDEX].top * 0.75);
-            icon_rect[ICON_BT_INDEX].right = (int) (icon_rect[ICON_BT_INDEX].right * 0.75);
-            icon_rect[ICON_BT_INDEX].bottom = (int) (icon_rect[ICON_BT_INDEX].bottom * 0.75);
+            icon_rect[ICON_BT_INDEX].left = (int) (icon_rect[ICON_BT_INDEX].left * rate);
+            icon_rect[ICON_BT_INDEX].top = (int) (icon_rect[ICON_BT_INDEX].top * rate);
+            icon_rect[ICON_BT_INDEX].right = (int) (icon_rect[ICON_BT_INDEX].right * rate);
+            icon_rect[ICON_BT_INDEX].bottom = (int) (icon_rect[ICON_BT_INDEX].bottom * rate);
         }
 
         // -----------------------------------------------------------------------------------------
