@@ -49,7 +49,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         LinearLayout linearlayout = new LinearLayout(getActivity());
-        View view = inflater.inflate(R.layout.under_construction_fragment, container, false);
+        View view = inflater.inflate(R.layout.throttle_fragment, container, false);
 
         ImageButton button = (ImageButton) view.findViewById(R.id.backButton);
         button.setOnClickListener(this);

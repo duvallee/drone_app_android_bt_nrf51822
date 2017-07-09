@@ -66,6 +66,8 @@ public class MainMenuView extends View
     private final Rect ICON_2_GPS_STATUS_RECT = new Rect(611, 56, 210, 210);
     private final Rect ICON_3_BT_STATUS_RECT = new Rect(831, 56, 210, 210);
 
+    private int init_resizing = 0;
+
     // ---------------------------------------------------------------------------
     private int select_menu_index = -1;
 
@@ -80,8 +82,11 @@ public class MainMenuView extends View
 
     private String[] menu_title;
 
-    // ---------------------------------------------------------------------------
+    // ****************************************************************************************** //
+    //
     // constructor
+    //
+    // ****************************************************************************************** //
     public MainMenuView(Context context)
     {
         super(context);
@@ -203,8 +208,9 @@ public class MainMenuView extends View
         icon_rect[ICON_GPS_INDEX] = ICON_2_GPS_STATUS_RECT;
         icon_rect[ICON_BT_INDEX] = ICON_3_BT_STATUS_RECT;
 
-        if (measureHeight <= 1080)
+        if ((measureHeight <= 1080) && (init_resizing == 0))
         {
+            init_resizing = 1;
             // 1080 / 1440 = 0.75
             double rate = 0.85;
             menu_rect[MENU_MAIN_INDEX].left = (int) (menu_rect[MENU_MAIN_INDEX].left * rate);

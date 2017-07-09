@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+
 /**
  * Created by duval on 2017-07-03.
  */
@@ -21,15 +22,24 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
     private MainRemoteControllerActivity mParrent;
 
     // ------------------------------------------------------------------------------------------ //
-    RangeSeekBar<Integer> throttle_value = null;
-    RangeSeekBar<Integer> throttle_min_max = null;
+    private RangeSeekBar<Integer> m_throttle_seekbar_value = null;
+    private RangeSeekBar<Integer> m_throttle_seekbar_min_max = null;
+    private int m_throttle_min = 0;
+    private int m_throttle_value = 0;
+    private int m_throttle_max = 0;
 
-    RangeSeekBar<Integer> yaw_value = null;
-    RangeSeekBar<Integer> yaw_min_max = null;
+    private RangeSeekBar<Integer> m_yaw_seekbar_value = null;
+    private RangeSeekBar<Integer> m_yaw_seekbar_min_max = null;
+    private int m_yaw_min = 0;
+    private int m_yaw_value = 0;
+    private int m_yaw_max = 0;
 
-    RangeSeekBar<Integer> pitch_value = null;
-    RangeSeekBar<Integer> pitch_min_max = null;
 
+    private RangeSeekBar<Integer> m_pitch_seekbar_value = null;
+    private RangeSeekBar<Integer> m_pitch_seekbar_min_max = null;
+    private int m_pitch_min = 0;
+    private int m_pitch_value = 0;
+    private int m_pitch_max = 0;
 
     // ****************************************************************************************** //
     //
@@ -56,21 +66,12 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
         super.onCreate(savedInstanceState);
     }
 
-//    // channel id
-//    public final int SPEKTRUM_CHANNEL_ROLL = 0;
-//    public final int SPEKTRUM_CHANNEL_PITCH = 1;
-//    public final int SPEKTRUM_CHANNEL_YAW = 2;
-//    public final int SPEKTRUM_CHANNEL_THROTTLE = 3;
-//    public final int SPEKTRUM_CHANNEL_GEAR = 4;
-//    public final int SPEKTRUM_CHANNEL_AUX_1 = 5;
-//    public final int SPEKTRUM_CHANNEL_AUX_2 = 6;
-//    public final int SPEKTRUM_CHANNEL_AUX_3 = 7;
-//    public final int SPEKTRUM_CHANNEL_AUX_4 = 8;
-//    public final int SPEKTRUM_CHANNEL_AUX_5 = 9;
-//    public final int SPEKTRUM_CHANNEL_AUX_6 = 10;
-//    public final int SPEKTRUM_CHANNEL_AUX_7 = 11;
-//    public final int SPEKTRUM_MAX_CHANNEL = 12;
-
+    // ****************************************************************************************** //
+    //
+    // public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    //
+    //
+    // ****************************************************************************************** //
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         LinearLayout linearlayout = new LinearLayout(getActivity());
@@ -85,49 +86,279 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
         // -----------------------------------------------------------------------------------------
         DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
 
-        RangeSeekBar<Integer> throttle_value = new RangeSeekBar<Integer>(mParrent, false);;
-        RangeSeekBar<Integer> throttle_min_max = new RangeSeekBar<Integer>(mParrent, true);;
-        throttle_min_max.setRangeValues(0, 100);
-
-        RangeSeekBar<Integer> yaw_value =  new RangeSeekBar<Integer>(mParrent, false);;
-        RangeSeekBar<Integer> yaw_min_max =  new RangeSeekBar<Integer>(mParrent, true);;
-        yaw_min_max.setRangeValues(0, 100);
-
-        RangeSeekBar<Integer> pitch_value =  new RangeSeekBar<Integer>(mParrent, false);;
-        RangeSeekBar<Integer> pitch_min_max = new RangeSeekBar<Integer>(mParrent, true);;
-        pitch_min_max.setRangeValues(0, 100);
+        // -----------------------------------------------------------------------------------------
+        // value of throttle
+        m_throttle_seekbar_value = new RangeSeekBar<Integer>(mParrent, true, true);
+        m_throttle_seekbar_value.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
+        {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
+            {
+                if (m_throttle_min > Value)
+                {
+                    m_throttle_value = m_throttle_min;
+                    m_throttle_seekbar_value.setValues(m_throttle_value);
+                }
+                else if (m_throttle_max < Value)
+                {
+                    m_throttle_value = m_throttle_max;
+                    m_throttle_seekbar_value.setValues(m_throttle_value);
+                }
+                else
+                {
+                    m_throttle_value = Value;
+                }
+            }
+        });
 
         // -----------------------------------------------------------------------------------------
+        // range of throttle
+        m_throttle_seekbar_min_max = new RangeSeekBar<Integer>(mParrent, false, true);
+        m_throttle_seekbar_min_max.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
+        {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
+            {
+                m_throttle_min = minValue;
+                m_throttle_max = maxValue;
+
+                if (m_throttle_min > m_throttle_value)
+                {
+                    m_throttle_value = m_throttle_min;
+                    m_throttle_seekbar_value.setValues(m_throttle_value);
+                }
+                else if (m_throttle_max < m_throttle_value)
+                {
+                    m_throttle_value = m_throttle_max;
+                    m_throttle_seekbar_value.setValues(m_throttle_value);
+                }
+            }
+        });
+        m_throttle_min = droneProtocol.get_throttle_min_value();
+        m_throttle_value = droneProtocol.get_throttle_value();
+        m_throttle_max = droneProtocol.get_throttle_max_value();
+
+        m_throttle_seekbar_min_max.setRangeValues(m_throttle_min, m_throttle_max);
+        m_throttle_seekbar_value.setRangeValues(m_throttle_min, m_throttle_max);
+        m_throttle_seekbar_value.setValues(m_throttle_value);
+
+        // layout of throttle
         LinearLayout throttle_Layout = (LinearLayout) view.findViewById(R.id.seetings_throttle_linear_layout);
-        throttle_Layout.addView(throttle_min_max);
-        throttle_Layout.addView(throttle_value);
+        throttle_Layout.addView(m_throttle_seekbar_value);
+        throttle_Layout.addView(m_throttle_seekbar_min_max);
 
         // -----------------------------------------------------------------------------------------
+        // value of yaw
+        m_yaw_seekbar_value =  new RangeSeekBar<Integer>(mParrent, true, true);
+        m_yaw_seekbar_value.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
+        {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
+            {
+                if (m_yaw_min > Value)
+                {
+                    m_yaw_value = m_yaw_min;
+                    m_yaw_seekbar_value.setValues(m_yaw_value);
+                }
+                else if (m_yaw_max < Value)
+                {
+                    m_yaw_value = m_yaw_max;
+                    m_yaw_seekbar_value.setValues(m_yaw_value);
+                }
+                else
+                {
+                    m_yaw_value = Value;
+                }
+//                Toast.makeText(mParrent, minValue + "-" + maxValue, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        // range of yaw
+        m_yaw_seekbar_min_max =  new RangeSeekBar<Integer>(mParrent, false, true);
+        m_yaw_seekbar_min_max.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
+        {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
+            {
+                m_yaw_min = minValue;
+                m_yaw_max = maxValue;
+
+                if (m_yaw_min > m_yaw_value)
+                {
+                    m_yaw_value = m_yaw_min;
+                    m_yaw_seekbar_value.setValues(m_yaw_value);
+                }
+                else if (m_yaw_max < m_yaw_value)
+                {
+                    m_yaw_value = m_yaw_max;
+                    m_yaw_seekbar_value.setValues(m_yaw_value);
+                }
+            }
+        });
+
+        m_yaw_min = droneProtocol.get_yaw_min_value();
+        m_yaw_value = droneProtocol.get_yaw_value();
+        m_yaw_max = droneProtocol.get_yaw_max_value();
+
+        m_yaw_seekbar_min_max.setRangeValues(m_yaw_min, m_yaw_max);
+        m_yaw_seekbar_value.setRangeValues(m_yaw_min, m_yaw_max);
+        m_yaw_seekbar_value.setValues(m_yaw_value);
+
+        // layout of yaw
         LinearLayout yaw_Layout = (LinearLayout) view.findViewById(R.id.seetings_Yaw_linear_layout);
-        yaw_Layout.addView(yaw_min_max);
-        yaw_Layout.addView(yaw_value);
+        yaw_Layout.addView(m_yaw_seekbar_value);
+        yaw_Layout.addView(m_yaw_seekbar_min_max);
+
 
         // -----------------------------------------------------------------------------------------
+        // value of pitch
+        m_pitch_seekbar_value =  new RangeSeekBar<Integer>(mParrent, true, true);
+        m_pitch_seekbar_value.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
+        {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
+            {
+                //Now you have the minValue and maxValue of your RangeSeekbar
+                if (m_pitch_min > Value)
+                {
+                    m_pitch_value = m_pitch_min;
+                    m_pitch_seekbar_value.setValues(m_pitch_value);
+                }
+                else if (m_pitch_max < Value)
+                {
+                    m_pitch_value = m_pitch_max;
+                    m_pitch_seekbar_value.setValues(m_pitch_value);
+                }
+                else
+                {
+                    m_pitch_value = Value;
+                }
+//                Toast.makeText(mParrent, minValue + "-" + maxValue, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        // range of pitch
+        m_pitch_seekbar_min_max = new RangeSeekBar<Integer>(mParrent, false, true);
+        m_pitch_seekbar_min_max.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
+        {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
+            {
+                m_pitch_min = minValue;
+                m_pitch_max = maxValue;
+
+                if (m_pitch_min > m_pitch_value)
+                {
+                    m_pitch_value = m_pitch_min;
+                    m_pitch_seekbar_value.setValues(m_pitch_value);
+                }
+                else if (m_pitch_max < m_pitch_value)
+                {
+                    m_pitch_value = m_pitch_max;
+                    m_pitch_seekbar_value.setValues(m_pitch_value);
+                }
+            }
+        });
+
+        m_pitch_min = droneProtocol.get_pitch__min_value();
+        m_pitch_value = droneProtocol.get_pitch_value();
+        m_pitch_max = droneProtocol.get_pitch__max_value();
+
+        m_pitch_seekbar_min_max.setRangeValues(m_pitch_min, m_pitch_max);
+        m_pitch_seekbar_value.setRangeValues(m_pitch_min, m_pitch_max);
+        m_pitch_seekbar_value.setValues(m_pitch_value);
+
+        // layout of Pitch
         LinearLayout pitch_Layout = (LinearLayout) view.findViewById(R.id.seetings_Pitch_linear_layout);
-        pitch_Layout.addView(pitch_min_max);
-        pitch_Layout.addView(pitch_value);
+        pitch_Layout.addView(m_pitch_seekbar_value);
+        pitch_Layout.addView(m_pitch_seekbar_min_max);
 
         // -----------------------------------------------------------------------------------------
         linearlayout.addView(view);
         return linearlayout;
     }
 
+    // ****************************************************************************************** //
+    //
+    // public void onClick(final View v)
+    //
+    // ****************************************************************************************** //
     public void onClick(final View v)
     {
         switch (v.getId())
         {
             case R.id.backButton :
                 mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
-//                Toast.makeText(mParrent, "button click", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.NextButton :
                 Toast.makeText(mParrent, "button click", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
+
+    // ------------------------------------------------------------------------------------------ //
+    // Lifeccle for the Fragment
+    //
+    // Fragment is added ...
+    // onAttach()
+    // onCreate()
+    // onCreateView()
+    // onStart()
+    // onResume()
+    //
+    //  Fragment is active ...
+    //
+    // onPause()
+    // onStop()
+    // onDestroyView()
+    // onDestory()
+    // onDetached()
+    // Fragment is destroyed ...
+    //
+    // ------------------------------------------------------------------------------------------ //
+
+    // ****************************************************************************************** //
+    //
+    // public void onStart()
+    //
+    // ****************************************************************************************** //
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+    }
+
+    // ****************************************************************************************** //
+    //
+    // public void onResume()
+    //
+    // ****************************************************************************************** //
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    // ****************************************************************************************** //
+    //
+    // public void onPause()
+    //
+    // ****************************************************************************************** //
+    @Override
+    public void onPause()
+    {
+        super.onResume();
+    }
+
+    // ****************************************************************************************** //
+    //
+    // public void onStop()
+    //
+    // ****************************************************************************************** //
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+    }
+
 }
