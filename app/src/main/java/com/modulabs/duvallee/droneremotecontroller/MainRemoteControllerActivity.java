@@ -237,26 +237,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 break;
 
             case VIEW_JOYSTICKCONTROLLER_INDEX :
-                // ---------------------------------------------------------------------------------
-                // start : for test code
-                if (mDroneTransmitterBtService != null)
-                {
-                    if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
-                    {
-                        byte[] Data = mDroneRemoteControllerProtocol.getProtocolData();
-                        mDroneTransmitterBtService.writeRXCharacteristic(Data);
-                    }
-                    else
-                    {
-                        showMessage("not connected !!!");
-                    }
-                }
-                else
-                {
-                    showMessage("not initialize !!!");
-                }
-                // end : for test code
-                // ---------------------------------------------------------------------------------
                 fragmentTransaction.replace(R.id.fragment_main_frame, new Joystick_Controller_Fragment(this), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
