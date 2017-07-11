@@ -114,79 +114,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     private static final int REQUEST_PERMISSION_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_LOCATION = 2;
 
-
-    // test function
-    public int roll_position = 1000;
-    public int pitch_position = 1000;
-    public int yaw_position = 1000;
-    public int throttle_position = 1000;
-    public int arming_position = 1000;
-    public void SendBTMessage()
-    {
-        byte[] value = new byte[16];
-
-        roll_position++;
-        pitch_position++;
-        yaw_position++;
-        throttle_position++;
-        arming_position++;
-
-        if (roll_position > 2000)
-        {
-            roll_position = 1000;
-        }
-        if (pitch_position > 2000)
-        {
-            pitch_position = 1000;
-        }
-        if (yaw_position > 2000)
-        {
-            yaw_position = 1000;
-        }
-        if (throttle_position > 2000)
-        {
-            throttle_position = 1000;
-        }
-        if (arming_position > 2000)
-        {
-            arming_position = 1000;
-        }
-
-        //send data to service
-        value[0] = (byte) 0x23;
-        value[1] = (byte) 0x92;
-
-        // roll
-        value[2] = (byte) (roll_position >> 8);
-        value[3] = (byte) (roll_position);
-
-        // pitch
-        value[4] = (byte) (pitch_position >> 8);
-        value[5] = (byte) (pitch_position);
-
-        // yaw_position
-        value[6] = (byte) (yaw_position >> 8);
-        value[7] = (byte) (yaw_position);
-
-        // throttle_position
-        value[8] = (byte) (throttle_position >> 8);
-        value[9] = (byte) (throttle_position);
-
-        // arming
-        value[10] = (byte) (arming_position >> 8);
-        value[11] = (byte) (arming_position);
-
-        // 00
-        value[12] = (byte) (0x00);
-        value[13] = (byte) (0x00);
-
-        // 00
-        value[14] = (byte) (0x00);
-        value[15] = (byte) (0x00);
-
-        mDroneTransmitterBtService.writeRXCharacteristic(value);
-    };
-
     // ****************************************************************************************** //
     //
     // DroneRemoteControllerProtocol getProtocol()
@@ -208,8 +135,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     // ****************************************************************************************** //
     public void response_protocol(byte[] data)
     {
-        mDroneRemoteControllerProtocol.responseProtocolData(data);
-        showMessage("reponse success !!!");
+        mDroneRemoteControllerProtocol.Response_Message(data);
     }
 
     // ****************************************************************************************** //
@@ -499,6 +425,10 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         // ----------------------------------------------------------------------------------------
         // init service for UART
         service_init();
+
+        // ----------------------------------------------------------------------------------------
+        // start handler after 3 second per 1 second ...
+        mHandler.sendEmptyMessageDelayed(0, 3000);
     }
 
     // ****************************************************************************************** //
@@ -700,7 +630,8 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         // Handler events that received from UART service
         public void handleMessage(Message msg)
         {
-
+            showMessage("Timer Test");
+            mHandler.sendEmptyMessageDelayed(0, 1000);
         }
     };
 

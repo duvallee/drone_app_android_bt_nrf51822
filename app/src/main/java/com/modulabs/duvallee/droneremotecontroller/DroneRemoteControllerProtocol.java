@@ -9,53 +9,60 @@ public class DroneRemoteControllerProtocol extends Object
     public static final String TAG = "DroneRemoteControllerProtocol";
 
     // ---------------------------------------------------------------------------------------------
-    // constant ...
+    // Start : Shared Area (8 bytes)
     public final int PROTOCOL_HEADER_1_HIGH_BYTE_INDEX = 0;
     public final int PROTOCOL_HEADER_1_LOW_BYTE_INDEX = 1;
 
     public final int PROTOCOL_HEADER_COMMAND_INDEX = 2;
     public final int PROTOCOL_HEADER_SIZE_INDEX = 3;
 
-    public final int PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX = 4;
-    public final int PROTOCOL_CHANEL_1_LOW_BYTE_INDEX = 5;
+    public final int PROTOCOL_OPTION_1_HIGH_BYTE_INDEX = 4;
+    public final int PROTOCOL_OPTION_1_LOW_BYTE_INDEX = 5;
 
-    public final int PROTOCOL_CHANEL_2_HIGH_BYTE_INDEX = 6;
-    public final int PROTOCOL_CHANEL_2_LOW_BYTE_INDEX = 7;
+    public final int PROTOCOL_OPTION_2_HIGH_BYTE_INDEX = 6;
+    public final int PROTOCOL_OPTION_2_LOW_BYTE_INDEX = 7;
 
-    public final int PROTOCOL_CHANEL_3_HIGH_BYTE_INDEX = 8;
-    public final int PROTOCOL_CHANEL_3_LOW_BYTE_INDEX = 9;
+    public final int PROTOCOL_BASIC_MAX_SIZE = 8;
+    // End : Shared Area
 
-    public final int PROTOCOL_CHANEL_4_HIGH_BYTE_INDEX = 10;
-    public final int PROTOCOL_CHANEL_4_LOW_BYTE_INDEX = 11;
+    // Start : Channel Info
+    public final int PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX = 8;
+    public final int PROTOCOL_CHANEL_1_LOW_BYTE_INDEX = 9;
 
-    public final int PROTOCOL_CHANEL_5_HIGH_BYTE_INDEX = 12;
-    public final int PROTOCOL_CHANEL_5_LOW_BYTE_INDEX = 13;
+    public final int PROTOCOL_CHANEL_2_HIGH_BYTE_INDEX = 10;
+    public final int PROTOCOL_CHANEL_2_LOW_BYTE_INDEX = 11;
 
-    public final int PROTOCOL_CHANEL_6_HIGH_BYTE_INDEX = 14;
-    public final int PROTOCOL_CHANEL_6_LOW_BYTE_INDEX = 15;
+    public final int PROTOCOL_CHANEL_3_HIGH_BYTE_INDEX = 12;
+    public final int PROTOCOL_CHANEL_3_LOW_BYTE_INDEX = 13;
 
-    public final int PROTOCOL_CHANEL_7_HIGH_BYTE_INDEX = 16;
-    public final int PROTOCOL_CHANEL_7_LOW_BYTE_INDEX = 17;
+    public final int PROTOCOL_CHANEL_4_HIGH_BYTE_INDEX = 14;
+    public final int PROTOCOL_CHANEL_4_LOW_BYTE_INDEX = 15;
 
-    public final int PROTOCOL_CHANEL_8_HIGH_BYTE_INDEX = 18;
-    public final int PROTOCOL_CHANEL_8_LOW_BYTE_INDEX = 19;
+    public final int PROTOCOL_CHANEL_5_HIGH_BYTE_INDEX = 16;
+    public final int PROTOCOL_CHANEL_5_LOW_BYTE_INDEX = 17;
 
-    public final int PROTOCOL_CHANEL_9_HIGH_BYTE_INDEX = 20;
-    public final int PROTOCOL_CHANEL_9_LOW_BYTE_INDEX = 21;
+    public final int PROTOCOL_CHANEL_6_HIGH_BYTE_INDEX = 18;
+    public final int PROTOCOL_CHANEL_6_LOW_BYTE_INDEX = 19;
 
-    public final int PROTOCOL_CHANEL_10_HIGH_BYTE_INDEX = 22;
-    public final int PROTOCOL_CHANEL_10_LOW_BYTE_INDEX = 23;
+    public final int PROTOCOL_CHANEL_7_HIGH_BYTE_INDEX = 20;
+    public final int PROTOCOL_CHANEL_7_LOW_BYTE_INDEX = 21;
 
-    public final int PROTOCOL_CHANEL_11_HIGH_BYTE_INDEX = 24;
-    public final int PROTOCOL_CHANEL_11_LOW_BYTE_INDEX = 25;
+    public final int PROTOCOL_CHANEL_8_HIGH_BYTE_INDEX = 22;
+    public final int PROTOCOL_CHANEL_8_LOW_BYTE_INDEX = 23;
 
-    public final int PROTOCOL_CHANEL_12_HIGH_BYTE_INDEX = 26;
-    public final int PROTOCOL_CHANEL_12_LOW_BYTE_INDEX = 27;
+    public final int PROTOCOL_CHANEL_9_HIGH_BYTE_INDEX = 24;
+    public final int PROTOCOL_CHANEL_9_LOW_BYTE_INDEX = 25;
 
-    public final int PROTOCOL_CRC_HIGH_BYTE_INDEX = 28;
-    public final int PROTOCOL_CRC_LOW_BYTE_INDEX = 29;
+    public final int PROTOCOL_CHANEL_10_HIGH_BYTE_INDEX = 26;
+    public final int PROTOCOL_CHANEL_10_LOW_BYTE_INDEX = 27;
 
-    public final int PROTOCOL_MAX_INDEX = 30;
+    public final int PROTOCOL_CHANEL_11_HIGH_BYTE_INDEX = 28;
+    public final int PROTOCOL_CHANEL_11_LOW_BYTE_INDEX = 29;
+
+    public final int PROTOCOL_CHANEL_12_HIGH_BYTE_INDEX = 30;
+    public final int PROTOCOL_CHANEL_12_LOW_BYTE_INDEX = 31;
+
+    public final int PROTOCOL_CHANNEL_MAX_INDEX = 32;
 
     // ---------------------------------------------------------------------------------------------
     // channel id (constant)
@@ -126,14 +133,20 @@ public class DroneRemoteControllerProtocol extends Object
     public final int SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE = 100;
     public final int SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE = 1023;
 
-    // header
-    public final int PROTOCOL_HEADER_HIGH_VERSION = 0x01;
-    public final int PROTOCOL_HEADER_LOW_VERSION = 0x00;
+    // ---------------------------------------------------------------------------------------------
+    // header (Version) ver 1.0.01 (high byte : 4 bit (Major) + 4 bit (Minor), low byte : sub version)
+    public final int PROTOCOL_HEADER_HIGH_VERSION = 0x10;
+    public final int PROTOCOL_HEADER_LOW_VERSION = 0x01;
 
-    // Command
-    public final int PROTOCOL_SEND_TO_TRANSMITTER = 0x01;
-    public final int PROTOCOL_RESPONSE_FROM_TRANSMITTER = 0x02;
-    public final int PROTOCOL_ALIVE_FROM_TRANSMITTER = 0x03;
+    // Command (byte : 4 bit (phone -> transmitter : 0x0?, transmitter -> phone : 0xF?)
+    public final int PROTOCOL_REGISTER_MESSAGE = 0x01;
+    public final int PROTOCOL_REGISTER_RESPONSE = 0xF1;
+    public final int PROTOCOL_ALIVE_MESSAGE = 0x02;
+    public final int PROTOCOL_ALIVE_RESPONSE = 0xF2;
+    public final int PROTOCOL_CHANNEL_MESSAGE = 0x03;
+    public final int PROTOCOL_CHANNEL_RESPONSE = 0xF3;
+
+    public final int PROTOCOL_CHANNEL_SHIFT = 4;
 
     // ---------------------------------------------------------------------------------------------
     // members
@@ -143,175 +156,336 @@ public class DroneRemoteControllerProtocol extends Object
     private int[] mChannelMinValue;
     private int[] mChannelMaxValue;
 
+    private byte[] mLastProtocolData;
+    private WAIT_FOR_RESPONSE mWait_for_response;
+    private RESULT_RESPONSE mResult_response;
+    private int mResponseCode;
+
+    private static enum WAIT_FOR_RESPONSE
+    {
+        NONE_WAIT_RESPONSE,
+        WAIT_REGISTER_COMMAND_RESPONSE,
+        WAIT_ALIVE_COMMAND_RESPONSE,
+        WAIT_CHANNEL_COMMAND_RESPONSE,
+    };
+
+    private static enum RESULT_RESPONSE
+    {
+        SUCCESS_RESPONSE,
+        FAILED_RESPONSE,
+        TIMEOUT_RESPONSE,
+    };
+
+
     // ---------------------------------------------------------------------------------------------
     // members
 
-    // test function
-    public int roll_position = 1000;
-    public int pitch_position = 1000;
-    public int yaw_position = 1000;
-    public int throttle_position = 1000;
-    public int arming_position = 1000;
-    public void SendBTMessage()
+    // ****************************************************************************************** //
+    //
+    // void ClearProtocolVariable()
+    //
+    // ****************************************************************************************** //
+    public void ClearProtocolVariable()
     {
-        byte[] value = new byte[16];
-
-        roll_position++;
-        pitch_position++;
-        yaw_position++;
-        throttle_position++;
-        arming_position++;
-
-        if (roll_position > 2000)
+        for (int i = 0; i < PROTOCOL_CHANNEL_MAX_INDEX; i++)
         {
-            roll_position = 1000;
+            mLastProtocolData[i] = 0x0;
         }
-        if (pitch_position > 2000)
-        {
-            pitch_position = 1000;
-        }
-        if (yaw_position > 2000)
-        {
-            yaw_position = 1000;
-        }
-        if (throttle_position > 2000)
-        {
-            throttle_position = 1000;
-        }
-        if (arming_position > 2000)
-        {
-            arming_position = 1000;
-        }
+    }
 
-        //send data to service
-        value[0] = (byte) 0x23;
-        value[1] = (byte) 0x92;
-
-        // roll
-        value[2] = (byte) (roll_position >> 8);
-        value[3] = (byte) (roll_position);
-
-        // pitch
-        value[4] = (byte) (pitch_position >> 8);
-        value[5] = (byte) (pitch_position);
-
-        // yaw_position
-        value[6] = (byte) (yaw_position >> 8);
-        value[7] = (byte) (yaw_position);
-
-        // throttle_position
-        value[8] = (byte) (throttle_position >> 8);
-        value[9] = (byte) (throttle_position);
-
-        // arming
-        value[10] = (byte) (arming_position >> 8);
-        value[11] = (byte) (arming_position);
-
-        // 00
-        value[12] = (byte) (0x00);
-        value[13] = (byte) (0x00);
-
-        // 00
-        value[14] = (byte) (0x00);
-        value[15] = (byte) (0x00);
-
-//        mDroneTransmitterBtService.writeRXCharacteristic(value);
-    };
 
     // ****************************************************************************************** //
     //
-    // byte[] getProtocolData()
+    // int Send_Register_Message(UartService uartservice)
     //
     // ****************************************************************************************** //
-    public byte[] getProtocolData()
+    public int Send_Register_Message(UartService uartservice)
     {
-        byte[] protocol_data = new byte[PROTOCOL_MAX_INDEX];
+        if (uartservice == null)
+        {
+            return -1;
+        }
+        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
+        {
+            return -1;
+        }
 
-        protocol_data[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
-        protocol_data[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
+        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
+        mResponseCode = 0;
 
-        protocol_data[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_SEND_TO_TRANSMITTER;
-        protocol_data[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_MAX_INDEX;
+        ClearProtocolVariable();
+        mLastProtocolData[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
+        mLastProtocolData[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
+        mLastProtocolData[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_REGISTER_MESSAGE;
+        mLastProtocolData[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_BASIC_MAX_SIZE;
+
+        mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = 0;
+        mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = 0;
+        mLastProtocolData[PROTOCOL_OPTION_2_HIGH_BYTE_INDEX] = 0;
+        mLastProtocolData[PROTOCOL_OPTION_2_LOW_BYTE_INDEX] = 0;
+
+        byte[] tmpData = new byte[PROTOCOL_BASIC_MAX_SIZE];
+        for (int i = 0; i < PROTOCOL_BASIC_MAX_SIZE; i++)
+        {
+            tmpData[i] = mLastProtocolData[i];
+        }
+        uartservice.writeRXCharacteristic(tmpData);
+        return 0;
+    }
+
+    // ****************************************************************************************** //
+    //
+    // int Send_Alive_Message(UartService uartservice, int alive_count)
+    //
+    // ****************************************************************************************** //
+    public int Send_Alive_Message(UartService uartservice, int alive_count)
+    {
+        if (uartservice == null)
+        {
+            return -1;
+        }
+        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
+        {
+            return -1;
+        }
+
+        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
+        mResponseCode = 0;
+
+        ClearProtocolVariable();
+        mLastProtocolData[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
+        mLastProtocolData[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
+        mLastProtocolData[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_REGISTER_MESSAGE;
+        mLastProtocolData[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_BASIC_MAX_SIZE;
+
+        mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = (byte) ((alive_count >> 24) & 0xFF);
+        mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = (byte) ((alive_count >> 16) & 0xFF);
+        mLastProtocolData[PROTOCOL_OPTION_2_HIGH_BYTE_INDEX] = (byte) ((alive_count >> 8) & 0xFF);
+        mLastProtocolData[PROTOCOL_OPTION_2_LOW_BYTE_INDEX] = (byte) (alive_count & 0xFF);
+
+        byte[] tmpData = new byte[PROTOCOL_BASIC_MAX_SIZE];
+        for (int i = 0; i < PROTOCOL_BASIC_MAX_SIZE; i++)
+        {
+            tmpData[i] = mLastProtocolData[i];
+        }
+        uartservice.writeRXCharacteristic(tmpData);
+        return 0;
+    }
+
+    // ****************************************************************************************** //
+    //
+    // int Send_Channel_Message(UartService uartservice)
+    //
+    // ****************************************************************************************** //
+    public int Send_Channel_Message(UartService uartservice)
+    {
+        if (uartservice == null)
+        {
+            return -1;
+        }
+        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
+        {
+            return -1;
+        }
+
+        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
+        mResponseCode = 0;
+
+        ClearProtocolVariable();
+        mLastProtocolData[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
+        mLastProtocolData[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
+        mLastProtocolData[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_CHANNEL_MESSAGE;
+        mLastProtocolData[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_CHANNEL_MAX_INDEX;
 
         // Channel : ROLL : 0
-        protocol_data[PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_ROLL << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_ROLL] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_1_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_ROLL] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_ROLL << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_ROLL] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_1_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_ROLL] & 0xFF);
 
         // Channel : PITCH : 1
-        protocol_data[PROTOCOL_CHANEL_2_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_PITCH << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_PITCH] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_2_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_PITCH] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_2_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_PITCH << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_PITCH] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_2_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_PITCH] & 0xFF);
 
         // Channel : YAW : 2
-        protocol_data[PROTOCOL_CHANEL_3_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_YAW << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_YAW] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_3_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_YAW] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_3_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_YAW << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_YAW] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_3_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_YAW] & 0xFF);
 
         // Channel : THROTTLE : 3
-        protocol_data[PROTOCOL_CHANEL_4_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_THROTTLE << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_4_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_4_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_THROTTLE << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_4_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] & 0xFF);
 
         // Channel : GEAR : 4
-        protocol_data[PROTOCOL_CHANEL_5_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_GEAR << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_GEAR] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_5_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_GEAR] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_5_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_GEAR << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_GEAR] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_5_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_GEAR] & 0xFF);
 
         // Channel : AUX 1 : 5
-        protocol_data[PROTOCOL_CHANEL_6_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_1 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_1] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_6_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_1] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_6_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_1 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_1] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_6_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_1] & 0xFF);
 
         // Channel : AUX 2 : 6
-        protocol_data[PROTOCOL_CHANEL_7_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_2 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_2] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_7_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_2] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_7_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_2 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_2] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_7_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_2] & 0xFF);
 
         // Channel : AUX 3 : 7
-        protocol_data[PROTOCOL_CHANEL_8_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_3 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_3] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_8_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_3] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_8_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_3 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_3] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_8_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_3] & 0xFF);
 
         // Channel : AUX 4 : 8
-        protocol_data[PROTOCOL_CHANEL_9_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_4 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_4] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_9_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_4] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_9_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_4 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_4] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_9_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_4] & 0xFF);
 
         // Channel : AUX 5 : 9
-        protocol_data[PROTOCOL_CHANEL_10_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_5 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_5] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_10_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_5] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_10_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_5 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_5] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_10_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_5] & 0xFF);
 
         // Channel : AUX 6 : 10
-        protocol_data[PROTOCOL_CHANEL_11_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_6 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_6] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_11_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_6] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_11_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_6 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_6] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_11_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_6] & 0xFF);
 
         // Channel : AUX 7 : 11
-        protocol_data[PROTOCOL_CHANEL_12_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_7 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_7] >> 8) & 0xF));
-        protocol_data[PROTOCOL_CHANEL_12_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_7] & 0xFF);
+        mLastProtocolData[PROTOCOL_CHANEL_12_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_7 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_7] >> 8) & 0xF));
+        mLastProtocolData[PROTOCOL_CHANEL_12_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_7] & 0xFF);
 
         int crc = 0;
-        for (int i = 0; i < (PROTOCOL_CHANEL_12_LOW_BYTE_INDEX + 1); i++)
+        for (int i = PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX; i <= (PROTOCOL_CHANEL_12_LOW_BYTE_INDEX); i++)
         {
-            crc += protocol_data[i];
+            crc += mLastProtocolData[i];
             crc = (crc & 0xFFFF);
         }
-        protocol_data[PROTOCOL_CRC_HIGH_BYTE_INDEX] = (byte) ((crc >> 8) & 0xFF);
-        protocol_data[PROTOCOL_CRC_LOW_BYTE_INDEX] = (byte) (crc & 0xFF);
+        mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = (byte) ((crc >> 8) & 0xFF);
+        mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = (byte) (crc & 0xFF);
 
-        return protocol_data;
+        mLastProtocolData[PROTOCOL_OPTION_2_HIGH_BYTE_INDEX] = 0;
+        mLastProtocolData[PROTOCOL_OPTION_2_LOW_BYTE_INDEX] = 0;
+
+        uartservice.writeRXCharacteristic(mLastProtocolData);
+        return 0;
     }
+
+    // ****************************************************************************************** //
+    //
+    // int Response_Message(byte[] response_data)
+    //
+    // ****************************************************************************************** //
+    public int Response_Message(byte[] response_data)
+    {
+        return 0;
+    }
+
 
     // ****************************************************************************************** //
     //
     // byte[] getProtocolData()
     //
     // ****************************************************************************************** //
-    public void responseProtocolData(byte[] data)
-    {
+//    public byte[] getProtocolData()
+//    {
+//        byte[] protocol_data = new byte[PROTOCOL_MAX_INDEX];
+//
+//        protocol_data[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
+//        protocol_data[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
+//
+//        protocol_data[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_SEND_TO_TRANSMITTER;
+//        protocol_data[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_MAX_INDEX;
+//
+//        // Channel : ROLL : 0
+//        protocol_data[PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_ROLL << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_ROLL] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_1_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_ROLL] & 0xFF);
+//
+//        // Channel : PITCH : 1
+//        protocol_data[PROTOCOL_CHANEL_2_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_PITCH << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_PITCH] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_2_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_PITCH] & 0xFF);
+//
+//        // Channel : YAW : 2
+//        protocol_data[PROTOCOL_CHANEL_3_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_YAW << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_YAW] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_3_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_YAW] & 0xFF);
+//
+//        // Channel : THROTTLE : 3
+//        protocol_data[PROTOCOL_CHANEL_4_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_THROTTLE << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_4_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] & 0xFF);
+//
+//        // Channel : GEAR : 4
+//        protocol_data[PROTOCOL_CHANEL_5_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_GEAR << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_GEAR] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_5_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_GEAR] & 0xFF);
+//
+//        // Channel : AUX 1 : 5
+//        protocol_data[PROTOCOL_CHANEL_6_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_1 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_1] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_6_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_1] & 0xFF);
+//
+//        // Channel : AUX 2 : 6
+//        protocol_data[PROTOCOL_CHANEL_7_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_2 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_2] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_7_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_2] & 0xFF);
+//
+//        // Channel : AUX 3 : 7
+//        protocol_data[PROTOCOL_CHANEL_8_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_3 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_3] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_8_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_3] & 0xFF);
+//
+//        // Channel : AUX 4 : 8
+//        protocol_data[PROTOCOL_CHANEL_9_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_4 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_4] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_9_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_4] & 0xFF);
+//
+//        // Channel : AUX 5 : 9
+//        protocol_data[PROTOCOL_CHANEL_10_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_5 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_5] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_10_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_5] & 0xFF);
+//
+//        // Channel : AUX 6 : 10
+//        protocol_data[PROTOCOL_CHANEL_11_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_6 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_6] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_11_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_6] & 0xFF);
+//
+//        // Channel : AUX 7 : 11
+//        protocol_data[PROTOCOL_CHANEL_12_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_7 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_7] >> 8) & 0xF));
+//        protocol_data[PROTOCOL_CHANEL_12_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_7] & 0xFF);
+//
+//        int crc = 0;
+//        for (int i = 0; i < (PROTOCOL_CHANEL_12_LOW_BYTE_INDEX + 1); i++)
+//        {
+//            crc += protocol_data[i];
+//            crc = (crc & 0xFFFF);
+//        }
+//        protocol_data[PROTOCOL_CRC_HIGH_BYTE_INDEX] = (byte) ((crc >> 8) & 0xFF);
+//        protocol_data[PROTOCOL_CRC_LOW_BYTE_INDEX] = (byte) (crc & 0xFF);
+//
+//        return protocol_data;
+//    }
 
+    // ****************************************************************************************** //
+    //
+    // byte[] getProtocolData()
+    //
+    // ****************************************************************************************** //
+//    public void responseProtocolData(byte[] data)
+//    {
+//
+//    }
+
+
+    // ****************************************************************************************** //
+    //
+    // int getProtocolRegisterMsgLength()
+    //
+    // ****************************************************************************************** //
+    public int getProtocolRegisterMsgLength()
+    {
+        return (PROTOCOL_BASIC_MAX_SIZE);
     }
 
+    // ****************************************************************************************** //
+    //
+    // int getProtocolAliveMsgLength()
+    //
+    // ****************************************************************************************** //
+    public int getProtocolAliveMsgLength()
+    {
+        return (PROTOCOL_BASIC_MAX_SIZE);
+    }
 
     // ****************************************************************************************** //
     //
-    // int getProtocolbytelength()
+    // int getProtocolChannelMsgLength()
     //
     // ****************************************************************************************** //
-    public int getProtocolbytelength()
+    public int getProtocolChannelMsgLength()
     {
-        return (PROTOCOL_MAX_INDEX);
+        return (PROTOCOL_CHANNEL_MAX_INDEX);
     }
 
     // ****************************************************************************************** //
@@ -325,6 +499,11 @@ public class DroneRemoteControllerProtocol extends Object
         mChannelValue = new int[SPEKTRUM_MAX_CHANNEL];
         mChannelMinValue = new int[SPEKTRUM_MAX_CHANNEL];
         mChannelMaxValue = new int[SPEKTRUM_MAX_CHANNEL];
+
+        mLastProtocolData = new byte[SPEKTRUM_MAX_CHANNEL];
+        mWait_for_response = WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE;
+        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
+        mResponseCode = 0;
 
         // default value
         mChannelValue[SPEKTRUM_CHANNEL_ROLL] = SPEKTRUM_CHANNEL_ROLL_DEFAULT_VALUE;

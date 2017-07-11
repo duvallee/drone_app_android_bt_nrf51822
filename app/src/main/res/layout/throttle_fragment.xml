@@ -67,8 +67,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_height="60dp">
-    <ToggleButton
+        android:layout_height="120dp">
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch" />
+
+        <ToggleButton
         android:id="@+id/armmingButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
