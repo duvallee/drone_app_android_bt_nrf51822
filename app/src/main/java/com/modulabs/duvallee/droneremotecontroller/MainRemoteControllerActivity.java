@@ -106,6 +106,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     private int mDroneTransmitterConnectionStatus = UART_PROFILE_DISCONNECTED;
 
     private DroneRemoteControllerProtocol mDroneRemoteControllerProtocol = new DroneRemoteControllerProtocol(this);
+    private int mAliveCount = 0;
 
     private final int STATE_CONNECTED = 2;
 
@@ -630,7 +631,23 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         // Handler events that received from UART service
         public void handleMessage(Message msg)
         {
-            showMessage("Timer Test");
+            if (mDroneTransmitterBtService == null)
+            {
+                mAliveCount = 0;
+            }
+            else
+            {
+                if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
+                {
+                    mAliveCount++;
+                    mDroneRemoteControllerProtocol.Send_Alive_Message(mDroneTransmitterBtService, mAliveCount);
+                }
+                else
+                {
+                    mAliveCount = 0;
+                }
+            }
+
             mHandler.sendEmptyMessageDelayed(0, 1000);
         }
     };

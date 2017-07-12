@@ -1,5 +1,7 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
+import android.widget.Toast;
+
 /**
  * Created by duval on 2017-07-02.
  */
@@ -368,6 +370,7 @@ public class DroneRemoteControllerProtocol extends Object
     // ****************************************************************************************** //
     public int Response_Message(byte[] response_data)
     {
+        Toast.makeText(mParent, "received response data", Toast.LENGTH_SHORT).show();
         return 0;
     }
 
@@ -500,7 +503,7 @@ public class DroneRemoteControllerProtocol extends Object
         mChannelMinValue = new int[SPEKTRUM_MAX_CHANNEL];
         mChannelMaxValue = new int[SPEKTRUM_MAX_CHANNEL];
 
-        mLastProtocolData = new byte[SPEKTRUM_MAX_CHANNEL];
+        mLastProtocolData = new byte[PROTOCOL_CHANNEL_MAX_INDEX];
         mWait_for_response = WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE;
         mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
         mResponseCode = 0;
