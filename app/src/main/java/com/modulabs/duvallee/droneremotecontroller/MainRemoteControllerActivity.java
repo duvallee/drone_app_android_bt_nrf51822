@@ -83,6 +83,11 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 
     private String[] mFlagmentTag;
 
+    // ---------------------------------------------------------------------------------------------
+    // Device Status
+    private int mRemoteControllerStatus = 0;
+    private int mGPSControllerStatus = 0;
+    private int mBluetoothStatus = 0;
 
     // ---------------------------------------------------------------------------------------------
     // for BT Dialog
@@ -119,7 +124,50 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     //
     // DroneRemoteControllerProtocol getProtocol()
     //
+    // ****************************************************************************************** //
+    public UartService getUartService()
+    {
+        if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
+        {
+            return mDroneTransmitterBtService;
+        }
+        return null;
+    }
+
+    // ****************************************************************************************** //
     //
+    // int getmRemoteControllerStatus()
+    //
+    // ****************************************************************************************** //
+    public int getRemoteControllerStatus()
+    {
+        return mRemoteControllerStatus;
+    }
+
+    // ****************************************************************************************** //
+    //
+    // int getGPSControllerStatus()
+    //
+    // ****************************************************************************************** //
+    public int getGPSControllerStatus()
+    {
+        return mGPSControllerStatus;
+    }
+
+    // ****************************************************************************************** //
+    //
+    // int getBluetoothStatus()
+    //
+    // ****************************************************************************************** //
+    public int getBluetoothStatus()
+    {
+        return mBluetoothStatus;
+    }
+
+
+    // ****************************************************************************************** //
+    //
+    // DroneRemoteControllerProtocol getProtocol()
     //
     // ****************************************************************************************** //
     public DroneRemoteControllerProtocol getProtocol()
@@ -262,7 +310,16 @@ public class MainRemoteControllerActivity extends AppCompatActivity
             Fragment fragment = fragmentManager.findFragmentByTag(mFlagmentTag[i]);
             if (fragment != null)
             {
-                if(fragment != null && fragment.isVisible())
+//                if (fragment.getTag() == VIEW_MAIN_MENU_SCREEN_TAG)
+//                {
+//                    MainMenuFragment mainmenufragment = (MainMenuFragment) fragment;
+//                    MainMenuView mainmenuview = (MainMenuView) mainmenufragment.getMainView();
+//                    if (mainmenuview != null)
+//                    {
+//                        mainmenuview.ChangeStatus(mRemoteControllerStatus, mGPSControllerStatus, mBluetoothStatus);
+//                    }
+//                }
+                if(fragment.isVisible())
                 {
                     View view = fragment.getView();
                     if (view != null)
@@ -341,20 +398,27 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         if (permissionCheck== PackageManager.PERMISSION_DENIED)
         {
             Log.d(TAG, "denied for android.permission.BLUETOOTH");
+
+            Toast.makeText(this, "Denied permission for the Bluetooth", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
         else
         {
-            Log.d(TAG, "aloowed for android.permission.BLUETOOTH");
+            Log.d(TAG, "allowed for android.permission.BLUETOOTH");
         }
 
         permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_ADMIN);
         if (permissionCheck== PackageManager.PERMISSION_DENIED)
         {
             Log.d(TAG, "denied for android.permission.BLUETOOTH_ADMIN");
+            Toast.makeText(this, "Denied permission for the Bluetooth", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
         else
         {
-            Log.d(TAG, "aloowed for android.permission.BLUETOOTH_ADMIN");
+            Log.d(TAG, "allowed for android.permission.BLUETOOTH_ADMIN");
         }
 
         permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
@@ -370,17 +434,19 @@ public class MainRemoteControllerActivity extends AppCompatActivity
             {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_LOCATION);
             }
-
         }
 
         permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
         if (permissionCheck== PackageManager.PERMISSION_DENIED)
         {
             Log.d(TAG, "denied for android.permission.ACCESS_COARSE_LOCATION");
+            Toast.makeText(this, "Denied COARSE_LOCATION permission for the Bluetooth", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
         else
         {
-            Log.d(TAG, "aloowed for android.permission.ACCESS_COARSE_LOCATION");
+            Log.d(TAG, "allowed for android.permission.ACCESS_COARSE_LOCATION");
         }
 
         // ----------------------------------------------------------------------------------------
@@ -396,6 +462,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         {
             mBtAdapter.enable();
         }
+        mBluetoothStatus = 1;
         mBtLeScanner = mBtAdapter.getBluetoothLeScanner();
         if (mBtLeScanner == null)
         {
@@ -532,7 +599,8 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
-
+            mRemoteControllerStatus = 1;
+            update_view();
         }
 
         public void onServiceDisconnected(ComponentName classname)
@@ -540,9 +608,10 @@ public class MainRemoteControllerActivity extends AppCompatActivity
             // comment from original version
             // mService.disconnect(mDevice);
             mDroneTransmitterBtService = null;
+            mRemoteControllerStatus = 0;
+            update_view();
         }
     };
-
 
     // ****************************************************************************************** //
     //
@@ -647,7 +716,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                     mAliveCount = 0;
                 }
             }
-
             mHandler.sendEmptyMessageDelayed(0, 1000);
         }
     };
@@ -679,6 +747,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                         Log.d(TAG, "UART_CONNECT_MSG");
 
                         mDroneTransmitterConnectionStatus = UART_PROFILE_CONNECTED;
+                        mRemoteControllerStatus = 1;
                         update_view();
                     }
                 });
@@ -697,11 +766,11 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                         mDroneTransmitterConnectionStatus = UART_PROFILE_DISCONNECTED;
                         mDroneTransmitterBtService.close();
 
+                        mRemoteControllerStatus = 0;
                         update_view();
                     }
                 });
             }
-
 
             //*********************//
             if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED))
@@ -740,6 +809,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 mDroneTransmitterBtService.disconnect();
                 mDroneTransmitterConnectionStatus = UART_PROFILE_DISCONNECTED;
 
+                mRemoteControllerStatus = 0;
                 update_view();
             }
         }
@@ -803,7 +873,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 if (resultCode == AppCompatActivity.RESULT_OK)
                 {
                     Toast.makeText(this, "Bluetooth has turned on ", Toast.LENGTH_SHORT).show();
-
                 }
                 else
                 {

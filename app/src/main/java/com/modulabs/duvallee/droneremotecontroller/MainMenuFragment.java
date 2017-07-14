@@ -14,28 +14,54 @@ import android.widget.RelativeLayout;
 public class MainMenuFragment extends Fragment
 {
     private MainRemoteControllerActivity parrent;
-    private MainMenuView view;
+    private MainMenuView mMainView = null;
+
+    // ****************************************************************************************** //
+    //
+    // MainMenuFragment(MainRemoteControllerActivity p)
+    //
+    // ****************************************************************************************** //
+    public MainMenuView getMainView()
+    {
+        return mMainView;
+    }
+
+    // ****************************************************************************************** //
+    //
+    // MainMenuFragment(MainRemoteControllerActivity p)
+    //
+    // ****************************************************************************************** //
     public MainMenuFragment(MainRemoteControllerActivity p)
     {
         // Required empty public constructor }
         parrent = p;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void onCreate(Bundle savedInstanceState)
+    //
+    // ****************************************************************************************** //
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        view = new MainMenuView(getActivity());
+        mMainView = new MainMenuView(getActivity());
 
     }
 
+    // ****************************************************************************************** //
+    //
+    // View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    //
+    // ****************************************************************************************** //
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
 
         // -----------------------------------------------------------------------------------------
         // case 4
         RelativeLayout relativelayout = new RelativeLayout(getActivity());
-        relativelayout.addView(view);
+        relativelayout.addView(mMainView);
 
         return (relativelayout);
 

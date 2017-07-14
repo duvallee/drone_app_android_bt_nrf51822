@@ -19,8 +19,7 @@ import android.widget.Toast;
  * Created by duval on 2017-07-03.
  */
 
-public class MainMenuView extends View
-{
+public class MainMenuView extends View {
     private MainRemoteControllerActivity activity;
 
     private final String MENU_MAIN_TITLE = "RC Controller";
@@ -47,6 +46,8 @@ public class MainMenuView extends View
 
     private final int ICON_MAX = 3;
 
+    private final int ICON_ON_STATUS = 1;
+    private final int ICON_OFF_STATUS = 0;
     private int[] icon_status;
 
     // ---------------------------------------------------------------------------
@@ -94,6 +95,12 @@ public class MainMenuView extends View
         InitView();
 
     }
+
+    // ****************************************************************************************** //
+    //
+    // constructor
+    //
+    // ****************************************************************************************** //
     public MainMenuView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -101,6 +108,11 @@ public class MainMenuView extends View
         InitView();
     }
 
+    // ****************************************************************************************** //
+    //
+    // constructor
+    //
+    // ****************************************************************************************** //
     public MainMenuView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -108,6 +120,11 @@ public class MainMenuView extends View
         InitView();
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    // ****************************************************************************************** //
     public void InitView()
     {
         // -----------------------------------------------------------------------------------------
@@ -126,9 +143,9 @@ public class MainMenuView extends View
 
         icon_status = new int[ICON_MAX];
 
-        icon_status[ICON_DRONE_INDEX] = 1;
-        icon_status[ICON_GPS_INDEX] = 1;
-        icon_status[ICON_BT_INDEX] = 1;
+        icon_status[ICON_DRONE_INDEX] = ICON_OFF_STATUS;
+        icon_status[ICON_GPS_INDEX] = ICON_OFF_STATUS;
+        icon_status[ICON_BT_INDEX] = ICON_OFF_STATUS;
 
         // -----------------------------------------------------------------------------------------
         // allocate menu title
@@ -183,11 +200,21 @@ public class MainMenuView extends View
         setFocusable(true);
     }
 
+    // ****************************************************************************************** //
+    //
+    // void init()
+    //
+    // ****************************************************************************************** //
     private void init()
     {
         Resources resource = getResources();
     }
 
+    // ****************************************************************************************** //
+    //
+    // void onMeasure(int wMeasureSpec, int hHeasureSpec)
+    //
+    // ****************************************************************************************** //
     @Override
     protected void onMeasure(int wMeasureSpec, int hHeasureSpec)
     {
@@ -274,6 +301,11 @@ public class MainMenuView extends View
         setMeasuredDimension(measureWidth, measureHeight);
     }
 
+    // ****************************************************************************************** //
+    //
+    // int MeasuredWidth(int measureSpec)
+    //
+    // ****************************************************************************************** //
     private int MeasuredWidth(int measureSpec)
     {
         int specMode = MeasureSpec.getMode(measureSpec);
@@ -291,6 +323,11 @@ public class MainMenuView extends View
         return specSize;
     }
 
+    // ****************************************************************************************** //
+    //
+    // int measureHeight(int measureSpec)
+    //
+    // ****************************************************************************************** //
     private int measureHeight(int measureSpec)
     {
         int specMode = MeasureSpec.getMode(measureSpec);
@@ -308,6 +345,11 @@ public class MainMenuView extends View
         return specSize;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void DrawButton(Canvas canvas, Rect rect, String btn_text, boolean selected)
+    //
+    // ****************************************************************************************** //
     public void DrawButton(Canvas canvas, Rect rect, String btn_text, boolean selected)
     {
 //        int one_grid_x = (rect.right - rect.left) / 32;
@@ -403,6 +445,11 @@ public class MainMenuView extends View
 //        canvas.drawText(btn_text, start_text_x, start_text_y, text_paint);
     }
 
+    // ****************************************************************************************** //
+    //
+    // public void DrawImageButton(Canvas canvas, int menu_index, boolean selected)
+    //
+    // ****************************************************************************************** //
     public void DrawImageButton(Canvas canvas, int menu_index, boolean selected)
     {
         int width = menu_unselect_Image[menu_index].getWidth();
@@ -439,15 +486,15 @@ public class MainMenuView extends View
         }
     }
 
+    // ****************************************************************************************** //
+    //
+    // void DrawImageIcon(Canvas canvas, int icon_index, boolean on)
+    //
+    // ****************************************************************************************** //
     public void DrawImageIcon(Canvas canvas, int icon_index, boolean on)
     {
         int width = icon_on_Image[icon_index].getWidth();
         int height = icon_on_Image[icon_index].getHeight();
-
-//        private Rect[] icon_rect;
-//
-//        private Bitmap[] icon_on_Image;
-//        private Bitmap[] icon_off_Image;
 
         Rect src = new Rect(0, 0, width, height);
         Rect des = new Rect(icon_rect[icon_index].left, icon_rect[icon_index].top, icon_rect[icon_index].left + icon_rect[icon_index].right, icon_rect[icon_index].top + icon_rect[icon_index].bottom);
@@ -461,12 +508,21 @@ public class MainMenuView extends View
         }
     }
 
+    // ****************************************************************************************** //
+    //
+    // public void onDraw(Canvas canvas)
+    //
+    // ****************************************************************************************** //
     // 2,560 x 1,440       (Galaxy Note 4)
     // 2,560 x 1,440 + 160 (Galaxy Note Edge)
     // 2,560 x 1,532
     @Override
     public void onDraw(Canvas canvas)
     {
+        icon_status[ICON_DRONE_INDEX] = activity.getRemoteControllerStatus();
+        icon_status[ICON_GPS_INDEX] = activity.getGPSControllerStatus();
+        icon_status[ICON_BT_INDEX] = activity.getBluetoothStatus();
+
         for (int i = 0; i < MENU_MAX; i++)
         {
             DrawImageButton(canvas, i, (select_menu_index == i) ? true : false);
@@ -474,22 +530,37 @@ public class MainMenuView extends View
 
         for (int i = 0; i < ICON_MAX; i++)
         {
-            DrawImageIcon(canvas, i, (icon_status[i] == i) ? true : false);
+            DrawImageIcon(canvas, i, (icon_status[i] == ICON_ON_STATUS) ? true : false);
         }
     }
 
+    // ****************************************************************************************** //
+    //
+    // boolean onKeyDown(int keyCode, KeyEvent keyEvent)
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent keyEvent)
     {
         return true;
     }
 
+    // ****************************************************************************************** //
+    //
+    // onKeyUp(int keyCode, KeyEvent keyEvent)
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent keyEvent)
     {
         return true;
     }
 
+    // ****************************************************************************************** //
+    //
+    // boolean onTrackballEvent(MotionEvent event)
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onTrackballEvent(MotionEvent event)
     {
@@ -497,6 +568,11 @@ public class MainMenuView extends View
         return true;
     }
 
+    // ****************************************************************************************** //
+    //
+    // boolean onTouchEvent(MotionEvent event)
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {

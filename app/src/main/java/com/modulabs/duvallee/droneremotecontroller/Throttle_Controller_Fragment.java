@@ -18,7 +18,6 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
     private MainRemoteControllerActivity mParrent;
 
     private RangeSeekBar<Integer> m_throttle_seekbar_test = null;
-    DroneRemoteControllerProtocol m_droneProtocol = null;
 
     // ****************************************************************************************** //
     //
@@ -59,9 +58,6 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         button.setOnClickListener(this);
 
         // -----------------------------------------------------------------------------------------
-        m_droneProtocol = mParrent.getProtocol();
-
-        // -----------------------------------------------------------------------------------------
         //throttle
         m_throttle_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
         m_throttle_seekbar_test.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
@@ -69,29 +65,20 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                m_droneProtocol.set_throttle_value(Value);
-                // ---------------------------------------------------------------------------------
-                // start : for test code
-//                if (mDroneTransmitterBtService != null)
-//                {
-//                    if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
-//                    {
-//                        byte[] Data = mDroneRemoteControllerProtocol.getProtocolData();
-//                        mDroneTransmitterBtService.writeRXCharacteristic(Data);
-//                    }
-//                    else
-//                    {
-//                        showMessage("not connected !!!");
-//                    }
-//                }
-//                else
-//                {
-//                    showMessage("not initialize !!!");
-//                }
-                // end : for test code
-                // ---------------------------------------------------------------------------------
+                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+                UartService uartservice = mParrent.getUartService();
 
-                Toast.makeText(mParrent, minValue + "-" + maxValue, Toast.LENGTH_LONG).show();
+                if (uartservice == null)
+                {
+                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    return;
+                }
+                droneProtocol.set_throttle_value(Value);
+                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                {
+                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -99,9 +86,11 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         LinearLayout throttle_Layout = (LinearLayout) view.findViewById(R.id.test_throttle_linear_layout);
         throttle_Layout.addView(m_throttle_seekbar_test);
 
-        int throttle_min = m_droneProtocol.get_throttle_min_value();
-        int throttle_value = m_droneProtocol.get_throttle_value();
-        int throttle_max = m_droneProtocol.get_throttle_max_value();
+        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+
+        int throttle_min = droneProtocol.get_throttle_min_value();
+        int throttle_value = droneProtocol.get_throttle_value();
+        int throttle_max = droneProtocol.get_throttle_max_value();
 
         m_throttle_seekbar_test.setRangeValues(throttle_min, throttle_max);
         m_throttle_seekbar_test.setValues(throttle_value);
