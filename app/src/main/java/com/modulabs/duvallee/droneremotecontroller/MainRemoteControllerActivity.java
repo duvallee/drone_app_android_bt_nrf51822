@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.icu.text.DateFormat;
 import android.os.Handler;
@@ -120,9 +121,120 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     private static final int REQUEST_PERMISSION_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_LOCATION = 2;
 
+    // ---------------------------------------------------------------------------------------------
+    // for Preferences
+    private final String PREFERENCES_NAME = "drone_remote_controller";
+
+    private final String PREFERENCES_KEY_REMOTE_DRONE_BT_ADDRESS = "drone_bt_address";
+    private final String PREFERENCES_KEY_REMOTE_DRONE_BT_NAME = "drone_bt_name";
+
+    private final String PREFERENCES_KEY_CHANNEL_ROLL_VALUE = "channel_roll_value";
+    private final String PREFERENCES_KEY_CHANNEL_ROLL_MIN = "channel_roll_min";
+    private final String PREFERENCES_KEY_CHANNEL_ROLL_MAX = "channel_roll_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_PITCH_VALUE = "channel_pitch_value";
+    private final String PREFERENCES_KEY_CHANNEL_PITCH_MIN = "channel_pitch_min";
+    private final String PREFERENCES_KEY_CHANNEL_PITCH_MAX = "channel_pitch_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_YAW_VALUE = "channel_yaw_value";
+    private final String PREFERENCES_KEY_CHANNEL_YAW_MIN = "channel_yaw_min";
+    private final String PREFERENCES_KEY_CHANNEL_YAW_MAX = "channel_yaw_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_THROTTLE_VALUE = "channel_throttle_value";
+    private final String PREFERENCES_KEY_CHANNEL_THROTTLE_MIN = "channel_throttle_min";
+    private final String PREFERENCES_KEY_CHANNEL_THROTTLE_MAX = "channel_throttle_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_GEAR_VALUE = "channel_gear_value";
+    private final String PREFERENCES_KEY_CHANNEL_GEAR_MIN = "channel_gear_min";
+    private final String PREFERENCES_KEY_CHANNEL_GEAR_MAX = "channel_gear_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_AUX1_VALUE = "channel_aux1_value";
+    private final String PREFERENCES_KEY_CHANNEL_AUX1_MIN = "channel_aux1_min";
+    private final String PREFERENCES_KEY_CHANNEL_AUX1_MAX = "channel_aux1_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_AUX2_VALUE = "channel_aux2_value";
+    private final String PREFERENCES_KEY_CHANNEL_AUX2_MIN = "channel_aux2_min";
+    private final String PREFERENCES_KEY_CHANNEL_AUX2_MAX = "channel_aux2_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_AUX3_VALUE = "channel_aux3_value";
+    private final String PREFERENCES_KEY_CHANNEL_AUX3_MIN = "channel_aux3_min";
+    private final String PREFERENCES_KEY_CHANNEL_AUX3_MAX = "channel_aux3_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_AUX4_VALUE = "channel_aux4_value";
+    private final String PREFERENCES_KEY_CHANNEL_AUX4_MIN = "channel_aux4_min";
+    private final String PREFERENCES_KEY_CHANNEL_AUX4_MAX = "channel_aux4_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_AUX5_VALUE = "channel_aux5_value";
+    private final String PREFERENCES_KEY_CHANNEL_AUX5_MIN = "channel_aux5_min";
+    private final String PREFERENCES_KEY_CHANNEL_AUX5_MAX = "channel_aux5_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_AUX6_VALUE = "channel_aux6_value";
+    private final String PREFERENCES_KEY_CHANNEL_AUX6_MIN = "channel_aux6_min";
+    private final String PREFERENCES_KEY_CHANNEL_AUX6_MAX = "channel_aux6_max";
+
+    private final String PREFERENCES_KEY_CHANNEL_AUX7_VALUE = "channel_aux7_value";
+    private final String PREFERENCES_KEY_CHANNEL_AUX7_MIN = "channel_aux7_min";
+    private final String PREFERENCES_KEY_CHANNEL_AUX7_MAX = "channel_aux7_max";
+
+
     // ****************************************************************************************** //
     //
-    // DroneRemoteControllerProtocol getProtocol()
+    // void loadRemoteDroneBtInfo()
+    //
+    // ****************************************************************************************** //
+    public void loadRemoteDroneBtInfo()
+    {
+        SharedPreferences pref = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        mDroneTransmitterBtDeviceAddress = pref.getString(PREFERENCES_KEY_REMOTE_DRONE_BT_ADDRESS, "");
+        mDroneTransmitterBtDeviceName = pref.getString(PREFERENCES_KEY_REMOTE_DRONE_BT_NAME, "");
+    }
+
+    // ****************************************************************************************** //
+    //
+    // void saveRemoteDroneBtInfo()
+    //
+    // ****************************************************************************************** //
+    public void saveRemoteDroneBtInfo()
+    {
+        SharedPreferences pref = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(PREFERENCES_KEY_REMOTE_DRONE_BT_ADDRESS, mDroneTransmitterBtDeviceAddress);
+        editor.putString(PREFERENCES_KEY_REMOTE_DRONE_BT_NAME, mDroneTransmitterBtDeviceName);
+        editor.commit();
+    }
+
+    // ****************************************************************************************** //
+    //
+    // void removeRemoteDroneBtInfo()
+    //
+    // ****************************************************************************************** //
+    public void removeRemoteDroneBtInfo()
+    {
+        SharedPreferences pref = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove(PREFERENCES_KEY_REMOTE_DRONE_BT_ADDRESS);
+        editor.remove(PREFERENCES_KEY_REMOTE_DRONE_BT_NAME);
+        editor.commit();
+    }
+
+
+    // ****************************************************************************************** //
+    //
+    // void allClearPreferences()
+    //
+    // ****************************************************************************************** //
+    public void allClearPreferences()
+    {
+        SharedPreferences pref = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+
+    // ****************************************************************************************** //
+    //
+    // UartService getUartService()
     //
     // ****************************************************************************************** //
     public UartService getUartService()
@@ -599,7 +711,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
-            mRemoteControllerStatus = 1;
+            mRemoteControllerStatus = 0;
             update_view();
         }
 
@@ -747,6 +859,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                         Log.d(TAG, "UART_CONNECT_MSG");
 
                         mDroneTransmitterConnectionStatus = UART_PROFILE_CONNECTED;
+                        // saveRemoteDroneBtInfo();
                         mRemoteControllerStatus = 1;
                         update_view();
                     }
@@ -860,11 +973,15 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 //When the DeviceListActivity return, with the selected device address
                 if (resultCode == AppCompatActivity.RESULT_OK && data != null)
                 {
-                    String deviceAddress = data.getStringExtra(BluetoothDevice.EXTRA_DEVICE);
                     mDroneTransmitterBtDeviceAddress = data.getStringExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                    mDroneTransmitterBtDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
-                    mDroneTransmitterBtService.connect(deviceAddress);
+                    mDroneTransmitterBtDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDroneTransmitterBtDeviceAddress);
+                    if (mDroneTransmitterBtService.connect(mDroneTransmitterBtDeviceAddress) != false)
+                    {
+                        mRemoteControllerStatus = 0;
+                        update_view();
+                        mDroneTransmitterBtDeviceAddress = null;
+                    }
                 }
                 break;
 
