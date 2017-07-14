@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 /**
@@ -54,8 +56,50 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         LinearLayout linearlayout = new LinearLayout(getActivity());
         View view = inflater.inflate(R.layout.throttle_fragment, container, false);
 
+        // -----------------------------------------------------------------------------------------
         ImageButton button = (ImageButton) view.findViewById(R.id.backButton);
         button.setOnClickListener(this);
+
+        // -----------------------------------------------------------------------------------------
+        Switch arming_switch = (Switch) view.findViewById(R.id.armingSwitchButton);
+        arming_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (isChecked)
+                {
+                    buttonView.setText("DISARM");
+                }
+                else
+                {
+                    buttonView.setText("ARM");
+                }
+                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+                UartService uartservice = mParrent.getUartService();
+
+                if (uartservice == null)
+                {
+                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    return;
+                }
+
+                if (isChecked)
+                {
+                    droneProtocol.set_gear_value(droneProtocol.get_gear_max_value());
+                }
+                else
+                {
+                    droneProtocol.set_gear_value(droneProtocol.get_gear_min_value());
+                }
+
+                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                {
+                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         // -----------------------------------------------------------------------------------------
         //throttle
