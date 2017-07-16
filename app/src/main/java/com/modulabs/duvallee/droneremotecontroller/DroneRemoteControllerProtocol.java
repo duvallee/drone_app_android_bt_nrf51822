@@ -1,5 +1,8 @@
 package com.modulabs.duvallee.droneremotecontroller;
 
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.widget.Toast;
 
 /**
@@ -66,12 +69,15 @@ public class DroneRemoteControllerProtocol extends Object
 
     public final int PROTOCOL_CHANNEL_MAX_INDEX = 32;
 
+    public final int PROTOCOL_CHANNEL_SEND_PACKET_SIZE = 16;                                        // (PROTOCOL_CHANNEL_MAX_INDEX / 2);
+
     // ---------------------------------------------------------------------------------------------
     // channel id (constant)
-    public final int SPEKTRUM_CHANNEL_ROLL = 0;
-    public final int SPEKTRUM_CHANNEL_PITCH = 1;
-    public final int SPEKTRUM_CHANNEL_YAW = 2;
-    public final int SPEKTRUM_CHANNEL_THROTTLE = 3;
+    // channel map : spektrum / Graupner / JR
+    public final int SPEKTRUM_CHANNEL_ROLL = 1;
+    public final int SPEKTRUM_CHANNEL_PITCH = 2;
+    public final int SPEKTRUM_CHANNEL_YAW = 3;
+    public final int SPEKTRUM_CHANNEL_THROTTLE = 0;
     public final int SPEKTRUM_CHANNEL_GEAR = 4;
     public final int SPEKTRUM_CHANNEL_AUX_1 = 5;
     public final int SPEKTRUM_CHANNEL_AUX_2 = 6;
@@ -84,56 +90,56 @@ public class DroneRemoteControllerProtocol extends Object
 
     // ---------------------------------------------------------------------------------------------
     // min, max, default (constant)
-    public final int SPEKTRUM_CHANNEL_ROLL_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_ROLL_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_ROLL_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_ROLL_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_ROLL_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_ROLL_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_PITCH_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_PITCH_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_PITCH_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_PITCH_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_PITCH_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_PITCH_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_YAW_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_YAW_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_YAW_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_YAW_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_YAW_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_YAW_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_THROTTLE_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_THROTTLE_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_THROTTLE_DEFAULT_VALUE = 500;
+    public final int SPEKTRUM_CHANNEL_THROTTLE_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_THROTTLE_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_THROTTLE_DEFAULT_VALUE = 300;
 
-    public final int SPEKTRUM_CHANNEL_GEAR_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_GEAR_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_GEAR_DEFAULT_VALUE= 768;
+    public final int SPEKTRUM_CHANNEL_GEAR_MIN_VALUE = 300;
+    public final int SPEKTRUM_CHANNEL_GEAR_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_GEAR_DEFAULT_VALUE= 300;
 
-    public final int SPEKTRUM_CHANNEL_AUX_1_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_AUX_1_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_AUX_1_DEFAULT_VALUE = 500;
+    public final int SPEKTRUM_CHANNEL_AUX_1_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_AUX_1_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_AUX_1_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_AUX_2_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_AUX_2_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_AUX_2_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_AUX_2_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_AUX_2_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_AUX_2_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_AUX_3_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_AUX_3_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_AUX_3_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_AUX_3_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_AUX_3_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_AUX_3_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_AUX_4_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_AUX_4_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_AUX_4_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_AUX_4_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_AUX_4_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_AUX_4_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_AUX_5_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_AUX_5_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_AUX_5_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_AUX_5_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_AUX_5_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_AUX_5_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_AUX_6_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_AUX_6_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_AUX_6_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_AUX_6_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_AUX_6_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_AUX_6_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_AUX_7_MIN_VALUE = 500;
-    public final int SPEKTRUM_CHANNEL_AUX_7_MAX_VALUE = 1000;
-    public final int SPEKTRUM_CHANNEL_AUX_7_DEFAULT_VALUE = 768;
+    public final int SPEKTRUM_CHANNEL_AUX_7_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_AUX_7_MAX_VALUE = 980;
+    public final int SPEKTRUM_CHANNEL_AUX_7_DEFAULT_VALUE = 650;
 
-    public final int SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE = 100;
-    public final int SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE = 1023;
+    public final int SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE = 250;
+    public final int SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE = 980;
 
     // ---------------------------------------------------------------------------------------------
     // header (Version) ver 1.0.01 (high byte : 4 bit (Major) + 4 bit (Minor), low byte : sub version)
@@ -158,7 +164,15 @@ public class DroneRemoteControllerProtocol extends Object
     private int[] mChannelMinValue;
     private int[] mChannelMaxValue;
 
+    // buffer for packet
+    private byte[] mRegisterProtocolData;
+    private byte[] mAliveProtocolData;
+    private byte[] mChannelProtocolData;
+
     private byte[] mLastProtocolData;
+
+
+    private int mChannelPacketDataCount = 0;
     private WAIT_FOR_RESPONSE mWait_for_response;
     private RESULT_RESPONSE mResult_response;
     private int mResponseCode;
@@ -212,6 +226,8 @@ public class DroneRemoteControllerProtocol extends Object
             return -1;
         }
 
+        mWait_for_response = WAIT_FOR_RESPONSE.WAIT_REGISTER_COMMAND_RESPONSE;
+
         mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
         mResponseCode = 0;
 
@@ -251,6 +267,8 @@ public class DroneRemoteControllerProtocol extends Object
             return -1;
         }
 
+        mWait_for_response = WAIT_FOR_RESPONSE.WAIT_ALIVE_COMMAND_RESPONSE;
+
         mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
         mResponseCode = 0;
 
@@ -279,16 +297,20 @@ public class DroneRemoteControllerProtocol extends Object
     // int Send_Channel_Message(UartService uartservice)
     //
     // ****************************************************************************************** //
+    private UartService mUartService = null;
     public int Send_Channel_Message(UartService uartservice)
     {
         if (uartservice == null)
         {
             return -1;
         }
-        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
-        {
-            return -1;
-        }
+
+//        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
+//        {
+//            return -1;
+//        }
+
+        mWait_for_response = WAIT_FOR_RESPONSE.WAIT_CHANNEL_COMMAND_RESPONSE;
 
         mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
         mResponseCode = 0;
@@ -359,18 +381,69 @@ public class DroneRemoteControllerProtocol extends Object
         mLastProtocolData[PROTOCOL_OPTION_2_HIGH_BYTE_INDEX] = 0;
         mLastProtocolData[PROTOCOL_OPTION_2_LOW_BYTE_INDEX] = 0;
 
-        uartservice.writeRXCharacteristic(mLastProtocolData);
+        mChannelPacketDataCount = 2;
+        mUartService = uartservice;
+        mHandler.sendEmptyMessageDelayed(0, 1);
         return 0;
     }
+
+    private Handler mHandler = new Handler()
+    {
+        @Override
+        // Handler events that received from UART service
+        public void handleMessage(Message msg)
+        {
+            byte[] packet_16_byte = new byte[PROTOCOL_CHANNEL_SEND_PACKET_SIZE];
+
+            if (mChannelPacketDataCount == 2)
+            {
+                for (int i = 0; i < PROTOCOL_CHANNEL_SEND_PACKET_SIZE; i++)
+                {
+                    packet_16_byte[i] = mLastProtocolData[i];
+                }
+                mChannelPacketDataCount = 1;
+                mUartService.writeRXCharacteristic(packet_16_byte);
+                mHandler.sendEmptyMessageDelayed(0, 20);
+            }
+            else if (mChannelPacketDataCount == 1)
+            {
+                for (int i = 0; i < PROTOCOL_CHANNEL_SEND_PACKET_SIZE; i++)
+                {
+                    packet_16_byte[i] = mLastProtocolData[i + PROTOCOL_CHANNEL_SEND_PACKET_SIZE];
+                }
+                mChannelPacketDataCount = 0;
+                mUartService.writeRXCharacteristic(packet_16_byte);
+            }
+            else
+            {
+                mUartService = null;
+                mChannelPacketDataCount = 0;
+            }
+        }
+    };
 
     // ****************************************************************************************** //
     //
     // int Response_Message(byte[] response_data)
     //
     // ****************************************************************************************** //
+    private int test_count = 0;
     public int Response_Message(byte[] response_data)
     {
-        Toast.makeText(mParent, "received response data", Toast.LENGTH_SHORT).show();
+        mWait_for_response = WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE;
+
+        test_count++;
+        int size = response_data.length;
+        if ((test_count % 30) == 0)
+        {
+            int i = 0;
+            String szMsg = new String();
+            for (i = 0; i < size; i++)
+            {
+                szMsg += "[" + response_data[i] + "] ";
+            }
+            Toast.makeText(mParent, szMsg, Toast.LENGTH_SHORT).show();
+        }
         return 0;
     }
 

@@ -119,6 +119,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     return;
                 }
                 droneProtocol.set_throttle_value(Value);
+
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
                     Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
