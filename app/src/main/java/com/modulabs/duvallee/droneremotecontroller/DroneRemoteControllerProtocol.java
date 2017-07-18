@@ -73,11 +73,12 @@ public class DroneRemoteControllerProtocol extends Object
 
     // ---------------------------------------------------------------------------------------------
     // channel id (constant)
-    // channel map : spektrum / Graupner / JR
-    public final int SPEKTRUM_CHANNEL_ROLL = 1;
-    public final int SPEKTRUM_CHANNEL_PITCH = 2;
+    // channel map : spektrum / Graupner / JR   : TAER1234, (Throttle, ROLL, PITCH, YAW)
+    //             : Default                    : AETR1234, (ROLL, PITCH, THROTTLE, YAW)
+    public final int SPEKTRUM_CHANNEL_ROLL = 0;
+    public final int SPEKTRUM_CHANNEL_PITCH = 1;
     public final int SPEKTRUM_CHANNEL_YAW = 3;
-    public final int SPEKTRUM_CHANNEL_THROTTLE = 0;
+    public final int SPEKTRUM_CHANNEL_THROTTLE = 2;
     public final int SPEKTRUM_CHANNEL_GEAR = 4;
     public final int SPEKTRUM_CHANNEL_AUX_1 = 5;
     public final int SPEKTRUM_CHANNEL_AUX_2 = 6;
