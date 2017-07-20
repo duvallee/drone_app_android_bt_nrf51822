@@ -978,6 +978,11 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                     mDroneTransmitterBtDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDroneTransmitterBtDeviceAddress);
                     if (mDroneTransmitterBtService.connect(mDroneTransmitterBtDeviceAddress) != false)
                     {
+                        mRemoteControllerStatus = 1;
+                        update_view();
+                    }
+                    else
+                    {
                         mRemoteControllerStatus = 0;
                         update_view();
                         mDroneTransmitterBtDeviceAddress = null;

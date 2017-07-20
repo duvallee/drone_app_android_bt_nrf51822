@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:weightSum="1">
+
+    <!-- title & back button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/black"
+                app:srcCompat="@mipmap/unselect_back_button" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textSettingsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/backButton"
+                android:background="@android:color/black"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:text="Roll Test"
+                android:textColor="#7F7F7F"
+                android:textSize="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <!-- title & back button -->
+
+    <!-- adc1 control -->
+    <LinearLayout
+        android:id="@+id/test_aux1_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+    </LinearLayout>
+    <!-- adc1 control -->
+
+    <!-- adc2 control -->
+    <LinearLayout
+        android:id="@+id/test_aux2_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+    </LinearLayout>
+    <!-- adc2 control -->
+
+    <!-- adc3 control -->
+    <LinearLayout
+        android:id="@+id/test_aux3_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+    </LinearLayout>
+    <!-- adc3 control -->
+
+    <!-- roll control -->
+    <LinearLayout
+        android:id="@+id/test_roll_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+    </LinearLayout>
+    <!-- roll control -->
+
+</LinearLayout>
+

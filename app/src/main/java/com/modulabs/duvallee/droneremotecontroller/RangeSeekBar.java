@@ -90,6 +90,19 @@ public class RangeSeekBar<T extends Number> extends ImageView
     private boolean mSingleThumb = false;
     private boolean mAlwaysSelectedValuesAreDefault = true;
 
+    String mValueLabel = "value";
+
+    // ****************************************************************************************** //
+    //
+    // set value label
+    //
+    //
+    // ****************************************************************************************** //
+    public void setValueLabel(String str)
+    {
+        mValueLabel = new String(str);
+    }
+
     // ****************************************************************************************** //
     //
     // constructor
@@ -635,7 +648,18 @@ public class RangeSeekBar<T extends Number> extends ImageView
         // draw min and max labels
         String minLabel = getContext().getString(R.string.rangeseekbar_min_label);
         String maxLabel = getContext().getString(R.string.rangeseekbar_max_label);
-        String valueLable = getContext().getString(R.string.rangeseekbar_value_label);
+
+        String valueLable;
+
+        if (mValueLabel == null)
+        {
+            valueLable = new String("value");
+        }
+        else
+        {
+            valueLable = mValueLabel;
+        }
+
         float minMaxLabelSize = Math.max(paint.measureText(minLabel), paint.measureText(maxLabel));
         float minMaxHeight = mTextOffset + thumbHalfHeight + mTextSize / 3;
 

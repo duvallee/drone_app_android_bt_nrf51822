@@ -1310,7 +1310,7 @@ public class DroneRemoteControllerProtocol extends Object
     // int get_pitch__min_value()
     //
     // ****************************************************************************************** //
-    public int get_pitch__min_value()
+    public int get_pitch_min_value()
     {
         return (mChannelMinValue[SPEKTRUM_CHANNEL_PITCH]);
     }
@@ -1320,7 +1320,7 @@ public class DroneRemoteControllerProtocol extends Object
     // int get_pitch__min_value()
     //
     // ****************************************************************************************** //
-    public int get_pitch__max_value()
+    public int get_pitch_max_value()
     {
         return (mChannelMaxValue[SPEKTRUM_CHANNEL_PITCH]);
     }

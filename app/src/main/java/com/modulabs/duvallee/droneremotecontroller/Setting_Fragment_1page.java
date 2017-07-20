@@ -260,9 +260,9 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
             }
         });
 
-        m_pitch_min = droneProtocol.get_pitch__min_value();
+        m_pitch_min = droneProtocol.get_pitch_min_value();
         m_pitch_value = droneProtocol.get_pitch_value();
-        m_pitch_max = droneProtocol.get_pitch__max_value();
+        m_pitch_max = droneProtocol.get_pitch_max_value();
 
         m_pitch_seekbar_min_max.setRangeValues(m_pitch_min, m_pitch_max);
         m_pitch_seekbar_value.setRangeValues(m_pitch_min, m_pitch_max);

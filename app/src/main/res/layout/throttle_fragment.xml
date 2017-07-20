@@ -83,28 +83,20 @@
     </LinearLayout>
     <!-- Armming -->
 
-
-    <!-- Throttle message -->
+    <!-- arming control -->
     <LinearLayout
+        android:id="@+id/test_arming_linear_layout"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="60dp">
-
-        <TextView
-            android:id="@+id/test_throttle_msg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:layout_weight="0.56" />
+        android:layout_height="105dp">
 
     </LinearLayout>
-    <!-- Throttle message-->
+    <!-- arming control -->
 
     <!-- Throttle control -->
     <LinearLayout
         android:id="@+id/test_throttle_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="105dp">
 
     </LinearLayout>
     <!-- Throttle control -->
