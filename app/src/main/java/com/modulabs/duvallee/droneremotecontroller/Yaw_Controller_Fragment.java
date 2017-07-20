@@ -56,6 +56,10 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
 
         ImageButton button = (ImageButton) view.findViewById(R.id.backButton);
         button.setOnClickListener(this);
+
+        ImageButton default_button = (ImageButton) view.findViewById(R.id.defaultButton);
+        default_button.setOnClickListener(this);
+
         // -----------------------------------------------------------------------------------------
         // yaw
         m_yaw_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
@@ -112,10 +116,29 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
+        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+        UartService uartservice = mParrent.getUartService();
+
         switch (v.getId())
         {
             case R.id.backButton :
                 mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                break;
+            case R.id.defaultButton :
+                if (uartservice == null)
+                {
+                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    return;
+                }
+
+                droneProtocol.set_yaw_value(512);
+                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                {
+                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                }
+
+                m_yaw_seekbar_test.setValues(512);
                 break;
         }
     }

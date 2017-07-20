@@ -61,6 +61,9 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         ImageButton button = (ImageButton) view.findViewById(R.id.backButton);
         button.setOnClickListener(this);
 
+        ImageButton default_button = (ImageButton) view.findViewById(R.id.defaultButton);
+        default_button.setOnClickListener(this);
+
         // -----------------------------------------------------------------------------------------
         Switch arming_switch = (Switch) view.findViewById(R.id.armingSwitchButton);
         arming_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
@@ -199,10 +202,31 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
+        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+        UartService uartservice = mParrent.getUartService();
+
         switch (v.getId())
         {
             case R.id.backButton :
                 mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                break;
+            case R.id.defaultButton :
+                if (uartservice == null)
+                {
+                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    return;
+                }
+
+                droneProtocol.set_throttle_value(100);
+                droneProtocol.set_gear_value(100);
+                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                {
+                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                }
+
+                m_arming_seekbar_test.setValues(100);
+                m_throttle_seekbar_test.setValues(100);
                 break;
         }
     }

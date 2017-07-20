@@ -57,6 +57,12 @@
             android:layout_weight="10"
             android:orientation="vertical">
 
+            <ImageButton
+                android:id="@+id/defaultButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/black"
+                app:srcCompat="@mipmap/unselect_default_button" />
         </LinearLayout>
 
     </LinearLayout>
