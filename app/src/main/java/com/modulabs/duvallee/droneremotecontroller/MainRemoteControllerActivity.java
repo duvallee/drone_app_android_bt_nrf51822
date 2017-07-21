@@ -65,8 +65,9 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     public final int VIEW_SETTING_PAGE_3_INDEX = 10;
     public final int VIEW_SETTING_PAGE_4_INDEX = 11;
     public final int VIEW_SEARCHING_INDEX = 12;
+    public final int VIEW_SENSOR_CONTROLLER_INDEX = 13;
 
-    public final int VIEW_MAX_INDEX = 13;
+    public final int VIEW_MAX_INDEX = 14;
 
     // tag for view
     private final String VIEW_SPLASHCONNECTSCREEN_TAG = "SPLASH_CONNECT_SCREEN_TAG";
@@ -81,6 +82,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     private final String VIEW_SETTING_PAGE_3_TAG = "SETTING_PAGE_3_TAG";
     private final String VIEW_SETTING_PAGE_4_TAG = "SETTING_PAGE_4_TAG";
     private final String VIEW_SEARCHING_TAG = "SEARCHING_TAG";
+    private final String VIEW_SENSOR_CONTROLLER_TAG = "SENSOR_CONTROLLER_TAG";
 
     private String[] mFlagmentTag;
 
@@ -372,6 +374,11 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 searching_drone_transmitter();
                 break;
 
+            case VIEW_SENSOR_CONTROLLER_INDEX :
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Sensor_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.commit();
+                break;
+
             default :
                 showMessage("unknown view index : " + String.valueOf(view_index));
                 break;
@@ -502,6 +509,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         mFlagmentTag[VIEW_SETTING_PAGE_2_INDEX] = VIEW_SETTING_PAGE_2_TAG;
         mFlagmentTag[VIEW_SETTING_PAGE_3_INDEX] = VIEW_SETTING_PAGE_3_TAG;
         mFlagmentTag[VIEW_SETTING_PAGE_4_INDEX] = VIEW_SETTING_PAGE_4_TAG;
+        mFlagmentTag[VIEW_SENSOR_CONTROLLER_INDEX] = VIEW_SENSOR_CONTROLLER_TAG;
         mFlagmentTag[VIEW_SEARCHING_INDEX] = VIEW_SEARCHING_TAG;
 
         // ----------------------------------------------------------------------------------------

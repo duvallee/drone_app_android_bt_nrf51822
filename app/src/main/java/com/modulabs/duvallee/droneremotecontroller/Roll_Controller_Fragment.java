@@ -63,6 +63,9 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
         ImageButton default_button = (ImageButton) view.findViewById(R.id.defaultButton);
         default_button.setOnClickListener(this);
 
+        ImageButton test_button = (ImageButton) view.findViewById(R.id.testButton);
+        test_button.setOnClickListener(this);
+
         // -----------------------------------------------------------------------------------------
         // aux1
         m_aux1_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
@@ -263,6 +266,10 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
                 }
 
                 m_roll_seekbar_test.setValues(512);
+                break;
+
+            case R.id.testButton :
+                mParrent.switch_view(mParrent.VIEW_SENSOR_CONTROLLER_INDEX);
                 break;
         }
     }

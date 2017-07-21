@@ -218,7 +218,7 @@ public class MainMenuView extends View {
     @Override
     protected void onMeasure(int wMeasureSpec, int hHeasureSpec)
     {
-        int measureHeight = measureHeight(hHeasureSpec);
+        int measureHeight = MeasuredHeight(hHeasureSpec);
         int measureWidth = MeasuredWidth(wMeasureSpec);
 
         // -----------------------------------------------------------------------------------------
@@ -325,10 +325,10 @@ public class MainMenuView extends View {
 
     // ****************************************************************************************** //
     //
-    // int measureHeight(int measureSpec)
+    // int MeasuredHeight(int measureSpec)
     //
     // ****************************************************************************************** //
-    private int measureHeight(int measureSpec)
+    private int MeasuredHeight(int measureSpec)
     {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
