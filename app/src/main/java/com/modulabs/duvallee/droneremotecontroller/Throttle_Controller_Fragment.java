@@ -91,13 +91,13 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                 if (isChecked)
                 {
-                    droneProtocol.set_gear_value(droneProtocol.get_gear_max_value());
-                    m_arming_seekbar_test.setValues(droneProtocol.get_gear_max_value());
+                    droneProtocol.set_gear_value(512);
+                    m_arming_seekbar_test.setValues(512);
                 }
                 else
                 {
-                    droneProtocol.set_gear_value(droneProtocol.get_gear_min_value());
-                    m_arming_seekbar_test.setValues(droneProtocol.get_gear_min_value());
+                    droneProtocol.set_gear_value(0);
+                    m_arming_seekbar_test.setValues(0);
                 }
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
