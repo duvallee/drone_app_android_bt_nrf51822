@@ -105,11 +105,11 @@ public class DroneRemoteControllerProtocol extends Object
 
     public final int SPEKTRUM_CHANNEL_THROTTLE_MIN_VALUE = 0;
     public final int SPEKTRUM_CHANNEL_THROTTLE_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_THROTTLE_DEFAULT_VALUE = 100;
+    public final int SPEKTRUM_CHANNEL_THROTTLE_DEFAULT_VALUE = 0;
 
     public final int SPEKTRUM_CHANNEL_GEAR_MIN_VALUE = 0;
     public final int SPEKTRUM_CHANNEL_GEAR_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_GEAR_DEFAULT_VALUE= 100;
+    public final int SPEKTRUM_CHANNEL_GEAR_DEFAULT_VALUE= 0;
 
     public final int SPEKTRUM_CHANNEL_AUX_1_MIN_VALUE = 0;
     public final int SPEKTRUM_CHANNEL_AUX_1_MAX_VALUE = 1023;
