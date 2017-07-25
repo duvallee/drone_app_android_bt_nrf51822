@@ -2,6 +2,8 @@ package com.modulabs.duvallee.droneremotecontroller;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +43,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
     private int m_throttle_value = DEFAULT_THROTTLE_VALUE;
 
+    private TextView mLevel_TextView = null;
+
     // ****************************************************************************************** //
     //
     // constructor
@@ -79,7 +83,6 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         // -----------------------------------------------------------------------------------------
         ImageButton back_button = (ImageButton) view.findViewById(R.id.backButton);
         back_button.setOnClickListener(this);
-
         back_button.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
@@ -102,24 +105,146 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             }
         });
         
-
-//        back_button.setOnTouchListener(this);
-
         ImageButton set_default_value_Button = (ImageButton) view.findViewById(R.id.defaultButton);
         set_default_value_Button.setOnClickListener(this);
-//        set_default_value_Button.setOnTouchListener(this);
+        set_default_value_Button.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+                UartService uartservice = mParrent.getUartService();
+                ImageButton set_default_value_Button = (ImageButton) v.findViewById(R.id.defaultButton);
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    set_default_value_Button.setImageResource(R.mipmap.select_default_button);
+                    return true;
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    set_default_value_Button.setImageResource(R.mipmap.unselect_default_button);
+                    if (uartservice == null)
+                    {
+                        Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                        mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                        return true;
+                    }
+
+                    m_throttle_value = DEFAULT_THROTTLE_VALUE;
+                    droneProtocol.set_throttle_value(m_throttle_value);
+                    droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
+                    if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                    {
+                        Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
+                    m_throttle_seekbar_test.setValues(m_throttle_value);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         ImageButton throttle_down_button = (ImageButton) view.findViewById(R.id.throttle_down_Button);
         throttle_down_button.setOnClickListener(this);
-//        throttle_down_button.setOnTouchListener(this);
+        throttle_down_button.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+                UartService uartservice = mParrent.getUartService();
+                ImageButton throttle_down_button = (ImageButton) v.findViewById(R.id.throttle_down_Button);
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    throttle_down_button.setImageResource(R.mipmap.select_left);
+                    return true;
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    throttle_down_button.setImageResource(R.mipmap.unselect_left);
+                    if (uartservice == null)
+                    {
+                        Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                        mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                        return true;
+                    }
+
+                    if ((m_throttle_value - m_throttle_level_unit) <= droneProtocol.get_throttle_min_value())
+                    {
+                        m_throttle_value = droneProtocol.get_throttle_min_value();
+                    }
+                    else
+                    {
+                        m_throttle_value -= m_throttle_level_unit;
+                    }
+
+                    droneProtocol.set_throttle_value(m_throttle_value);
+                    m_throttle_seekbar_test.setValues(m_throttle_value);
+
+                    if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                    {
+                        Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
 
         ImageButton throttle_level_button = (ImageButton) view.findViewById(R.id.throttle_level_Button);
         throttle_level_button.setOnClickListener(this);
-//        throttle_level_button.setOnTouchListener(this);
 
         ImageButton throttle_up_button = (ImageButton) view.findViewById(R.id.throttle_up_Button);
         throttle_up_button.setOnClickListener(this);
-//        throttle_up_button.setOnTouchListener(this);
+        throttle_up_button.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+                UartService uartservice = mParrent.getUartService();
+                ImageButton throttle_up_button = (ImageButton) v.findViewById(R.id.throttle_up_Button);
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    throttle_up_button.setImageResource(R.mipmap.select_right);
+                    return true;
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    throttle_up_button.setImageResource(R.mipmap.unselect_right);
+                    if (uartservice == null)
+                    {
+                        Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                        mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                        return true;
+                    }
+
+                    if ((m_throttle_value + m_throttle_level_unit) >= droneProtocol.get_throttle_max_value())
+                    {
+                        m_throttle_value = droneProtocol.get_throttle_max_value();
+                    }
+                    else
+                    {
+                        m_throttle_value += m_throttle_level_unit;
+                    }
+
+                    droneProtocol.set_throttle_value(m_throttle_value);
+                    m_throttle_seekbar_test.setValues(m_throttle_value);
+
+                    if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                    {
+                        Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // -----------------------------------------------------------------------------------------
         Switch arming_switch = (Switch) view.findViewById(R.id.armingSwitchButton);
@@ -163,6 +288,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 }
             }
         });
+
+        mLevel_TextView = (TextView) view.findViewById(R.id.textLevelThrottle);
 
         // -----------------------------------------------------------------------------------------
         // arming seekbar
@@ -213,6 +340,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         // throttle
         m_throttle_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
         m_throttle_seekbar_test.setValueLabel("throttle");
+//        m_throttle_seekbar_test.setNotifyWhileDragging(true);
 
         m_throttle_seekbar_test.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
         {
@@ -228,7 +356,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
-                droneProtocol.set_throttle_value(Value);
+                m_throttle_value = Value;
+                droneProtocol.set_throttle_value(m_throttle_value);
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
@@ -266,66 +395,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
-        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-        UartService uartservice = mParrent.getUartService();
-
         switch (v.getId())
         {
-            case R.id.backButton :
-                ImageButton backButton = (ImageButton) v.findViewById(R.id.backButton);
-                backButton.setImageResource(R.mipmap.select_back_button);
-
-                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
-                break;
-
-            case R.id.defaultButton :
-                ImageButton defaultButton = (ImageButton) v.findViewById(R.id.defaultButton);
-                defaultButton.setImageResource(R.mipmap.select_default_button);
-                if (uartservice == null)
-                {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
-                    return;
-                }
-
-                m_throttle_value = droneProtocol.get_throttle_value();
-                droneProtocol.set_throttle_value(m_throttle_value);
-                droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
-                {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
-                }
-
-                m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
-                m_throttle_seekbar_test.setValues(m_throttle_value);
-                break;
-
-            case R.id.throttle_down_Button :
-                if (uartservice == null)
-                {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
-                    return;
-                }
-
-                if ((m_throttle_value - m_throttle_level_unit) <= droneProtocol.get_throttle_min_value())
-                {
-                    m_throttle_value = droneProtocol.get_throttle_min_value();
-                }
-                else
-                {
-                    m_throttle_value -= m_throttle_level_unit;
-                }
-
-                droneProtocol.set_throttle_value(m_throttle_value);
-                m_throttle_seekbar_test.setValues(m_throttle_value);
-
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
-                {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
             case R.id.throttle_level_Button :
                 m_throttle_speed_level += 1;
                 m_throttle_speed_level %= THROTTLE_SPEED_MAX_LEVEL;
@@ -338,35 +409,9 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 {
                     m_throttle_level_unit = (m_throttle_speed_level * THROTTLE_SPEED_LEVEL_VALUE);
                 }
-
-                TextView level_text_view = (TextView) v.findViewById(R.id.textLevelThrottle);
-                level_text_view.setText(String.valueOf(m_throttle_level_unit));
-//                Toast.makeText(mParrent, "level : " + m_throttle_speed_level, Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.throttle_up_Button :
-                if (uartservice == null)
+                if (mLevel_TextView != null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
-                    return;
-                }
-
-                if ((m_throttle_value + m_throttle_level_unit) >= droneProtocol.get_throttle_max_value())
-                {
-                    m_throttle_value = droneProtocol.get_throttle_max_value();
-                }
-                else
-                {
-                    m_throttle_value += m_throttle_level_unit;
-                }
-
-                droneProtocol.set_throttle_value(m_throttle_value);
-                m_throttle_seekbar_test.setValues(m_throttle_value);
-
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
-                {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    mLevel_TextView.setText(String.valueOf(m_throttle_level_unit));
                 }
                 break;
         }
