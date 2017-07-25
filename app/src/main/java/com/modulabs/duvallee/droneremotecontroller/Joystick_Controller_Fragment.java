@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 
 public class Joystick_Controller_Fragment extends Fragment implements View.OnClickListener
 {
-    private MainRemoteControllerActivity mParrent;
+    private MainRemoteControllerActivity mParrent = null;
+    private Joystick_Controller_View mJoystickControllerView = null;
+
 
     // ****************************************************************************************** //
     //

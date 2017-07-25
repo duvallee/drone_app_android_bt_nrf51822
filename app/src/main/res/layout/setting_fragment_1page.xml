@@ -59,7 +59,7 @@
                 android:background="@android:color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/next_arrow" />
+                app:srcCompat="@mipmap/unselect_next" />
         </LinearLayout>
 
     </LinearLayout>

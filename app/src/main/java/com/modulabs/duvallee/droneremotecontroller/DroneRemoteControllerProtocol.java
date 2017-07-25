@@ -90,57 +90,58 @@ public class DroneRemoteControllerProtocol extends Object
     public final int SPEKTRUM_MAX_CHANNEL = 12;
 
     // ---------------------------------------------------------------------------------------------
-    // min, max, default (constant)
-    public final int SPEKTRUM_CHANNEL_ROLL_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_ROLL_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_ROLL_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_PITCH_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_PITCH_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_PITCH_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_YAW_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_YAW_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_YAW_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_THROTTLE_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_THROTTLE_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_THROTTLE_DEFAULT_VALUE = 0;
-
-    public final int SPEKTRUM_CHANNEL_GEAR_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_GEAR_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_GEAR_DEFAULT_VALUE= 0;
-
-    public final int SPEKTRUM_CHANNEL_AUX_1_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_AUX_1_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_AUX_1_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_AUX_2_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_AUX_2_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_AUX_2_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_AUX_3_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_AUX_3_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_AUX_3_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_AUX_4_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_AUX_4_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_AUX_4_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_AUX_5_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_AUX_5_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_AUX_5_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_AUX_6_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_AUX_6_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_AUX_6_DEFAULT_VALUE = 512;
-
-    public final int SPEKTRUM_CHANNEL_AUX_7_MIN_VALUE = 0;
-    public final int SPEKTRUM_CHANNEL_AUX_7_MAX_VALUE = 1023;
-    public final int SPEKTRUM_CHANNEL_AUX_7_DEFAULT_VALUE = 512;
-
     public final int SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE = 0;
     public final int SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE = 1023;
+    public final int SPEKTRUM_CHANNEL_CENTER_VALUE = 512;
+
+    // min, max, default (constant)
+    public final int SPEKTRUM_CHANNEL_ROLL_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_ROLL_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_ROLL_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_PITCH_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_PITCH_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_PITCH_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_YAW_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_YAW_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_YAW_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_THROTTLE_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_THROTTLE_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_THROTTLE_DEFAULT_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_GEAR_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_GEAR_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_GEAR_DEFAULT_VALUE= SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_AUX_1_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_1_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_1_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_AUX_2_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_2_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_2_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_AUX_3_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_3_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_3_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_AUX_4_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_4_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_4_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_AUX_5_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_5_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_5_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_AUX_6_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_6_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_6_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
+
+    public final int SPEKTRUM_CHANNEL_AUX_7_MIN_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_7_MAX_VALUE = SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE;
+    public final int SPEKTRUM_CHANNEL_AUX_7_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
 
     // ---------------------------------------------------------------------------------------------
     // header (Version) ver 1.0.01 (high byte : 4 bit (Major) + 4 bit (Minor), low byte : sub version)
@@ -624,6 +625,28 @@ public class DroneRemoteControllerProtocol extends Object
         mChannelMaxValue[SPEKTRUM_CHANNEL_AUX_6] = SPEKTRUM_CHANNEL_AUX_6_MAX_VALUE;
         mChannelMaxValue[SPEKTRUM_CHANNEL_AUX_7] = SPEKTRUM_CHANNEL_AUX_7_MAX_VALUE;
     }
+
+
+    // ****************************************************************************************** //
+    //
+    // int get_absolute_min_value()
+    //
+    // ****************************************************************************************** //
+    public int get_absolute_min_value()
+    {
+        return (SPEKTRUM_CHANNEL_ABSOLUTE_MIN_VALUE);
+    }
+
+    // ****************************************************************************************** //
+    //
+    // int get_absolute_max_value()
+    //
+    // ****************************************************************************************** //
+    public int get_absolute_max_value()
+    {
+        return (SPEKTRUM_CHANNEL_ABSOLUTE_MAX_VALUE);
+    }
+
 
     // ****************************************************************************************** //
     //

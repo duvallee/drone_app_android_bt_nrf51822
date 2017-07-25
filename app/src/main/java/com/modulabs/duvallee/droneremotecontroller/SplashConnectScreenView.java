@@ -21,9 +21,9 @@ public class SplashConnectScreenView extends View
     private MainRemoteControllerActivity activity;
 
     // 2560 x 1440
-    private final int TEXT_OUT_Y_2560x1440_COORDINAGE = 1246;
+    private final int TEXT_OUT_Y_2560x1440_COORDINAGE = 1316;
     // 1920 x 1080
-    private final int TEXT_OUT_Y_1920x1080_COORDINAGE = 935;
+    private final int TEXT_OUT_Y_1920x1080_COORDINAGE = 987;
 
     private int TEXT_OUT_Y_COORDINAGE = 0;
 

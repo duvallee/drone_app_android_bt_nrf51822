@@ -19,9 +19,12 @@ import android.widget.Toast;
  * Created by duval on 2017-07-03.
  */
 
-public class MainMenuView extends View {
-    private MainRemoteControllerActivity activity;
+public class MainMenuView extends View
+{
+    // for Main Activity
+    private MainRemoteControllerActivity mActivity;
 
+    // title string of menu
     private final String MENU_MAIN_TITLE = "RC Controller";
     private final String MENU_THROTTLE_TITLE = "Throttle";
     private final String MENU_YAW_TITLE = "Yaw";
@@ -29,7 +32,9 @@ public class MainMenuView extends View {
     private final String MENU_ROLL_TITLE = "Roll";
     private final String MENU_SETTING_TITLE = "Setting";
     private final String MENU_SEARCHING_TITLE = "Searching";
+    private final String MENU_POWER_OFF_TITLE = "Power off";
 
+    // menu index
     private final int MENU_MAIN_INDEX = 0;
     private final int MENU_THROTTLE_INDEX = 1;
     private final int MENU_YAW_INDEX = 2;
@@ -37,15 +42,19 @@ public class MainMenuView extends View {
     private final int MENU_ROLL_INDEX = 4;
     private final int MENU_SETTING_INDEX = 5;
     private final int MENU_SEARCHING_INDEX = 6;
+    private final int MENU_POWER_OFF_INDEX = 7;
 
-    private final int MENU_MAX = 7;
+    // menu count
+    private final int MENU_MAX = 8;
 
     private final int ICON_DRONE_INDEX = 0;
     private final int ICON_GPS_INDEX = 1;
     private final int ICON_BT_INDEX = 2;
 
+    // icon count
     private final int ICON_MAX = 3;
 
+    // icon status
     private final int ICON_ON_STATUS = 1;
     private final int ICON_OFF_STATUS = 0;
     private int[] icon_status;
@@ -61,6 +70,7 @@ public class MainMenuView extends View {
     private final Rect MENU_ROLL_RECT = new Rect(1793, 1000, 375, 322);
     private final Rect MENU_SETTING_RECT = new Rect(1958, 56, 210, 210);
     private final Rect MENU_SEARCHING_RECT = new Rect(1737, 56, 210, 210);
+    private final Rect MENU_POWER_OFF_RECT = new Rect(2218, 1112, 210, 210);
 
     // icon
     private final Rect ICON_1_DRONE_STATUS_RECT = new Rect(391, 56, 210, 210);
@@ -91,7 +101,7 @@ public class MainMenuView extends View {
     public MainMenuView(Context context)
     {
         super(context);
-        activity = (MainRemoteControllerActivity) context;
+        mActivity = (MainRemoteControllerActivity) context;
         InitView();
 
     }
@@ -104,7 +114,7 @@ public class MainMenuView extends View {
     public MainMenuView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        activity = (MainRemoteControllerActivity) context;
+        mActivity = (MainRemoteControllerActivity) context;
         InitView();
     }
 
@@ -116,7 +126,7 @@ public class MainMenuView extends View {
     public MainMenuView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        activity = (MainRemoteControllerActivity) context;
+        mActivity = (MainRemoteControllerActivity) context;
         InitView();
     }
 
@@ -156,11 +166,13 @@ public class MainMenuView extends View {
         menu_title[MENU_ROLL_INDEX] = new String(MENU_ROLL_TITLE);
         menu_title[MENU_SETTING_INDEX] = new String(MENU_SETTING_TITLE);
         menu_title[MENU_SEARCHING_INDEX] = new String(MENU_SEARCHING_TITLE);
+        menu_title[MENU_POWER_OFF_INDEX] = new String(MENU_POWER_OFF_TITLE);
 
         // -----------------------------------------------------------------------------------------
         // load image from resource
-        Resources resources = activity.getResources();
+        Resources resources = mActivity.getResources();
 
+        // image of button
         menu_unselect_Image[MENU_MAIN_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_main_menu);
         menu_select_Image[MENU_MAIN_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_main_menu);
 
@@ -182,6 +194,10 @@ public class MainMenuView extends View {
         menu_unselect_Image[MENU_SEARCHING_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_searching_menu);
         menu_select_Image[MENU_SEARCHING_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_searching_menu);
 
+        menu_unselect_Image[MENU_POWER_OFF_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.unselect_power_off);
+        menu_select_Image[MENU_POWER_OFF_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.select_power_off);
+
+        // image of icon
         icon_on_Image[ICON_DRONE_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.on_icon_drone);
         icon_off_Image[ICON_DRONE_INDEX] = BitmapFactory.decodeResource(resources, R.mipmap.off_icon_drone);
 
@@ -194,7 +210,7 @@ public class MainMenuView extends View {
         // -----------------------------------------------------------------------------------------
         // hide action bar
         setBackgroundColor(Color.BLACK);
-        ActionBar actionbar = activity.getSupportActionBar();
+        ActionBar actionbar = mActivity.getSupportActionBar();
         actionbar.hide();
 
         setFocusable(true);
@@ -222,14 +238,15 @@ public class MainMenuView extends View {
         int measureWidth = MeasuredWidth(wMeasureSpec);
 
         // -----------------------------------------------------------------------------------------
-        // menu title
+        // set rectangle of menu
         menu_rect[MENU_MAIN_INDEX] = MENU_MAIN_RECT;
         menu_rect[MENU_THROTTLE_INDEX] = MENU_THROTTLE_RECT;
         menu_rect[MENU_YAW_INDEX] = MENU_YAW_RECT;
         menu_rect[MENU_PITCH_INDEX] = MENU_PITCH_RECT;
         menu_rect[MENU_ROLL_INDEX] = MENU_ROLL_RECT;
-        menu_rect[MENU_SETTING_INDEX] =MENU_SETTING_RECT;
-        menu_rect[MENU_SEARCHING_INDEX] =MENU_SEARCHING_RECT;
+        menu_rect[MENU_SETTING_INDEX] = MENU_SETTING_RECT;
+        menu_rect[MENU_SEARCHING_INDEX] = MENU_SEARCHING_RECT;
+        menu_rect[MENU_POWER_OFF_INDEX] = MENU_POWER_OFF_RECT;
 
         icon_rect[ICON_DRONE_INDEX] = ICON_1_DRONE_STATUS_RECT;
         icon_rect[ICON_GPS_INDEX] = ICON_2_GPS_STATUS_RECT;
@@ -239,7 +256,7 @@ public class MainMenuView extends View {
         {
             init_resizing = 1;
             // 1080 / 1440 = 0.75
-            double rate = 0.85;
+            double rate = 0.75;
             menu_rect[MENU_MAIN_INDEX].left = (int) (menu_rect[MENU_MAIN_INDEX].left * rate);
             menu_rect[MENU_MAIN_INDEX].top = (int) (menu_rect[MENU_MAIN_INDEX].top * rate);
             menu_rect[MENU_MAIN_INDEX].right = (int) (menu_rect[MENU_MAIN_INDEX].right * rate);
@@ -519,9 +536,9 @@ public class MainMenuView extends View {
     @Override
     public void onDraw(Canvas canvas)
     {
-        icon_status[ICON_DRONE_INDEX] = activity.getRemoteControllerStatus();
-        icon_status[ICON_GPS_INDEX] = activity.getGPSControllerStatus();
-        icon_status[ICON_BT_INDEX] = activity.getBluetoothStatus();
+        icon_status[ICON_DRONE_INDEX] = mActivity.getRemoteControllerStatus();
+        icon_status[ICON_GPS_INDEX] = mActivity.getGPSControllerStatus();
+        icon_status[ICON_BT_INDEX] = mActivity.getBluetoothStatus();
 
         for (int i = 0; i < MENU_MAX; i++)
         {
@@ -603,31 +620,35 @@ public class MainMenuView extends View {
             switch(select_menu_index)
             {
                 case MENU_MAIN_INDEX:
-                    activity.switch_view(activity.VIEW_JOYSTICKCONTROLLER_INDEX);
+                    mActivity.switch_view(mActivity.VIEW_JOYSTICKCONTROLLER_INDEX);
                     break;
 
                 case MENU_THROTTLE_INDEX:
-                    activity.switch_view(activity.VIEW_THROTTLECONTROLLER_INDEX);
+                    mActivity.switch_view(mActivity.VIEW_THROTTLECONTROLLER_INDEX);
                     break;
 
                 case MENU_YAW_INDEX:
-                    activity.switch_view(activity.VIEW_YAWCONTROLLER_INDEX);
+                    mActivity.switch_view(mActivity.VIEW_YAWCONTROLLER_INDEX);
                     break;
 
                 case MENU_PITCH_INDEX:
-                    activity.switch_view(activity.VIEW_PITCHCONTROLLER_INDEX);
+                    mActivity.switch_view(mActivity.VIEW_PITCHCONTROLLER_INDEX);
                     break;
 
                 case MENU_ROLL_INDEX:
-                    activity.switch_view(activity.VIEW_ROLLCONTROLLER_INDEX);
+                    mActivity.switch_view(mActivity.VIEW_ROLLCONTROLLER_INDEX);
                     break;
 
                 case MENU_SETTING_INDEX :
-                    activity.switch_view(activity.VIEW_SETTING_PAGE_1_INDEX);
+                    mActivity.switch_view(mActivity.VIEW_SETTING_PAGE_1_INDEX);
                     break;
 
                 case MENU_SEARCHING_INDEX :
-                    activity.switch_view(activity.VIEW_SEARCHING_INDEX);
+                    mActivity.switch_view(mActivity.VIEW_SEARCHING_INDEX);
+                    break;
+
+                case MENU_POWER_OFF_INDEX :
+                    Toast.makeText(mActivity, "Press Power-Off menu !!!", Toast.LENGTH_LONG).show();
                     break;
             }
             select_menu_index = -1;
