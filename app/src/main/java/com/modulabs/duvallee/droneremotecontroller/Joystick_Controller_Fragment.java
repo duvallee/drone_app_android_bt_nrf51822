@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by duval on 2017-07-03.
@@ -41,6 +42,7 @@ public class Joystick_Controller_Fragment extends Fragment implements View.OnCli
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mJoystickControllerView = new Joystick_Controller_View(mParrent);
     }
 
     // ****************************************************************************************** //
@@ -51,15 +53,10 @@ public class Joystick_Controller_Fragment extends Fragment implements View.OnCli
     // ****************************************************************************************** //
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        LinearLayout linearlayout = new LinearLayout(getActivity());
-        View view = inflater.inflate(R.layout.under_construction_fragment, container, false);
+        RelativeLayout relativelayout = new RelativeLayout(getActivity());
+        relativelayout.addView(mJoystickControllerView);
 
-        ImageButton button = (ImageButton) view.findViewById(R.id.backButton);
-        button.setOnClickListener(this);
-
-        linearlayout.addView(view);
-
-        return linearlayout;
+        return (relativelayout);
     }
 
     // ****************************************************************************************** //

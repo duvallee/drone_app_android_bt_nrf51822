@@ -25,7 +25,7 @@
                 android:background="@android:color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/unselect_back_button" />
+                app:srcCompat="@mipmap/unselect_prev" />
         </LinearLayout>
 
         <LinearLayout

@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -316,6 +318,7 @@ public class MainMenuView extends View
         // must be called setMeasuredDimension
         // if not called, occurred run-time error !!!
         setMeasuredDimension(measureWidth, measureHeight);
+        mMainMenuUiHandler.sendEmptyMessageDelayed(0, 1000);
     }
 
     // ****************************************************************************************** //
@@ -648,7 +651,7 @@ public class MainMenuView extends View
                     break;
 
                 case MENU_POWER_OFF_INDEX :
-                    Toast.makeText(mActivity, "Press Power-Off menu !!!", Toast.LENGTH_LONG).show();
+                    mActivity.drone_controller_power_off();
                     break;
             }
             select_menu_index = -1;
@@ -658,4 +661,37 @@ public class MainMenuView extends View
         // Must be return is true because should be received the ACTION_MOVE, ACTION_UP event
         return true;
     }
+    // ****************************************************************************************** //
+    //
+    // Handler mMainMenuUiHandler = new Handler()
+    //
+    //
+    // ****************************************************************************************** //
+    private Handler mMainMenuUiHandler = new Handler()
+    {
+        @Override
+        // Handler events that received from UART service
+        public void handleMessage(Message msg)
+        {
+            mMainMenuUiHandler.sendEmptyMessageDelayed(0, 1000);
+            if (icon_status[ICON_DRONE_INDEX] != mActivity.getRemoteControllerStatus())
+            {
+                invalidate();
+                return;
+            }
+
+            if (icon_status[ICON_GPS_INDEX] != mActivity.getGPSControllerStatus())
+            {
+                invalidate();
+                return;
+            }
+
+            if (icon_status[ICON_BT_INDEX] != mActivity.getBluetoothStatus())
+            {
+                invalidate();
+                return;
+            }
+        }
+    };
+
 }

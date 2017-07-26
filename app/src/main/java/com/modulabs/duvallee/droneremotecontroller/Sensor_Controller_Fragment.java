@@ -63,8 +63,6 @@ public class Sensor_Controller_Fragment extends Fragment
         relativelayout.addView(mSensorControllerView);
 
         return (relativelayout);
-
-
     }
 
     // ****************************************************************************************** //

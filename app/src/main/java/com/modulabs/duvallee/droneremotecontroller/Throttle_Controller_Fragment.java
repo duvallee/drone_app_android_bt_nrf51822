@@ -45,6 +45,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
     private TextView mLevel_TextView = null;
 
+    private boolean mFailSafeMode = false;
+
     // ****************************************************************************************** //
     //
     // constructor
@@ -97,6 +99,10 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
+                    if (mFailSafeMode == true)
+                    {
+                        return false;
+                    }
                     backButton.setImageResource(R.mipmap.unselect_prev);
                     mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return true;
@@ -124,6 +130,12 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     set_default_value_Button.setImageResource(R.mipmap.unselect_default_button);
+
+                    if (mFailSafeMode == true)
+                    {
+                        return false;
+                    }
+
                     if (uartservice == null)
                     {
                         Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
@@ -131,16 +143,24 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                         return true;
                     }
 
-                    m_throttle_value = DEFAULT_THROTTLE_VALUE;
-                    droneProtocol.set_throttle_value(m_throttle_value);
-                    droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
-                    if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                    if (droneProtocol.get_gear_value() > 0 && droneProtocol.get_throttle_value() > 0)
                     {
-                        Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                        mFailSafeMode = true;
+                        mThrottleHandler.sendEmptyMessageDelayed(0, 300);
                     }
+                    else
+                    {
+                        m_throttle_value = DEFAULT_THROTTLE_VALUE;
+                        droneProtocol.set_throttle_value(m_throttle_value);
+                        droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
+                        if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                        {
+                            Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                        }
 
-                    m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
-                    m_throttle_seekbar_test.setValues(m_throttle_value);
+                        m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
+                        m_throttle_seekbar_test.setValues(m_throttle_value);
+                    }
                     return true;
                 }
                 return false;
@@ -166,6 +186,10 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     throttle_down_button.setImageResource(R.mipmap.unselect_left);
+                    if (mFailSafeMode == true)
+                    {
+                        return false;
+                    }
                     if (uartservice == null)
                     {
                         Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
@@ -217,6 +241,10 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     throttle_up_button.setImageResource(R.mipmap.unselect_right);
+                    if (mFailSafeMode == true)
+                    {
+                        return false;
+                    }
                     if (uartservice == null)
                     {
                         Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
@@ -253,6 +281,10 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
+                if (mFailSafeMode == true)
+                {
+                    return;
+                }
                 if (isChecked)
                 {
                     buttonView.setText("DISARM");
@@ -305,6 +337,10 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
                 UartService uartservice = mParrent.getUartService();
 
+                if (mFailSafeMode == true)
+                {
+                    return;
+                }
                 if (uartservice == null)
                 {
                     Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
@@ -349,6 +385,11 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             {
                 DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
                 UartService uartservice = mParrent.getUartService();
+
+                if (mFailSafeMode == true)
+                {
+                    return;
+                }
 
                 if (uartservice == null)
                 {
@@ -398,6 +439,12 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         switch (v.getId())
         {
             case R.id.throttle_level_Button :
+
+                if (mFailSafeMode == true)
+                {
+                    return;
+                }
+
                 m_throttle_speed_level += 1;
                 m_throttle_speed_level %= THROTTLE_SPEED_MAX_LEVEL;
 
@@ -416,4 +463,55 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 break;
         }
     }
+
+    // ****************************************************************************************** //
+    //
+    // Handler mThrottleHandler = new Handler()
+    //
+    //
+    // ****************************************************************************************** //
+    private Handler mThrottleHandler = new Handler()
+    {
+        @Override
+        // Handler events that received from UART service
+        public void handleMessage(Message msg)
+        {
+            DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+            UartService uartservice = mParrent.getUartService();
+
+            if (uartservice == null)
+            {
+                Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                return;
+            }
+
+            if ((m_throttle_value - 10) <= 0)
+            {
+                m_throttle_value = DEFAULT_THROTTLE_VALUE;
+                droneProtocol.set_throttle_value(m_throttle_value);
+                droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
+                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                {
+                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                }
+
+                m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
+                m_throttle_seekbar_test.setValues(m_throttle_value);
+                mFailSafeMode = false;
+            }
+            else
+            {
+                m_throttle_value -= 10;
+                droneProtocol.set_throttle_value(m_throttle_value);
+
+                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                {
+                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                }
+                m_throttle_seekbar_test.setValues(m_throttle_value);
+                mThrottleHandler.sendEmptyMessageDelayed(0, 300);
+            }
+        }
+    };
 }

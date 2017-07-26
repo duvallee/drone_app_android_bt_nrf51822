@@ -303,6 +303,18 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 
     // ****************************************************************************************** //
     //
+    // void void drone_controller_power_off()
+    //
+    // for view switch
+    //
+    // ****************************************************************************************** //
+    public void drone_controller_power_off()
+    {
+        finish();
+    }
+
+    // ****************************************************************************************** //
+    //
     // void switch_view(int view_index)
     //
     // for view switch
@@ -822,17 +834,32 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         {
             if (mDroneTransmitterBtService == null)
             {
+                if (mRemoteControllerStatus == 1)
+                {
+                    mRemoteControllerStatus = 0;
+                    update_view();
+                }
                 mAliveCount = 0;
             }
             else
             {
                 if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
                 {
+                    if (mRemoteControllerStatus == 0)
+                    {
+                        mRemoteControllerStatus = 1;
+                        update_view();
+                    }
                     mAliveCount++;
                     mDroneRemoteControllerProtocol.Send_Alive_Message(mDroneTransmitterBtService, mAliveCount);
                 }
                 else
                 {
+                    if (mRemoteControllerStatus == 1)
+                    {
+                        mRemoteControllerStatus = 0;
+                        update_view();
+                    }
                     mAliveCount = 0;
                 }
             }
