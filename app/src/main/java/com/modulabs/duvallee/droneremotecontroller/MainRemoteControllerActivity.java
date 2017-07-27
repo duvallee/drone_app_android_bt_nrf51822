@@ -178,7 +178,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     private final String PREFERENCES_KEY_CHANNEL_AUX7_MIN = "channel_aux7_min";
     private final String PREFERENCES_KEY_CHANNEL_AUX7_MAX = "channel_aux7_max";
 
-
     // ****************************************************************************************** //
     //
     // void loadRemoteDroneBtInfo()
@@ -291,9 +290,24 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 
     // ****************************************************************************************** //
     //
-    // void switch_view(int view_index)
+    // int autoConnect_drone_controller()
     //
-    // for view switch
+    //
+    // ****************************************************************************************** //
+    public int autoConnect_drone_controller()
+    {
+        loadRemoteDroneBtInfo();
+        if (mDroneTransmitterBtDeviceAddress == null || mDroneTransmitterBtDeviceAddress.isEmpty() == true)
+        {
+            return -1;
+        }
+        return 0;
+    }
+
+    // ****************************************************************************************** //
+    //
+    // void response_protocol(byte[] data)
+    //
     //
     // ****************************************************************************************** //
     public void response_protocol(byte[] data)
@@ -305,7 +319,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     //
     // void void drone_controller_power_off()
     //
-    // for view switch
     //
     // ****************************************************************************************** //
     public void drone_controller_power_off()
@@ -731,8 +744,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
-            mRemoteControllerStatus = 0;
-            update_view();
         }
 
         public void onServiceDisconnected(ComponentName classname)
@@ -894,9 +905,18 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                         Log.d(TAG, "UART_CONNECT_MSG");
 
                         mDroneTransmitterConnectionStatus = UART_PROFILE_CONNECTED;
-                        // saveRemoteDroneBtInfo();
-                        mRemoteControllerStatus = 1;
-                        update_view();
+
+                        if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
+                        {
+                            if (mDroneTransmitterBtDevice != null)
+                            {
+                                mRemoteControllerStatus = 1;
+                                update_view();
+                                mDroneTransmitterBtDeviceAddress = mDroneTransmitterBtDevice.getAddress();
+                                mDroneTransmitterBtDeviceName = mDroneTransmitterBtDevice.getName();
+                                saveRemoteDroneBtInfo();
+                            }
+                        }
                     }
                 });
             }
@@ -1011,10 +1031,14 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                     mDroneTransmitterBtDeviceAddress = data.getStringExtra(BluetoothDevice.EXTRA_DEVICE);
 
                     mDroneTransmitterBtDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDroneTransmitterBtDeviceAddress);
+//                    if (mDroneTransmitterBtDevice != null)
+//                    {
+//                        showMessage(mDroneTransmitterBtDevice.getName() + " : " + mDroneTransmitterBtDevice.getAddress());
+//                    }
                     if (mDroneTransmitterBtService.connect(mDroneTransmitterBtDeviceAddress) != false)
                     {
-                        mRemoteControllerStatus = 1;
-                        update_view();
+//                        mRemoteControllerStatus = 1;
+//                        update_view();
                     }
                     else
                     {
