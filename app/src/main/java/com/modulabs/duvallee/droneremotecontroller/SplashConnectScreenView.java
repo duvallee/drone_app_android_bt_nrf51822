@@ -7,9 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -29,7 +31,7 @@ import android.widget.ProgressBar;
 
 public class SplashConnectScreenView extends View
 {
-    private MainRemoteControllerActivity mMainActivity;
+    private MainRemoteControllerActivity mMainActivity = null;
 
     private int mSpashScreenRetentionCount = 0;
     private int mTryConnectBTTransmitter = 0;
@@ -43,6 +45,12 @@ public class SplashConnectScreenView extends View
 
     private int TEXT_OUT_Y_COORDINAGE = 0;
 
+    // ****************************************************************************************** //
+    //
+    // public SplashConnectScreenView(Context context)
+    //
+    //
+    // ****************************************************************************************** //
     public SplashConnectScreenView(Context context)
     {
         super(context);
@@ -51,6 +59,12 @@ public class SplashConnectScreenView extends View
 
     }
 
+    // ****************************************************************************************** //
+    //
+    // public SplashConnectScreenView(Context context)
+    //
+    //
+    // ****************************************************************************************** //
     public SplashConnectScreenView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -58,6 +72,12 @@ public class SplashConnectScreenView extends View
         InitView();
     }
 
+    // ****************************************************************************************** //
+    //
+    // public SplashConnectScreenView(Context context)
+    //
+    //
+    // ****************************************************************************************** //
     public SplashConnectScreenView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -65,6 +85,12 @@ public class SplashConnectScreenView extends View
         InitView();
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     public void InitView()
     {
         setBackgroundColor(Color.BLACK);
@@ -79,10 +105,20 @@ public class SplashConnectScreenView extends View
 //        mWaitProgressDialog = new ProgressDialog(mMainActivity, R.style.bt_search_progress_dialog);
         mWaitProgressDialog = new ProgressDialog(mMainActivity);
 //        mWaitProgressDialog.setMessage("searching the BT Transmitter");
-        mWaitProgressDialog.setMessage("Searching the BT Transmitter");
+//        mWaitProgressDialog.setMessage("Searching the BT Transmitter");
+        mWaitProgressDialog.setMessage(Html.fromHtml("<font color='#FF7F27'>Searching the BT Transmitter</font>"));
         mWaitProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mWaitProgressDialog.setCancelable(false);
         mWaitProgressDialog.show();
+
+        mWaitProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        mWaitProgressDialog.getWindow().setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+//        mWaitProgressDialog.getWindow().setGravity(Gravity.TOP | Gravity.RIGHT);
+
+
+        // width, height
+//        mWaitProgressDialog.getWindow().setLayout(1500, 10);
+
 
 //        mWaitProgressDialog.getWindow().getDecorView().setBackgroundColor(Color.LTGRAY);
 //
@@ -94,12 +130,12 @@ public class SplashConnectScreenView extends View
 
         if (mMainActivity.autoConnect_drone_controller() < 0)
         {
-            mSpashScreenRetentionCount = 20;
+            mSpashScreenRetentionCount = 5;
             mTryConnectBTTransmitter = 0;
         }
         else
         {
-            mSpashScreenRetentionCount = 20;
+            mSpashScreenRetentionCount = 10;
             mTryConnectBTTransmitter = 1;
         }
         mSplashHandler.sendEmptyMessageDelayed(0, 1000);
@@ -110,11 +146,23 @@ public class SplashConnectScreenView extends View
     private int x;
     private int y;
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     private void init()
     {
         Resources resource = getResources();
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     @Override
     protected void onMeasure(int wMeasureSpec, int hHeasureSpec)
     {
@@ -138,6 +186,12 @@ public class SplashConnectScreenView extends View
         setMeasuredDimension(measureWidth, measureHeight);
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     private int MeasuredWidth(int measureSpec)
     {
         int specMode = MeasureSpec.getMode(measureSpec);
@@ -154,6 +208,12 @@ public class SplashConnectScreenView extends View
         return specSize;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     private int measureHeight(int measureSpec)
     {
         int specMode = MeasureSpec.getMode(measureSpec);
@@ -169,6 +229,12 @@ public class SplashConnectScreenView extends View
         return specSize;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     // 2,560 x 1,440       (Galaxy Note 4)
     // 2,560 x 1,440 + 160 (Galaxy Note Edge)
     // 2,560 x 1,532
@@ -191,18 +257,36 @@ public class SplashConnectScreenView extends View
     }
 
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent keyEvent)
     {
         return true;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent keyEvent)
     {
         return true;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onTrackballEvent(MotionEvent event)
     {
@@ -210,6 +294,12 @@ public class SplashConnectScreenView extends View
         return true;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void InitView()
+    //
+    //
+    // ****************************************************************************************** //
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {

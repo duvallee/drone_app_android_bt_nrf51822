@@ -109,7 +109,7 @@
 
     <!-- Throttle button control -->
     <LinearLayout
-        android:id="@+id/test_throttle_linear_layout"
+        android:id="@+id/test_throttle_button_layout"
         android:layout_width="match_parent"
         android:layout_height="65dp">
 
@@ -159,7 +159,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/backButton" />
+                android:layout_toEndOf="@+id/throttle_level_Button" />
 
         </RelativeLayout>
 
