@@ -5,6 +5,8 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.widget.Toast;
 
+import java.util.concurrent.locks.Lock;
+
 /**
  * Created by duval on 2017-07-02.
  */
@@ -12,6 +14,136 @@ import android.widget.Toast;
 public class DroneRemoteControllerProtocol extends Object
 {
     public static final String TAG = "DroneRemoteControllerProtocol";
+
+    public class PacketInfo
+    {
+        public final static byte PACKET_HALF_SIZE = 16;
+        public final static byte BASIC_PACKET_SIZE = 8;
+        public final static byte CHANNEL_PACKET_SIZE = 32;
+
+        public final static int PACKET_FREE = 0;
+        public final static int PACKET_READY = 1;
+        public final static int PACKET_WAIT_RESPONSE = 2;
+
+        public int m_paket_length = 0;
+        public int m_packet_status = 0;
+
+        public int m_packet_response_timeout = 0;
+
+        private byte[] m_basic_paket_byte;
+
+        private byte[] m_low_paket_byte;
+        private byte[] m_high_paket_byte;
+
+        // ****************************************************************************************** //
+        //
+        // contructor
+        //
+        // ****************************************************************************************** //
+        PacketInfo()
+        {
+            m_basic_paket_byte = new byte[BASIC_PACKET_SIZE];
+            m_low_paket_byte = new byte[PACKET_HALF_SIZE];
+            m_high_paket_byte = new byte[PACKET_HALF_SIZE];
+        }
+
+        // ****************************************************************************************** //
+        //
+        // MakeBasicPacket
+        //
+        // ****************************************************************************************** //
+        void MakeBasicPacket(byte header_1_hi_byte, byte header_1_low_byte,
+                             byte header_command_byte, byte header_size_byte,
+                             byte option_1_hi_byte, byte option_1_low_byte,
+                             byte option_2_hi_byte, byte option_2_low_byte)
+        {
+            m_paket_length = BASIC_PACKET_SIZE;
+            m_packet_status = PACKET_READY;
+            m_packet_response_timeout = 0;
+
+            m_basic_paket_byte[0] = header_1_hi_byte;
+            m_basic_paket_byte[1] = header_1_low_byte;
+            m_basic_paket_byte[2] = header_command_byte;
+            m_basic_paket_byte[3] = header_size_byte;
+            m_basic_paket_byte[4] = option_1_hi_byte;
+            m_basic_paket_byte[5] = option_1_low_byte;
+            m_basic_paket_byte[6] = option_2_hi_byte;
+            m_basic_paket_byte[7] = option_2_low_byte;
+        }
+
+        // ****************************************************************************************** //
+        //
+        // MakeChannelPacket
+        //
+        // ****************************************************************************************** //
+        void MakeChannelPacket(byte header_1_hi_byte, byte header_1_low_byte,
+                             byte header_command_byte, byte header_size_byte,
+                             byte option_1_hi, byte option_1_low,
+                             byte option_2_hi, byte option_2_low,
+                             byte ch_0_hi, byte ch_0_low,
+                             byte ch_1_hi, byte ch_1_low,
+                             byte ch_2_hi, byte ch_2_low,
+                             byte ch_3_hi, byte ch_3_low,
+                             byte ch_4_hi, byte ch_4_low,
+                             byte ch_5_hi, byte ch_5_low,
+                             byte ch_6_hi, byte ch_6_low,
+                             byte ch_7_hi, byte ch_7_low,
+                             byte ch_8_hi, byte ch_8_low,
+                             byte ch_9_hi, byte ch_9_low,
+                             byte ch_10_hi, byte ch_10_low,
+                             byte ch_11_hi, byte ch_11_low)
+        {
+            m_paket_length = BASIC_PACKET_SIZE;
+            m_packet_status = PACKET_READY;
+            m_packet_response_timeout = 0;
+
+            m_low_paket_byte[0] = header_1_hi_byte;
+            m_low_paket_byte[1] = header_1_low_byte;
+            m_low_paket_byte[2] = header_command_byte;
+            m_low_paket_byte[3] = header_size_byte;
+            m_low_paket_byte[4] = 0;    // crc
+            m_low_paket_byte[5] = 0;    // crc
+            m_low_paket_byte[6] = 0;
+            m_low_paket_byte[7] = 0;
+            m_low_paket_byte[8] = ch_0_hi;
+            m_low_paket_byte[9] = ch_0_low;
+            m_low_paket_byte[10] = ch_1_hi;
+            m_low_paket_byte[11] = ch_1_low;
+            m_low_paket_byte[12] = ch_2_hi;
+            m_low_paket_byte[13] = ch_2_low;
+            m_low_paket_byte[14] = ch_3_hi;
+            m_low_paket_byte[15] = ch_3_low;
+
+            m_high_paket_byte[0] = ch_4_hi;
+            m_high_paket_byte[1] = ch_4_low;
+            m_high_paket_byte[2] = ch_5_hi;
+            m_high_paket_byte[3] = ch_5_low;
+            m_high_paket_byte[4] = ch_6_hi;
+            m_high_paket_byte[5] = ch_6_low;
+            m_high_paket_byte[6] = ch_7_hi;
+            m_high_paket_byte[7] = ch_7_low;
+            m_high_paket_byte[8] = ch_8_hi;
+            m_high_paket_byte[9] = ch_8_low;
+            m_high_paket_byte[10] = ch_9_hi;
+            m_high_paket_byte[11] = ch_9_low;
+            m_high_paket_byte[12] = ch_10_hi;
+            m_high_paket_byte[13] = ch_10_low;
+            m_high_paket_byte[14] = ch_11_hi;
+            m_high_paket_byte[15] = ch_11_low;
+
+
+//            int crc = 0;
+//            for (int i = PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX; i <= (PROTOCOL_CHANEL_12_LOW_BYTE_INDEX); i++)
+//            {
+//                crc += mLastProtocolData[i];
+//                crc = (crc & 0xFFFF);
+//            }
+//            mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = (byte) ((crc >> 8) & 0xFF);
+//            mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = (byte) (crc & 0xFF);
+
+        }
+
+    };
 
     // ---------------------------------------------------------------------------------------------
     // Start : Shared Area (8 bytes)
@@ -145,16 +277,16 @@ public class DroneRemoteControllerProtocol extends Object
 
     // ---------------------------------------------------------------------------------------------
     // header (Version) ver 1.0.01 (high byte : 4 bit (Major) + 4 bit (Minor), low byte : sub version)
-    public final int PROTOCOL_HEADER_HIGH_VERSION = 0x10;
-    public final int PROTOCOL_HEADER_LOW_VERSION = 0x01;
+    public final byte PROTOCOL_HEADER_HIGH_VERSION = (byte) 0x10;
+    public final byte PROTOCOL_HEADER_LOW_VERSION = (byte) 0x01;
 
     // Command (byte : 4 bit (phone -> transmitter : 0x0?, transmitter -> phone : 0xF?)
-    public final int PROTOCOL_REGISTER_MESSAGE = 0x01;
-    public final int PROTOCOL_REGISTER_RESPONSE = 0xF1;
-    public final int PROTOCOL_ALIVE_MESSAGE = 0x02;
-    public final int PROTOCOL_ALIVE_RESPONSE = 0xF2;
-    public final int PROTOCOL_CHANNEL_MESSAGE = 0x03;
-    public final int PROTOCOL_CHANNEL_RESPONSE = 0xF3;
+    public final byte PROTOCOL_REGISTER_MESSAGE = (byte) 0x01;
+    public final byte PROTOCOL_REGISTER_RESPONSE = (byte) 0xF1;
+    public final byte PROTOCOL_ALIVE_MESSAGE = (byte) 0x02;
+    public final byte PROTOCOL_ALIVE_RESPONSE = (byte) 0xF2;
+    public final byte PROTOCOL_CHANNEL_MESSAGE = (byte) 0x03;
+    public final byte PROTOCOL_CHANNEL_RESPONSE = (byte) 0xF3;
 
     public final int PROTOCOL_CHANNEL_SHIFT = 4;
 
@@ -167,9 +299,12 @@ public class DroneRemoteControllerProtocol extends Object
     private int[] mChannelMaxValue;
 
     // buffer for packet
-    private byte[] mRegisterProtocolData;
-    private byte[] mAliveProtocolData;
-    private byte[] mChannelProtocolData;
+    private final static int MAX_PACKET_INFO_COUNT = 32;
+    private PacketInfo[] mPacketInfo;
+    private int mPacketInfo_fi_index = 0;           // first in index
+    private int mPacketInfo_response_index = 0;     // index of wait for reponse
+    private int mPacketInfo_fo_index = 0;           // first out index
+    private int mPacketInfo_free_size = MAX_PACKET_INFO_COUNT;
 
     private byte[] mLastProtocolData;
 
@@ -223,34 +358,28 @@ public class DroneRemoteControllerProtocol extends Object
         {
             return -1;
         }
-        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
+
+        if (mPacketInfo_free_size == 0)
         {
             return -1;
         }
 
-        mWait_for_response = WAIT_FOR_RESPONSE.WAIT_REGISTER_COMMAND_RESPONSE;
-
-        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
-        mResponseCode = 0;
-
-        ClearProtocolVariable();
-        mLastProtocolData[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
-        mLastProtocolData[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
-        mLastProtocolData[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_REGISTER_MESSAGE;
-        mLastProtocolData[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_BASIC_MAX_SIZE;
-
-        mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = 0;
-        mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = 0;
-        mLastProtocolData[PROTOCOL_OPTION_2_HIGH_BYTE_INDEX] = 0;
-        mLastProtocolData[PROTOCOL_OPTION_2_LOW_BYTE_INDEX] = 0;
-
-        byte[] tmpData = new byte[PROTOCOL_BASIC_MAX_SIZE];
-        for (int i = 0; i < PROTOCOL_BASIC_MAX_SIZE; i++)
+        if (mPacketInfo[mPacketInfo_fi_index].m_packet_status == PacketInfo.PACKET_FREE)
         {
-            tmpData[i] = mLastProtocolData[i];
+            mPacketInfo[mPacketInfo_fi_index].MakeBasicPacket(PROTOCOL_HEADER_HIGH_VERSION, PROTOCOL_HEADER_LOW_VERSION,
+                    PROTOCOL_REGISTER_MESSAGE, PacketInfo.BASIC_PACKET_SIZE,
+                    (byte) 0, (byte) 0,
+                    (byte) 0, (byte) 0);
+            mPacketInfo_free_size--;
+            mPacketInfo_fi_index++;
+            mPacketInfo_fi_index %= MAX_PACKET_INFO_COUNT;
+            return 0;
         }
-        uartservice.writeRXCharacteristic(tmpData);
-        return 0;
+        else
+        {
+            Toast.makeText(mParent, "Send_Register_Message() index error", Toast.LENGTH_SHORT).show();
+        }
+        return -1;
     }
 
     // ****************************************************************************************** //
@@ -264,34 +393,28 @@ public class DroneRemoteControllerProtocol extends Object
         {
             return -1;
         }
-        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
+
+        if (mPacketInfo_free_size == 0)
         {
             return -1;
         }
 
-        mWait_for_response = WAIT_FOR_RESPONSE.WAIT_ALIVE_COMMAND_RESPONSE;
-
-        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
-        mResponseCode = 0;
-
-        ClearProtocolVariable();
-        mLastProtocolData[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
-        mLastProtocolData[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
-        mLastProtocolData[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_REGISTER_MESSAGE;
-        mLastProtocolData[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_BASIC_MAX_SIZE;
-
-        mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = (byte) ((alive_count >> 24) & 0xFF);
-        mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = (byte) ((alive_count >> 16) & 0xFF);
-        mLastProtocolData[PROTOCOL_OPTION_2_HIGH_BYTE_INDEX] = (byte) ((alive_count >> 8) & 0xFF);
-        mLastProtocolData[PROTOCOL_OPTION_2_LOW_BYTE_INDEX] = (byte) (alive_count & 0xFF);
-
-        byte[] tmpData = new byte[PROTOCOL_BASIC_MAX_SIZE];
-        for (int i = 0; i < PROTOCOL_BASIC_MAX_SIZE; i++)
+        if (mPacketInfo[mPacketInfo_fi_index].m_packet_status == PacketInfo.PACKET_FREE)
         {
-            tmpData[i] = mLastProtocolData[i];
+            mPacketInfo[mPacketInfo_fi_index].MakeBasicPacket(PROTOCOL_HEADER_HIGH_VERSION, PROTOCOL_HEADER_LOW_VERSION,
+                    PROTOCOL_ALIVE_MESSAGE, PacketInfo.BASIC_PACKET_SIZE,
+                    (byte) ((alive_count >> 24) & 0xFF), (byte) ((alive_count >> 16) & 0xFF),
+                    (byte) ((alive_count >> 8) & 0xFF), (byte) (alive_count & 0xFF));
+            mPacketInfo_free_size--;
+            mPacketInfo_fi_index++;
+            mPacketInfo_fi_index %= MAX_PACKET_INFO_COUNT;
+            return 0;
         }
-        uartservice.writeRXCharacteristic(tmpData);
-        return 0;
+        else
+        {
+            Toast.makeText(mParent, "Send_Register_Message() index error", Toast.LENGTH_SHORT).show();
+        }
+        return -1;
     }
 
     // ****************************************************************************************** //
@@ -307,120 +430,60 @@ public class DroneRemoteControllerProtocol extends Object
             return -1;
         }
 
-//        if (mWait_for_response != WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE)
-//        {
-//            return -1;
-//        }
-
-        mWait_for_response = WAIT_FOR_RESPONSE.WAIT_CHANNEL_COMMAND_RESPONSE;
-
-        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
-        mResponseCode = 0;
-
-        ClearProtocolVariable();
-        mLastProtocolData[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
-        mLastProtocolData[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
-        mLastProtocolData[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_CHANNEL_MESSAGE;
-        mLastProtocolData[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_CHANNEL_MAX_INDEX;
-
-        // Channel : ROLL : 0
-        mLastProtocolData[PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_ROLL << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_ROLL] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_1_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_ROLL] & 0xFF);
-
-        // Channel : PITCH : 1
-        mLastProtocolData[PROTOCOL_CHANEL_2_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_PITCH << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_PITCH] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_2_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_PITCH] & 0xFF);
-
-        // Channel : YAW : 2
-        mLastProtocolData[PROTOCOL_CHANEL_3_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_YAW << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_YAW] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_3_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_YAW] & 0xFF);
-
-        // Channel : THROTTLE : 3
-        mLastProtocolData[PROTOCOL_CHANEL_4_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_THROTTLE << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_4_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] & 0xFF);
-
-        // Channel : GEAR : 4
-        mLastProtocolData[PROTOCOL_CHANEL_5_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_GEAR << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_GEAR] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_5_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_GEAR] & 0xFF);
-
-        // Channel : AUX 1 : 5
-        mLastProtocolData[PROTOCOL_CHANEL_6_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_1 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_1] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_6_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_1] & 0xFF);
-
-        // Channel : AUX 2 : 6
-        mLastProtocolData[PROTOCOL_CHANEL_7_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_2 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_2] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_7_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_2] & 0xFF);
-
-        // Channel : AUX 3 : 7
-        mLastProtocolData[PROTOCOL_CHANEL_8_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_3 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_3] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_8_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_3] & 0xFF);
-
-        // Channel : AUX 4 : 8
-        mLastProtocolData[PROTOCOL_CHANEL_9_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_4 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_4] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_9_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_4] & 0xFF);
-
-        // Channel : AUX 5 : 9
-        mLastProtocolData[PROTOCOL_CHANEL_10_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_5 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_5] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_10_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_5] & 0xFF);
-
-        // Channel : AUX 6 : 10
-        mLastProtocolData[PROTOCOL_CHANEL_11_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_6 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_6] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_11_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_6] & 0xFF);
-
-        // Channel : AUX 7 : 11
-        mLastProtocolData[PROTOCOL_CHANEL_12_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_7 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_7] >> 8) & 0xF));
-        mLastProtocolData[PROTOCOL_CHANEL_12_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_7] & 0xFF);
-
-        int crc = 0;
-        for (int i = PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX; i <= (PROTOCOL_CHANEL_12_LOW_BYTE_INDEX); i++)
+        if (mPacketInfo_free_size == 0)
         {
-            crc += mLastProtocolData[i];
-            crc = (crc & 0xFFFF);
+            return -1;
         }
-        mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = (byte) ((crc >> 8) & 0xFF);
-        mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = (byte) (crc & 0xFF);
 
-        mLastProtocolData[PROTOCOL_OPTION_2_HIGH_BYTE_INDEX] = 0;
-        mLastProtocolData[PROTOCOL_OPTION_2_LOW_BYTE_INDEX] = 0;
-
-        mChannelPacketDataCount = 2;
-        mUartService = uartservice;
-        mHandler.sendEmptyMessageDelayed(0, 1);
-        return 0;
+        if (mPacketInfo[mPacketInfo_fi_index].m_packet_status == PacketInfo.PACKET_FREE)
+        {
+            mPacketInfo[mPacketInfo_fi_index].MakeChannelPacket(PROTOCOL_HEADER_HIGH_VERSION, PROTOCOL_HEADER_LOW_VERSION,
+                    PROTOCOL_CHANNEL_MESSAGE, PacketInfo.CHANNEL_PACKET_SIZE,
+                    (byte) 0, (byte) 0,
+                    (byte) 0, (byte) 0,
+                    (byte) ((SPEKTRUM_CHANNEL_ROLL << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_ROLL] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_ROLL] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_PITCH << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_PITCH] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_PITCH] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_YAW << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_YAW] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_YAW] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_THROTTLE << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_GEAR << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_GEAR] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_GEAR] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_AUX_1 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_1] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_1] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_AUX_2 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_2] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_2] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_AUX_3 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_3] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_3] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_AUX_4 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_4] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_4] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_AUX_5 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_5] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_5] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_AUX_6 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_6] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_6] & 0xFF),
+                    (byte) ((SPEKTRUM_CHANNEL_AUX_7 << PROTOCOL_CHANNEL_SHIFT) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_7] >> 8) & 0xF)),
+                    (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_7] & 0xFF));
+            mPacketInfo_free_size--;
+            mPacketInfo_fi_index++;
+            mPacketInfo_fi_index %= MAX_PACKET_INFO_COUNT;
+            return 0;
+        }
+        else
+        {
+            Toast.makeText(mParent, "Send_Register_Message() index error", Toast.LENGTH_SHORT).show();
+        }
+        return -1;
     }
 
-    private Handler mHandler = new Handler()
+    private Handler m_Send_Packet_Handler = new Handler()
     {
         @Override
         // Handler events that received from UART service
         public void handleMessage(Message msg)
         {
-            byte[] packet_16_byte = new byte[PROTOCOL_CHANNEL_SEND_PACKET_SIZE];
 
-            if (mChannelPacketDataCount == 2)
-            {
-                for (int i = 0; i < PROTOCOL_CHANNEL_SEND_PACKET_SIZE; i++)
-                {
-                    packet_16_byte[i] = mLastProtocolData[i];
-                }
-                mChannelPacketDataCount = 1;
-                mUartService.writeRXCharacteristic(packet_16_byte);
-                mHandler.sendEmptyMessageDelayed(0, 20);
-            }
-            else if (mChannelPacketDataCount == 1)
-            {
-                for (int i = 0; i < PROTOCOL_CHANNEL_SEND_PACKET_SIZE; i++)
-                {
-                    packet_16_byte[i] = mLastProtocolData[i + PROTOCOL_CHANNEL_SEND_PACKET_SIZE];
-                }
-                mChannelPacketDataCount = 0;
-                mUartService.writeRXCharacteristic(packet_16_byte);
-            }
-            else
-            {
-                mUartService = null;
-                mChannelPacketDataCount = 0;
-            }
         }
     };
 
@@ -578,6 +641,13 @@ public class DroneRemoteControllerProtocol extends Object
         mChannelMinValue = new int[SPEKTRUM_MAX_CHANNEL];
         mChannelMaxValue = new int[SPEKTRUM_MAX_CHANNEL];
 
+        mPacketInfo = new PacketInfo[MAX_PACKET_INFO_COUNT];
+        for (int i = 0; i < MAX_PACKET_INFO_COUNT; i++)
+        {
+            mPacketInfo[i].m_paket_length = 0;
+            mPacketInfo[i].m_packet_status = PacketInfo.PACKET_FREE;
+        }
+
         mLastProtocolData = new byte[PROTOCOL_CHANNEL_MAX_INDEX];
         mWait_for_response = WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE;
         mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
@@ -624,6 +694,8 @@ public class DroneRemoteControllerProtocol extends Object
         mChannelMaxValue[SPEKTRUM_CHANNEL_AUX_5] = SPEKTRUM_CHANNEL_AUX_5_MAX_VALUE;
         mChannelMaxValue[SPEKTRUM_CHANNEL_AUX_6] = SPEKTRUM_CHANNEL_AUX_6_MAX_VALUE;
         mChannelMaxValue[SPEKTRUM_CHANNEL_AUX_7] = SPEKTRUM_CHANNEL_AUX_7_MAX_VALUE;
+
+        m_Send_Packet_Handler.sendEmptyMessageDelayed(0, 50);
     }
 
 
