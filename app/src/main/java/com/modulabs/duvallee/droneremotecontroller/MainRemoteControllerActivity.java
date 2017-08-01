@@ -240,10 +240,16 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     // ****************************************************************************************** //
     public UartService getUartService()
     {
+        if (mDroneTransmitterBtService == null)
+        {
+            mDroneRemoteControllerProtocol.init_fifo();
+            return null;
+        }
         if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
         {
             return mDroneTransmitterBtService;
         }
+        mDroneRemoteControllerProtocol.init_fifo();
         return null;
     }
 
@@ -738,6 +744,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         public void onServiceConnected(ComponentName className, IBinder rawBinder)
         {
             mDroneTransmitterBtService = ((UartService.LocalBinder) rawBinder).getService();
+            mDroneRemoteControllerProtocol.init_fifo();
             Log.d(TAG, "onServiceConnected mService = " + mDroneTransmitterBtService);
             if (mDroneTransmitterBtService.initialize() == false)
             {
@@ -874,7 +881,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                     mAliveCount = 0;
                 }
             }
-            mHandler.sendEmptyMessageDelayed(0, 1000);
+            mHandler.sendEmptyMessageDelayed(0, 3000);
         }
     };
 

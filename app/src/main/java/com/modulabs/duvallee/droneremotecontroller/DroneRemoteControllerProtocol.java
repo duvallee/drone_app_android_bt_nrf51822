@@ -23,7 +23,8 @@ public class DroneRemoteControllerProtocol extends Object
 
         public final static int PACKET_FREE = 0;
         public final static int PACKET_READY = 1;
-        public final static int PACKET_WAIT_RESPONSE = 2;
+        public final static int PACKET_HALF_SEND = 2;
+        public final static int PACKET_WAIT_RESPONSE = 3;
 
         public int m_paket_length = 0;
         public int m_packet_status = 0;
@@ -45,6 +46,30 @@ public class DroneRemoteControllerProtocol extends Object
             m_basic_paket_byte = new byte[BASIC_PACKET_SIZE];
             m_low_paket_byte = new byte[PACKET_HALF_SIZE];
             m_high_paket_byte = new byte[PACKET_HALF_SIZE];
+            clean();
+        }
+
+        // ****************************************************************************************** //
+        //
+        // contructor
+        //
+        // ****************************************************************************************** //
+        void clean()
+        {
+            m_paket_length = 0;
+            m_packet_status = PACKET_FREE;
+            m_packet_response_timeout = 0;
+
+            for (int i = 0; i < BASIC_PACKET_SIZE; i++)
+            {
+                m_basic_paket_byte[i] = 0;
+            }
+
+            for (int i = 0; i < PACKET_HALF_SIZE; i++)
+            {
+                m_low_paket_byte[i] = 0;
+                m_high_paket_byte[i] = 0;
+            }
         }
 
         // ****************************************************************************************** //
@@ -93,7 +118,7 @@ public class DroneRemoteControllerProtocol extends Object
                              byte ch_10_hi, byte ch_10_low,
                              byte ch_11_hi, byte ch_11_low)
         {
-            m_paket_length = BASIC_PACKET_SIZE;
+            m_paket_length = CHANNEL_PACKET_SIZE;
             m_packet_status = PACKET_READY;
             m_packet_response_timeout = 0;
 
@@ -132,15 +157,20 @@ public class DroneRemoteControllerProtocol extends Object
             m_high_paket_byte[15] = ch_11_low;
 
 
-//            int crc = 0;
-//            for (int i = PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX; i <= (PROTOCOL_CHANEL_12_LOW_BYTE_INDEX); i++)
-//            {
-//                crc += mLastProtocolData[i];
-//                crc = (crc & 0xFFFF);
-//            }
-//            mLastProtocolData[PROTOCOL_OPTION_1_HIGH_BYTE_INDEX] = (byte) ((crc >> 8) & 0xFF);
-//            mLastProtocolData[PROTOCOL_OPTION_1_LOW_BYTE_INDEX] = (byte) (crc & 0xFF);
+            int crc = 0;
+            for (int i = 8; i < PACKET_HALF_SIZE; i++)
+            {
+                crc += m_low_paket_byte[i];
+                crc = (crc & 0xFFFF);
+            }
 
+            for (int i = 0; i < PACKET_HALF_SIZE; i++)
+            {
+                crc += m_high_paket_byte[i];
+                crc = (crc & 0xFFFF);
+            }
+            m_low_paket_byte[4] = (byte) ((crc >> 8) & 0xFF);
+            m_low_paket_byte[5] = (byte) (crc & 0xFF);
         }
 
     };
@@ -306,46 +336,9 @@ public class DroneRemoteControllerProtocol extends Object
     private int mPacketInfo_fo_index = 0;           // first out index
     private int mPacketInfo_free_size = MAX_PACKET_INFO_COUNT;
 
-    private byte[] mLastProtocolData;
-
-
-    private int mChannelPacketDataCount = 0;
-    private WAIT_FOR_RESPONSE mWait_for_response;
-    private RESULT_RESPONSE mResult_response;
-    private int mResponseCode;
-
-    private static enum WAIT_FOR_RESPONSE
-    {
-        NONE_WAIT_RESPONSE,
-        WAIT_REGISTER_COMMAND_RESPONSE,
-        WAIT_ALIVE_COMMAND_RESPONSE,
-        WAIT_CHANNEL_COMMAND_RESPONSE,
-    };
-
-    private static enum RESULT_RESPONSE
-    {
-        SUCCESS_RESPONSE,
-        FAILED_RESPONSE,
-        TIMEOUT_RESPONSE,
-    };
-
-
-    // ---------------------------------------------------------------------------------------------
-    // members
-
-    // ****************************************************************************************** //
-    //
-    // void ClearProtocolVariable()
-    //
-    // ****************************************************************************************** //
-    public void ClearProtocolVariable()
-    {
-        for (int i = 0; i < PROTOCOL_CHANNEL_MAX_INDEX; i++)
-        {
-            mLastProtocolData[i] = 0x0;
-        }
-    }
-
+//    private final static int RESPONSE_TIME_OUT = 60;      // 3 second
+    private final static int RESPONSE_TIME_OUT = 600;       // 3 second
+    private int m_Timer_duration = 100;                     // 200 ms
 
     // ****************************************************************************************** //
     //
@@ -422,7 +415,6 @@ public class DroneRemoteControllerProtocol extends Object
     // int Send_Channel_Message(UartService uartservice)
     //
     // ****************************************************************************************** //
-    private UartService mUartService = null;
     public int Send_Channel_Message(UartService uartservice)
     {
         if (uartservice == null)
@@ -477,13 +469,60 @@ public class DroneRemoteControllerProtocol extends Object
         return -1;
     }
 
+    // ****************************************************************************************** //
+    //
+    // Handler m_Send_Packet_Handler
+    //
+    // ****************************************************************************************** //
     private Handler m_Send_Packet_Handler = new Handler()
     {
         @Override
         // Handler events that received from UART service
         public void handleMessage(Message msg)
         {
+            UartService uart_service = mParent.getUartService();;
+            if (uart_service == null)
+            {
+                m_Send_Packet_Handler.sendEmptyMessageDelayed(0, m_Timer_duration);
+                return;
+            }
 
+            if (mPacketInfo[mPacketInfo_fo_index].m_packet_status == PacketInfo.PACKET_READY)
+            {
+                if (mPacketInfo[mPacketInfo_fo_index].m_paket_length == PacketInfo.BASIC_PACKET_SIZE)
+                {
+                    // send packet for register & alive
+                    uart_service.writeRXCharacteristic(mPacketInfo[mPacketInfo_fo_index].m_basic_paket_byte);
+                    mPacketInfo[mPacketInfo_fo_index].m_packet_status = PacketInfo.PACKET_WAIT_RESPONSE;
+                }
+                else if (mPacketInfo[mPacketInfo_fo_index].m_paket_length == PacketInfo.CHANNEL_PACKET_SIZE)
+                {
+                    // send packet for low of channel
+                    uart_service.writeRXCharacteristic(mPacketInfo[mPacketInfo_fo_index].m_low_paket_byte);
+                    mPacketInfo[mPacketInfo_fo_index].m_packet_status = PacketInfo.PACKET_HALF_SEND;
+                }
+                else
+                {
+                    Toast.makeText(mParent, "internel error : unknown packet size", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            else if (mPacketInfo[mPacketInfo_fo_index].m_packet_status == PacketInfo.PACKET_HALF_SEND)
+            {
+                // send packet for high of channel
+                uart_service.writeRXCharacteristic(mPacketInfo[mPacketInfo_fo_index].m_high_paket_byte);
+                mPacketInfo[mPacketInfo_fo_index].m_packet_status = PacketInfo.PACKET_WAIT_RESPONSE;
+            }
+            else if (mPacketInfo[mPacketInfo_fo_index].m_packet_status == PacketInfo.PACKET_WAIT_RESPONSE)
+            {
+                mPacketInfo[mPacketInfo_fo_index].m_packet_response_timeout++;
+                if (mPacketInfo[mPacketInfo_fo_index].m_packet_response_timeout > RESPONSE_TIME_OUT)
+                {
+                    Toast.makeText(mParent, "internel error : time-out", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            m_Send_Packet_Handler.sendEmptyMessageDelayed(0, m_Timer_duration);
         }
     };
 
@@ -492,26 +531,35 @@ public class DroneRemoteControllerProtocol extends Object
     // int Response_Message(byte[] response_data)
     //
     // ****************************************************************************************** //
-    private int test_count = 0;
     public int Response_Message(byte[] response_data)
     {
-        mWait_for_response = WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE;
-
-        test_count++;
-        int size = response_data.length;
-        if ((test_count % 30) == 0)
+        if (mPacketInfo[mPacketInfo_fo_index].m_packet_status == PacketInfo.PACKET_WAIT_RESPONSE)
         {
-            int i = 0;
-            String szMsg = new String();
-            for (i = 0; i < size; i++)
-            {
-                szMsg += "[" + response_data[i] + "] ";
-            }
-            Toast.makeText(mParent, szMsg, Toast.LENGTH_SHORT).show();
+            mPacketInfo[mPacketInfo_fo_index].clean();
+            mPacketInfo_free_size++;
+            mPacketInfo_fo_index++;
+            mPacketInfo_fo_index %= MAX_PACKET_INFO_COUNT;
         }
         return 0;
     }
 
+    // ****************************************************************************************** //
+    //
+    // void init_fifo()
+    //
+    // ****************************************************************************************** //
+    public void init_fifo()
+    {
+        for (int i = 0; i < MAX_PACKET_INFO_COUNT; i++)
+        {
+            mPacketInfo[i].clean();
+        }
+
+        mPacketInfo_fi_index = 0;           // first in index
+        mPacketInfo_response_index = 0;     // index of wait for reponse
+        mPacketInfo_fo_index = 0;           // first out index
+        mPacketInfo_free_size = MAX_PACKET_INFO_COUNT;
+    }
 
     // ****************************************************************************************** //
     //
@@ -590,17 +638,6 @@ public class DroneRemoteControllerProtocol extends Object
 
     // ****************************************************************************************** //
     //
-    // byte[] getProtocolData()
-    //
-    // ****************************************************************************************** //
-//    public void responseProtocolData(byte[] data)
-//    {
-//
-//    }
-
-
-    // ****************************************************************************************** //
-    //
     // int getProtocolRegisterMsgLength()
     //
     // ****************************************************************************************** //
@@ -644,14 +681,13 @@ public class DroneRemoteControllerProtocol extends Object
         mPacketInfo = new PacketInfo[MAX_PACKET_INFO_COUNT];
         for (int i = 0; i < MAX_PACKET_INFO_COUNT; i++)
         {
-            mPacketInfo[i].m_paket_length = 0;
-            mPacketInfo[i].m_packet_status = PacketInfo.PACKET_FREE;
+            mPacketInfo[i] = new PacketInfo();
         }
 
-        mLastProtocolData = new byte[PROTOCOL_CHANNEL_MAX_INDEX];
-        mWait_for_response = WAIT_FOR_RESPONSE.NONE_WAIT_RESPONSE;
-        mResult_response = RESULT_RESPONSE.SUCCESS_RESPONSE;
-        mResponseCode = 0;
+        mPacketInfo_fi_index = 0;           // first in index
+        mPacketInfo_response_index = 0;     // index of wait for reponse
+        mPacketInfo_fo_index = 0;           // first out index
+        mPacketInfo_free_size = MAX_PACKET_INFO_COUNT;
 
         // default value
         mChannelValue[SPEKTRUM_CHANNEL_ROLL] = SPEKTRUM_CHANNEL_ROLL_DEFAULT_VALUE;
@@ -695,7 +731,7 @@ public class DroneRemoteControllerProtocol extends Object
         mChannelMaxValue[SPEKTRUM_CHANNEL_AUX_6] = SPEKTRUM_CHANNEL_AUX_6_MAX_VALUE;
         mChannelMaxValue[SPEKTRUM_CHANNEL_AUX_7] = SPEKTRUM_CHANNEL_AUX_7_MAX_VALUE;
 
-        m_Send_Packet_Handler.sendEmptyMessageDelayed(0, 50);
+        m_Send_Packet_Handler.sendEmptyMessageDelayed(0, m_Timer_duration);
     }
 
 
