@@ -347,57 +347,57 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         switch (view_index)
         {
             case VIEW_SPLASHCONNECTSCREEN_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new SplashConnectScreenFragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new SplashConnectScreenFragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_MAIN_MENU_SCREEN_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new MainMenuFragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new MainMenuFragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_JOYSTICKCONTROLLER_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Joystick_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Joystick_Controller_Fragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_THROTTLECONTROLLER_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Throttle_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Throttle_Controller_Fragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_YAWCONTROLLER_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Yaw_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Yaw_Controller_Fragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_PITCHCONTROLLER_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Pitch_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Pitch_Controller_Fragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_ROLLCONTROLLER_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Roll_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Roll_Controller_Fragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_SETTING_PAGE_1_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_1page(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_1page(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_SETTING_PAGE_2_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_2page(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_2page(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_SETTING_PAGE_3_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_3page(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_3page(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
             case VIEW_SETTING_PAGE_4_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_3page(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Setting_Fragment_3page(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 
@@ -406,7 +406,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                 break;
 
             case VIEW_SENSOR_CONTROLLER_INDEX :
-                fragmentTransaction.replace(R.id.fragment_main_frame, new Sensor_Controller_Fragment(this), mFlagmentTag[view_index]);
+                fragmentTransaction.replace(R.id.fragment_main_frame, new Sensor_Controller_Fragment(), mFlagmentTag[view_index]);
                 fragmentTransaction.commit();
                 break;
 

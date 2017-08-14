@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 public class Sensor_Controller_Fragment extends Fragment
 {
-    private MainRemoteControllerActivity mParrent = null;
     private Sensor_Controller_View mSensorControllerView = null;
 
     // ****************************************************************************************** //
@@ -25,10 +24,9 @@ public class Sensor_Controller_Fragment extends Fragment
     //
     //
     // ****************************************************************************************** //
-    public Sensor_Controller_Fragment(MainRemoteControllerActivity p)
+    public Sensor_Controller_Fragment()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 
     // ****************************************************************************************** //
@@ -41,7 +39,13 @@ public class Sensor_Controller_Fragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mSensorControllerView = new Sensor_Controller_View(mParrent);
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
+        mSensorControllerView = new Sensor_Controller_View(main_activity);
     }
 
     // ****************************************************************************************** //
@@ -73,13 +77,20 @@ public class Sensor_Controller_Fragment extends Fragment
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
+
 //        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
 //        UartService uartservice = mParrent.getUartService();
 
         switch (v.getId())
         {
             case R.id.backButton :
-                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                 break;
 
             case R.id.testButton :

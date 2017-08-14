@@ -8,17 +8,13 @@ import android.app.Fragment;
 
 public class Setting_Fragment_4page extends Fragment
 {
-    private MainRemoteControllerActivity mParrent;
-
     // ****************************************************************************************** //
     //
     // constructor
     //
-    //
     // ****************************************************************************************** //
-    public Setting_Fragment_4page(MainRemoteControllerActivity p)
+    public Setting_Fragment_4page()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 }

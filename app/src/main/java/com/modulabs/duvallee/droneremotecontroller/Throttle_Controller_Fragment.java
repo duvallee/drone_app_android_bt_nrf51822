@@ -22,10 +22,6 @@ import android.widget.Toast;
 public class Throttle_Controller_Fragment extends Fragment implements View.OnClickListener
 {
     // --------------------------------------------------------------------------------
-    // main activity
-    private MainRemoteControllerActivity mParrent;
-
-    // --------------------------------------------------------------------------------
     // range seekbar
     private RangeSeekBar<Integer> m_arming_seekbar_test = null;
     private RangeSeekBar<Integer> m_throttle_seekbar_test = null;
@@ -53,10 +49,9 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
     //
     //
     // ****************************************************************************************** //
-    public Throttle_Controller_Fragment(MainRemoteControllerActivity p)
+    public Throttle_Controller_Fragment()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 
     // ****************************************************************************************** //
@@ -104,7 +99,15 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                         return false;
                     }
                     backButton.setImageResource(R.mipmap.unselect_prev);
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                    if (main_activity != null)
+                    {
+                        main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    }
+                    else
+                    {
+                        // error
+                    }
                     return true;
                 }
                 return true;
@@ -118,8 +121,14 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return false;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
                 ImageButton set_default_value_Button = (ImageButton) v.findViewById(R.id.defaultButton);
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
@@ -138,8 +147,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                     if (uartservice == null)
                     {
-                        Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                        mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                        Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                        main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                         return true;
                     }
 
@@ -155,7 +164,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                         droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
                         if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                         {
-                            Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                         }
 
                         m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
@@ -174,8 +183,14 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return false;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
                 ImageButton throttle_down_button = (ImageButton) v.findViewById(R.id.throttle_down_Button);
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
@@ -192,8 +207,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     }
                     if (uartservice == null)
                     {
-                        Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                        mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                        Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                        main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                         return true;
                     }
 
@@ -211,7 +226,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                     if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                     {
-                        Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 }
@@ -229,8 +244,14 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return false;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
                 ImageButton throttle_up_button = (ImageButton) v.findViewById(R.id.throttle_up_Button);
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
@@ -247,8 +268,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     }
                     if (uartservice == null)
                     {
-                        Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                        mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                        Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                        main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                         return true;
                     }
 
@@ -266,7 +287,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                     if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                     {
-                        Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 }
@@ -293,13 +314,19 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 {
                     buttonView.setText("ARM");
                 }
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
 
@@ -316,7 +343,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -325,7 +352,13 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
         // -----------------------------------------------------------------------------------------
         // arming seekbar
-        m_arming_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return null;
+        }
+        m_arming_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
 
         m_arming_seekbar_test.setValueLabel("arm");
 
@@ -334,8 +367,14 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (mFailSafeMode == true)
                 {
@@ -343,15 +382,15 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 }
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
                 droneProtocol.set_gear_value(Value);
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -361,7 +400,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         LinearLayout arming_Layout = (LinearLayout) view.findViewById(R.id.test_arming_linear_layout);
         arming_Layout.addView(m_arming_seekbar_test);
 
-        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+        DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
 
         int gear_min = droneProtocol.get_gear_min_value();
         int gear_value = droneProtocol.get_gear_value();
@@ -374,7 +413,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
         // -----------------------------------------------------------------------------------------
         // throttle
-        m_throttle_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
+        m_throttle_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
         m_throttle_seekbar_test.setValueLabel("throttle");
 //        m_throttle_seekbar_test.setNotifyWhileDragging(true);
 
@@ -383,8 +422,14 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (mFailSafeMode == true)
                 {
@@ -393,8 +438,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
                 m_throttle_value = Value;
@@ -402,7 +447,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -476,13 +521,19 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         // Handler events that received from UART service
         public void handleMessage(Message msg)
         {
-            DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-            UartService uartservice = mParrent.getUartService();
+            MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+            if (main_activity == null)
+            {
+                // error
+                return;
+            }
+            DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+            UartService uartservice = main_activity.getUartService();
 
             if (uartservice == null)
             {
-                Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                 return;
             }
 
@@ -493,7 +544,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
 
                 m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
@@ -507,7 +558,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
                 m_throttle_seekbar_test.setValues(m_throttle_value);
                 mThrottleHandler.sendEmptyMessageDelayed(0, 300);

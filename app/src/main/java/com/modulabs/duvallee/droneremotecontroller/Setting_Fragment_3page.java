@@ -8,17 +8,14 @@ import android.app.Fragment;
 
 public class Setting_Fragment_3page extends Fragment
 {
-    private MainRemoteControllerActivity mParrent;
-
     // ****************************************************************************************** //
     //
     // constructor
     //
     //
     // ****************************************************************************************** //
-    public Setting_Fragment_3page(MainRemoteControllerActivity p)
+    public Setting_Fragment_3page()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 }

@@ -15,8 +15,6 @@ import android.widget.Toast;
 
 public class Roll_Controller_Fragment extends Fragment implements View.OnClickListener
 {
-    private MainRemoteControllerActivity mParrent;
-
     private RangeSeekBar<Integer> m_roll_seekbar_test = null;
     private RangeSeekBar<Integer> m_aux1_seekbar_test = null;
     private RangeSeekBar<Integer> m_aux2_seekbar_test = null;
@@ -28,10 +26,9 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
     //
     //
     // ****************************************************************************************** //
-    public Roll_Controller_Fragment(MainRemoteControllerActivity p)
+    public Roll_Controller_Fragment()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 
     // ****************************************************************************************** //
@@ -66,9 +63,16 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
         ImageButton test_button = (ImageButton) view.findViewById(R.id.testButton);
         test_button.setOnClickListener(this);
 
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return null;
+        }
+
         // -----------------------------------------------------------------------------------------
         // aux1
-        m_aux1_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
+        m_aux1_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
 
         m_aux1_seekbar_test.setValueLabel("aux1");
 
@@ -77,20 +81,26 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
                 droneProtocol.set_aux_1_value(Value);
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -98,7 +108,7 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
         LinearLayout aux1_Layout = (LinearLayout) view.findViewById(R.id.test_aux1_linear_layout);
         aux1_Layout.addView(m_aux1_seekbar_test);
 
-        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+        DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
 
         int aux1_min = droneProtocol.get_aux_1_min_value();
         int aux1_value = droneProtocol.get_aux_1_value();
@@ -110,7 +120,7 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
 
         // -----------------------------------------------------------------------------------------
         // aux2
-        m_aux2_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
+        m_aux2_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
 
         m_aux2_seekbar_test.setValueLabel("aux2");
 
@@ -119,20 +129,26 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
                 droneProtocol.set_aux_2_value(Value);
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -150,7 +166,7 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
 
         // -----------------------------------------------------------------------------------------
         // aux3
-        m_aux3_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
+        m_aux3_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
 
         m_aux3_seekbar_test.setValueLabel("aux3");
 
@@ -159,20 +175,26 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
                 droneProtocol.set_aux_3_value(Value);
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -191,7 +213,7 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
 
         // -----------------------------------------------------------------------------------------
         // roll
-        m_roll_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
+        m_roll_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
 
         m_roll_seekbar_test.setValueLabel("roll");
 
@@ -200,20 +222,26 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
                 droneProtocol.set_roll_value(Value);
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -242,34 +270,40 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
-        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-        UartService uartservice = mParrent.getUartService();
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
+        DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+        UartService uartservice = main_activity.getUartService();
 
         switch (v.getId())
         {
             case R.id.backButton :
-                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                 break;
 
             case R.id.defaultButton :
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
 
                 droneProtocol.set_roll_value(512);
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
 
                 m_roll_seekbar_test.setValues(512);
                 break;
 
             case R.id.testButton :
-                mParrent.switch_view(mParrent.VIEW_SENSOR_CONTROLLER_INDEX);
+                main_activity.switch_view(main_activity.VIEW_SENSOR_CONTROLLER_INDEX);
                 break;
         }
     }

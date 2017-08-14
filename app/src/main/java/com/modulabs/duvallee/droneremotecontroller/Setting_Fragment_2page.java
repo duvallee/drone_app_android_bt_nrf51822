@@ -8,18 +8,14 @@ import android.app.Fragment;
 
 public class Setting_Fragment_2page extends Fragment
 {
-    private MainRemoteControllerActivity mParrent;
-
     // ****************************************************************************************** //
     //
     // constructor
     //
-    //
     // ****************************************************************************************** //
-    public Setting_Fragment_2page(MainRemoteControllerActivity p)
+    public Setting_Fragment_2page()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 
 }

@@ -13,12 +13,11 @@ import android.widget.RelativeLayout;
 
 public class MainMenuFragment extends Fragment
 {
-    private MainRemoteControllerActivity parrent;
     private MainMenuView mMainView = null;
 
     // ****************************************************************************************** //
     //
-    // MainMenuFragment(MainRemoteControllerActivity p)
+    // public MainMenuView getMainView()
     //
     // ****************************************************************************************** //
     public MainMenuView getMainView()
@@ -28,13 +27,12 @@ public class MainMenuFragment extends Fragment
 
     // ****************************************************************************************** //
     //
-    // MainMenuFragment(MainRemoteControllerActivity p)
+    // public MainMenuFragment()
     //
     // ****************************************************************************************** //
-    public MainMenuFragment(MainRemoteControllerActivity p)
+    public MainMenuFragment()
     {
-        // Required empty public constructor }
-        parrent = p;
+        // Required empty public constructor
     }
 
     // ****************************************************************************************** //

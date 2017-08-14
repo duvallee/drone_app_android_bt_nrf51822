@@ -47,10 +47,9 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
     //
     //
     // ****************************************************************************************** //
-    public Setting_Fragment_1page(MainRemoteControllerActivity p)
+    public Setting_Fragment_1page()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 
 
@@ -83,12 +82,18 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
         ImageButton nextbutton = (ImageButton) view.findViewById(R.id.NextButton);
         nextbutton.setOnClickListener(this);
 
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return null;
+        }
         // -----------------------------------------------------------------------------------------
-        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+        DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
 
         // -----------------------------------------------------------------------------------------
         // value of throttle
-        m_throttle_seekbar_value = new RangeSeekBar<Integer>(mParrent, true, true);
+        m_throttle_seekbar_value = new RangeSeekBar<Integer>(main_activity, true, true);
         m_throttle_seekbar_value.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
         {
             @Override
@@ -113,7 +118,7 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
 
         // -----------------------------------------------------------------------------------------
         // range of throttle
-        m_throttle_seekbar_min_max = new RangeSeekBar<Integer>(mParrent, false, true);
+        m_throttle_seekbar_min_max = new RangeSeekBar<Integer>(main_activity, false, true);
         m_throttle_seekbar_min_max.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
         {
             @Override
@@ -149,7 +154,7 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
 
         // -----------------------------------------------------------------------------------------
         // value of yaw
-        m_yaw_seekbar_value =  new RangeSeekBar<Integer>(mParrent, true, true);
+        m_yaw_seekbar_value =  new RangeSeekBar<Integer>(main_activity, true, true);
         m_yaw_seekbar_value.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
         {
             @Override
@@ -174,7 +179,7 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
         });
 
         // range of yaw
-        m_yaw_seekbar_min_max =  new RangeSeekBar<Integer>(mParrent, false, true);
+        m_yaw_seekbar_min_max =  new RangeSeekBar<Integer>(main_activity, false, true);
         m_yaw_seekbar_min_max.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
         {
             @Override
@@ -212,7 +217,7 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
 
         // -----------------------------------------------------------------------------------------
         // value of pitch
-        m_pitch_seekbar_value =  new RangeSeekBar<Integer>(mParrent, true, true);
+        m_pitch_seekbar_value =  new RangeSeekBar<Integer>(main_activity, true, true);
         m_pitch_seekbar_value.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
         {
             @Override
@@ -238,7 +243,7 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
         });
 
         // range of pitch
-        m_pitch_seekbar_min_max = new RangeSeekBar<Integer>(mParrent, false, true);
+        m_pitch_seekbar_min_max = new RangeSeekBar<Integer>(main_activity, false, true);
         m_pitch_seekbar_min_max.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
         {
             @Override
@@ -285,13 +290,19 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
         switch (v.getId())
         {
             case R.id.backButton :
-                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                 break;
             case R.id.NextButton :
-                Toast.makeText(mParrent, "button click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(main_activity, "button click", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

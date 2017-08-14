@@ -12,12 +12,16 @@ import android.view.ViewGroup;
 
 public class SplashConnectScreenFragment extends Fragment
 {
-    private MainRemoteControllerActivity parrent;
     private SplashConnectScreenView splash_view;
 
-    public SplashConnectScreenFragment(MainRemoteControllerActivity p)
+    // ****************************************************************************************** //
+    //
+    // public SplashConnectScreenFragment()
+    //
+    //
+    // ****************************************************************************************** //
+    public SplashConnectScreenFragment()
     {
-        parrent = p;
     }
 
     @Override
@@ -25,7 +29,15 @@ public class SplashConnectScreenFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         // use parrent instead of getActivity
-        splash_view = new SplashConnectScreenView(parrent);
+
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
+
+        splash_view = new SplashConnectScreenView(main_activity);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

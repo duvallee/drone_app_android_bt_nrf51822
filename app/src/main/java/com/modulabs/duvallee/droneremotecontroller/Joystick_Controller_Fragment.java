@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 
 public class Joystick_Controller_Fragment extends Fragment implements View.OnClickListener
 {
-    private MainRemoteControllerActivity mParrent;
     private Joystick_Controller_View mJoystickControllerView = null;
 
 
@@ -28,19 +27,7 @@ public class Joystick_Controller_Fragment extends Fragment implements View.OnCli
     // ****************************************************************************************** //
     public Joystick_Controller_Fragment()
     {
-        // Required empty public constructor }
-    }
-
-    // ****************************************************************************************** //
-    //
-    // constructor
-    //
-    //
-    // ****************************************************************************************** //
-    public Joystick_Controller_Fragment(MainRemoteControllerActivity p)
-    {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 
     // ****************************************************************************************** //
@@ -53,7 +40,13 @@ public class Joystick_Controller_Fragment extends Fragment implements View.OnCli
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mJoystickControllerView = new Joystick_Controller_View(mParrent);
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
+        mJoystickControllerView = new Joystick_Controller_View(main_activity);
     }
 
     // ****************************************************************************************** //
@@ -78,10 +71,16 @@ public class Joystick_Controller_Fragment extends Fragment implements View.OnCli
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
         switch (v.getId())
         {
             case R.id.backButton :
-                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                 break;
         }
     }

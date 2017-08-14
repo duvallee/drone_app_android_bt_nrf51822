@@ -25,10 +25,9 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
     //
     //
     // ****************************************************************************************** //
-    public Yaw_Controller_Fragment(MainRemoteControllerActivity p)
+    public Yaw_Controller_Fragment()
     {
-        // Required empty public constructor }
-        mParrent = p;
+        // Required empty public constructor
     }
 
     // ****************************************************************************************** //
@@ -60,10 +59,16 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
         ImageButton default_button = (ImageButton) view.findViewById(R.id.defaultButton);
         default_button.setOnClickListener(this);
 
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return null;
+        }
+
         // -----------------------------------------------------------------------------------------
         // yaw
-        m_yaw_seekbar_test = new RangeSeekBar<Integer>(mParrent, true, true);
-
+        m_yaw_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
         m_yaw_seekbar_test.setValueLabel("yaw");
 
         m_yaw_seekbar_test.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
@@ -71,20 +76,26 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
             {
-                DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-                UartService uartservice = mParrent.getUartService();
+                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+                if (main_activity == null)
+                {
+                    // error
+                    return;
+                }
+                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+                UartService uartservice = main_activity.getUartService();
 
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
                 droneProtocol.set_yaw_value(Value);
 
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -92,7 +103,7 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
         LinearLayout yaw_Layout = (LinearLayout) view.findViewById(R.id.test_yaw_linear_layout);
         yaw_Layout.addView(m_yaw_seekbar_test);
 
-        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
+        DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
 
         int yaw_min = droneProtocol.get_yaw_min_value();
         int yaw_value = droneProtocol.get_yaw_value();
@@ -116,26 +127,32 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
     // ****************************************************************************************** //
     public void onClick(final View v)
     {
-        DroneRemoteControllerProtocol droneProtocol = mParrent.getProtocol();
-        UartService uartservice = mParrent.getUartService();
+        MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
+        if (main_activity == null)
+        {
+            // error
+            return;
+        }
+        DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
+        UartService uartservice = main_activity.getUartService();
 
         switch (v.getId())
         {
             case R.id.backButton :
-                mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                 break;
             case R.id.defaultButton :
                 if (uartservice == null)
                 {
-                    Toast.makeText(mParrent, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    mParrent.switch_view(mParrent.VIEW_MAIN_MENU_SCREEN_INDEX);
+                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
+                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
 
                 droneProtocol.set_yaw_value(512);
                 if (droneProtocol.Send_Channel_Message(uartservice) < 0)
                 {
-                    Toast.makeText(mParrent, "Busy state !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
 
                 m_yaw_seekbar_test.setValues(512);
