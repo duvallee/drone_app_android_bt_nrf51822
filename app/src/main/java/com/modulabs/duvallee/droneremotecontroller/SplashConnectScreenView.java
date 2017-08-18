@@ -130,12 +130,13 @@ public class SplashConnectScreenView extends View
 
         if (mMainActivity.autoConnect_drone_controller() < 0)
         {
-            mSpashScreenRetentionCount = 5;
+            mWaitProgressDialog.hide();
+            mSpashScreenRetentionCount = 1;
             mTryConnectBTTransmitter = 0;
         }
         else
         {
-            mSpashScreenRetentionCount = 10;
+            mSpashScreenRetentionCount = 5;
             mTryConnectBTTransmitter = 1;
         }
         mSplashHandler.sendEmptyMessageDelayed(0, 1000);
