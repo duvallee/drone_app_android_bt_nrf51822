@@ -306,9 +306,9 @@ public class DroneRemoteControllerProtocol extends Object
     public final int SPEKTRUM_CHANNEL_AUX_7_DEFAULT_VALUE = SPEKTRUM_CHANNEL_CENTER_VALUE;
 
     // ---------------------------------------------------------------------------------------------
-    // header (Version) ver 1.0.01 (high byte : 4 bit (Major) + 4 bit (Minor), low byte : sub version)
-    public final byte PROTOCOL_HEADER_HIGH_VERSION = (byte) 0x10;
-    public final byte PROTOCOL_HEADER_LOW_VERSION = (byte) 0x01;
+    // Packet Sync Byte
+    public final byte PROTOCOL_HEADER_HIGH_SYNC = (byte) 0xD7;
+    public final byte PROTOCOL_HEADER_LOW_SYNC = (byte) 0x5E;
 
     // Command (byte : 4 bit (phone -> transmitter : 0x0?, transmitter -> phone : 0xF?)
     public final byte PROTOCOL_REGISTER_MESSAGE = (byte) 0x01;
@@ -359,7 +359,7 @@ public class DroneRemoteControllerProtocol extends Object
 
         if (mPacketInfo[mPacketInfo_fi_index].m_packet_status == PacketInfo.PACKET_FREE)
         {
-            mPacketInfo[mPacketInfo_fi_index].MakeBasicPacket(PROTOCOL_HEADER_HIGH_VERSION, PROTOCOL_HEADER_LOW_VERSION,
+            mPacketInfo[mPacketInfo_fi_index].MakeBasicPacket(PROTOCOL_HEADER_HIGH_SYNC, PROTOCOL_HEADER_LOW_SYNC,
                     PROTOCOL_REGISTER_MESSAGE, PacketInfo.BASIC_PACKET_SIZE,
                     (byte) 0, (byte) 0,
                     (byte) 0, (byte) 0);
@@ -394,7 +394,7 @@ public class DroneRemoteControllerProtocol extends Object
 
         if (mPacketInfo[mPacketInfo_fi_index].m_packet_status == PacketInfo.PACKET_FREE)
         {
-            mPacketInfo[mPacketInfo_fi_index].MakeBasicPacket(PROTOCOL_HEADER_HIGH_VERSION, PROTOCOL_HEADER_LOW_VERSION,
+            mPacketInfo[mPacketInfo_fi_index].MakeBasicPacket(PROTOCOL_HEADER_HIGH_SYNC, PROTOCOL_HEADER_LOW_SYNC,
                     PROTOCOL_ALIVE_MESSAGE, PacketInfo.BASIC_PACKET_SIZE,
                     (byte) ((alive_count >> 24) & 0xFF), (byte) ((alive_count >> 16) & 0xFF),
                     (byte) ((alive_count >> 8) & 0xFF), (byte) (alive_count & 0xFF));
@@ -429,7 +429,7 @@ public class DroneRemoteControllerProtocol extends Object
 
         if (mPacketInfo[mPacketInfo_fi_index].m_packet_status == PacketInfo.PACKET_FREE)
         {
-            mPacketInfo[mPacketInfo_fi_index].MakeChannelPacket(PROTOCOL_HEADER_HIGH_VERSION, PROTOCOL_HEADER_LOW_VERSION,
+            mPacketInfo[mPacketInfo_fi_index].MakeChannelPacket(PROTOCOL_HEADER_HIGH_SYNC, PROTOCOL_HEADER_LOW_SYNC,
                     PROTOCOL_CHANNEL_MESSAGE, PacketInfo.CHANNEL_PACKET_SIZE,
                     (byte) 0, (byte) 0,
                     (byte) 0, (byte) 0,
@@ -560,81 +560,6 @@ public class DroneRemoteControllerProtocol extends Object
         mPacketInfo_fo_index = 0;           // first out index
         mPacketInfo_free_size = MAX_PACKET_INFO_COUNT;
     }
-
-    // ****************************************************************************************** //
-    //
-    // byte[] getProtocolData()
-    //
-    // ****************************************************************************************** //
-//    public byte[] getProtocolData()
-//    {
-//        byte[] protocol_data = new byte[PROTOCOL_MAX_INDEX];
-//
-//        protocol_data[PROTOCOL_HEADER_1_HIGH_BYTE_INDEX] = PROTOCOL_HEADER_HIGH_VERSION;
-//        protocol_data[PROTOCOL_HEADER_1_LOW_BYTE_INDEX] = PROTOCOL_HEADER_LOW_VERSION;
-//
-//        protocol_data[PROTOCOL_HEADER_COMMAND_INDEX] = PROTOCOL_SEND_TO_TRANSMITTER;
-//        protocol_data[PROTOCOL_HEADER_SIZE_INDEX] = PROTOCOL_MAX_INDEX;
-//
-//        // Channel : ROLL : 0
-//        protocol_data[PROTOCOL_CHANEL_1_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_ROLL << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_ROLL] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_1_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_ROLL] & 0xFF);
-//
-//        // Channel : PITCH : 1
-//        protocol_data[PROTOCOL_CHANEL_2_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_PITCH << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_PITCH] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_2_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_PITCH] & 0xFF);
-//
-//        // Channel : YAW : 2
-//        protocol_data[PROTOCOL_CHANEL_3_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_YAW << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_YAW] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_3_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_YAW] & 0xFF);
-//
-//        // Channel : THROTTLE : 3
-//        protocol_data[PROTOCOL_CHANEL_4_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_THROTTLE << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_4_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] & 0xFF);
-//
-//        // Channel : GEAR : 4
-//        protocol_data[PROTOCOL_CHANEL_5_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_GEAR << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_GEAR] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_5_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_GEAR] & 0xFF);
-//
-//        // Channel : AUX 1 : 5
-//        protocol_data[PROTOCOL_CHANEL_6_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_1 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_1] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_6_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_1] & 0xFF);
-//
-//        // Channel : AUX 2 : 6
-//        protocol_data[PROTOCOL_CHANEL_7_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_2 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_2] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_7_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_2] & 0xFF);
-//
-//        // Channel : AUX 3 : 7
-//        protocol_data[PROTOCOL_CHANEL_8_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_3 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_3] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_8_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_3] & 0xFF);
-//
-//        // Channel : AUX 4 : 8
-//        protocol_data[PROTOCOL_CHANEL_9_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_4 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_4] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_9_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_4] & 0xFF);
-//
-//        // Channel : AUX 5 : 9
-//        protocol_data[PROTOCOL_CHANEL_10_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_5 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_5] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_10_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_5] & 0xFF);
-//
-//        // Channel : AUX 6 : 10
-//        protocol_data[PROTOCOL_CHANEL_11_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_6 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_6] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_11_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_6] & 0xFF);
-//
-//        // Channel : AUX 7 : 11
-//        protocol_data[PROTOCOL_CHANEL_12_HIGH_BYTE_INDEX] = (byte) ((SPEKTRUM_CHANNEL_AUX_7 << 4) | ((mChannelValue[SPEKTRUM_CHANNEL_AUX_7] >> 8) & 0xF));
-//        protocol_data[PROTOCOL_CHANEL_12_LOW_BYTE_INDEX] = (byte) (mChannelValue[SPEKTRUM_CHANNEL_AUX_7] & 0xFF);
-//
-//        int crc = 0;
-//        for (int i = 0; i < (PROTOCOL_CHANEL_12_LOW_BYTE_INDEX + 1); i++)
-//        {
-//            crc += protocol_data[i];
-//            crc = (crc & 0xFFFF);
-//        }
-//        protocol_data[PROTOCOL_CRC_HIGH_BYTE_INDEX] = (byte) ((crc >> 8) & 0xFF);
-//        protocol_data[PROTOCOL_CRC_LOW_BYTE_INDEX] = (byte) (crc & 0xFF);
-//
-//        return protocol_data;
-//    }
 
     // ****************************************************************************************** //
     //
