@@ -100,15 +100,6 @@
     </LinearLayout>
     <!-- adc2 control -->
 
-    <!-- adc3 control -->
-    <LinearLayout
-        android:id="@+id/test_aux3_linear_layout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-
-    </LinearLayout>
-    <!-- adc3 control -->
-
     <!-- roll control -->
     <LinearLayout
         android:id="@+id/test_roll_linear_layout"

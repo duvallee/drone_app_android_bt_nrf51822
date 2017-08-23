@@ -18,7 +18,6 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
     private RangeSeekBar<Integer> m_roll_seekbar_test = null;
     private RangeSeekBar<Integer> m_aux1_seekbar_test = null;
     private RangeSeekBar<Integer> m_aux2_seekbar_test = null;
-    private RangeSeekBar<Integer> m_aux3_seekbar_test = null;
 
     // ****************************************************************************************** //
     //
@@ -162,52 +161,6 @@ public class Roll_Controller_Fragment extends Fragment implements View.OnClickLi
 
         m_aux2_seekbar_test.setRangeValues(aux2_min, aux2_max);
         m_aux2_seekbar_test.setValues(aux2_value);
-        // -----------------------------------------------------------------------------------------
-
-        // -----------------------------------------------------------------------------------------
-        // aux3
-        m_aux3_seekbar_test = new RangeSeekBar<Integer>(main_activity, true, true);
-
-        m_aux3_seekbar_test.setValueLabel("aux3");
-
-        m_aux3_seekbar_test.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
-        {
-            @Override
-            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue, Integer Value)
-            {
-                MainRemoteControllerActivity main_activity = (MainRemoteControllerActivity) getActivity();
-                if (main_activity == null)
-                {
-                    // error
-                    return;
-                }
-                DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
-                UartService uartservice = main_activity.getUartService();
-
-                if (uartservice == null)
-                {
-                    Toast.makeText(main_activity, "Not connected the Drone BT Transmitter", Toast.LENGTH_LONG).show();
-                    main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
-                    return;
-                }
-                droneProtocol.set_aux_3_value(Value);
-
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
-                {
-                    Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        // layout of aux3
-        LinearLayout aux3_Layout = (LinearLayout) view.findViewById(R.id.test_aux3_linear_layout);
-        aux3_Layout.addView(m_aux3_seekbar_test);
-
-        int aux3_min = droneProtocol.get_aux_3_min_value();
-        int aux3_value = droneProtocol.get_aux_3_value();
-        int aux3_max = droneProtocol.get_aux_3_max_value();
-
-        m_aux3_seekbar_test.setRangeValues(aux3_min, aux3_max);
-        m_aux3_seekbar_test.setValues(aux3_value);
         // -----------------------------------------------------------------------------------------
 
 

@@ -136,7 +136,7 @@ public class SplashConnectScreenView extends View
         }
         else
         {
-            mSpashScreenRetentionCount = 5;
+            mSpashScreenRetentionCount = 1;
             mTryConnectBTTransmitter = 1;
         }
         mSplashHandler.sendEmptyMessageDelayed(0, 1000);
