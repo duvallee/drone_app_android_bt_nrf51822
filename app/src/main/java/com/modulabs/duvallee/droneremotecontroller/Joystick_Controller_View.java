@@ -22,62 +22,62 @@ public class Joystick_Controller_View extends View implements Runnable
 
    // ---------------------------------------------------------------------------------------------
    // for Main Activity
-   private MainRemoteControllerActivity mActivity;
+   private MainRemoteControllerActivity m_MainActivity;
 
    // ---------------------------------------------------------------------------------------------
    private final double RAD = 57.2957795;
    public final static long DEFAULT_LOOP_INTERVAL = 3000; // 1000 ms
-   public final static long TOUCH_PROCESS_LOOP_INTERVAL = 500; // 100 ms
-
-   public final static int FRONT = 3;
-   public final static int FRONT_RIGHT = 4;
-   public final static int RIGHT = 5;
-   public final static int RIGHT_BOTTOM = 6;
-   public final static int BOTTOM = 7;
-   public final static int BOTTOM_LEFT = 8;
-   public final static int LEFT = 1;
-   public final static int LEFT_FRONT = 2;
+   public final static long TOUCH_PROCESS_LOOP_INTERVAL = 100; // 100 ms
 
    public final static double BUTTONRADIUS = 0.16;
    public final static double JOYSTICKRADIUS = 0.70;
 
+   public final static int ARMMING_OFF_VALUE = 0;
+   public final static int ARMMING_ON_VALUE = 512;
+
    // ---------------------------------------------------------------------------------------------
    // Left Joystick (top-bottom : throttle, left-right : rudder(yaw, dron rotation))
-   private int left_xPosition = 0; // Touch x position
-   private int left_yPosition = 0; // Touch y position
-   private Rect left_button_rect = new Rect();
-   private int left_button_select = -1;
+   private double m_left_joystick_centerX = 0; // Center view x position
+   private double m_left_joystick_centerY = 0; // Center view y position
 
-   private double left_centerX = 0; // Center view x position
-   private double left_centerY = 0; // Center view y position
+   private int m_touch_left_joystick_positionX = 0; // Touch x position
+   private int m_touch_left_joystick_positionY = 0; // Touch y position
 
-   private int last_left_Angle = 0;
-   private int last_left_Power = 0;
-
-   private int left_vertial_value = 0;
-   private int left_horizontal_value = 0;
-
-   private int arming_enable = 0;
+   private Rect m_left_joystick_button_rect = new Rect();
+   private int m_left_joystick_button_select = -1;
 
    // ---------------------------------------------------------------------------------------------
    // right Joystick (top-bottom : elevator(pitch, drone forward or backward), left-right : aileron(roll, left & right move))
-   private int right_xPosition = 0; // Touch x position
-   private int right_yPosition = 0; // Touch y position
-   private Rect right_button_rect = new Rect();
-   private int right_button_select = -1;
+   private double m_right_joystick_centerX = 0; // Center view x position
+   private double m_right_joystick_centerY = 0; // Center view y position
 
-   private double right_centerX = 0; // Center view x position
-   private double right_centerY = 0; // Center view y position
+   private int m_touch_right_joystick_positionX = 0; // Touch x position
+   private int m_touch_right_joystick_positionY = 0; // Touch y position
 
-   private int last_right_Angle = 0;
-   private int last_right_Power = 0;
-
-   private int right_vertial_value = 0;
-   private int right_horizontal_value = 0;
+   private Rect m_right_joystick_button_rect = new Rect();
+   private int m_right_joystick_button_select = -1;
 
    // ---------------------------------------------------------------------------------------------
-   private int joystickRadius;
-   private int buttonRadius;
+   // armming
+   private double m_arming_button_offX = 0;
+   private double m_arming_button_offY = 0;
+
+   private double m_arming_button_onX = 0;
+   private double m_arming_button_onY = 0;
+
+   private int m_touch_arming_button_positionX = 0; // Touch x position
+   private int m_touch_arming_button_positionY = 0; // Touch y position
+
+   private int m_arming_button_select = -1;
+
+   private Rect m_arming_button_rect = new Rect();
+   private boolean m_arming_button_enable = false;
+   private boolean m_arming_button_fake_enable = false;
+
+   // ---------------------------------------------------------------------------------------------
+   private int m_joystick_Radius;
+   private int m_joystick_button_Radius;
+   private int m_arming_button_Radius;
 
    // ---------------------------------------------------------------------------------------------
    // exit button
@@ -87,11 +87,14 @@ public class Joystick_Controller_View extends View implements Runnable
    private int exit_button_select = -1;
 
    // ---------------------------------------------------------------------------------------------
-   private Paint mainCircle;
-   private Paint secondaryCircle;
-   private Paint button;
-   private Paint horizontalLine;
-   private Paint verticalLine;
+   private Paint m_paint_joystick_mainCircle;
+   private Paint m_paint_joystick_secondaryCircle;
+   private Paint m_paint_joystick_button;
+   private Paint m_paint_joystick_horizontalLine;
+   private Paint m_paint_joystick_verticalLine;
+
+   private Paint m_paint_arming_on_button;
+   private Paint m_paint_arming_off_button;
 
    // ---------------------------------------------------------------------------------------------
    private OnJoystickMoveListener onJoystickMoveListener; // Listener
@@ -107,7 +110,7 @@ public class Joystick_Controller_View extends View implements Runnable
    public Joystick_Controller_View(Context context)
    {
       super(context);
-      mActivity = (MainRemoteControllerActivity) context;
+      m_MainActivity = (MainRemoteControllerActivity) context;
       Init_Joystick_Controller_View();
    }
 
@@ -119,7 +122,7 @@ public class Joystick_Controller_View extends View implements Runnable
    public Joystick_Controller_View(Context context, AttributeSet attrs)
    {
       super(context, attrs);
-      mActivity = (MainRemoteControllerActivity) context;
+      m_MainActivity = (MainRemoteControllerActivity) context;
       Init_Joystick_Controller_View();
    }
 
@@ -131,7 +134,7 @@ public class Joystick_Controller_View extends View implements Runnable
    public Joystick_Controller_View(Context context, AttributeSet attrs, int defStyle)
    {
       super(context, attrs, defStyle);
-      mActivity = (MainRemoteControllerActivity) context;
+      m_MainActivity = (MainRemoteControllerActivity) context;
       Init_Joystick_Controller_View();
    }
 
@@ -142,25 +145,34 @@ public class Joystick_Controller_View extends View implements Runnable
    // ****************************************************************************************** //
    protected void Init_Joystick_Controller_View()
    {
-      mainCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
-      mainCircle.setColor(Color.LTGRAY);
-      mainCircle.setStyle(Paint.Style.FILL_AND_STROKE);
+      m_paint_joystick_mainCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
+      m_paint_joystick_mainCircle.setColor(Color.rgb(197, 197, 197));
+      m_paint_joystick_mainCircle.setStyle(Paint.Style.FILL_AND_STROKE);
 
-      secondaryCircle = new Paint();
-      secondaryCircle.setColor(Color.GREEN);
-      secondaryCircle.setStyle(Paint.Style.STROKE);
+      m_paint_joystick_secondaryCircle = new Paint();
+      m_paint_joystick_secondaryCircle.setColor(Color.rgb(97, 97, 97));
+      m_paint_joystick_secondaryCircle.setStyle(Paint.Style.STROKE);
 
-      verticalLine = new Paint();
-      verticalLine.setStrokeWidth(5);
-      verticalLine.setColor(Color.RED);
+      m_paint_joystick_verticalLine = new Paint();
+      m_paint_joystick_verticalLine.setStrokeWidth(5);
+      m_paint_joystick_verticalLine.setColor(Color.rgb(10, 10, 10));
 
-      horizontalLine = new Paint();
-      horizontalLine.setStrokeWidth(2);
-      horizontalLine.setColor(Color.BLACK);
+      m_paint_joystick_horizontalLine = new Paint();
+      m_paint_joystick_horizontalLine.setStrokeWidth(2);
+      m_paint_joystick_horizontalLine.setColor(Color.rgb(10, 10, 10));
 
-      button = new Paint(Paint.ANTI_ALIAS_FLAG);
-      button.setColor(Color.MAGENTA);
-      button.setStyle(Paint.Style.FILL);
+      m_paint_joystick_button = new Paint(Paint.ANTI_ALIAS_FLAG);
+      m_paint_joystick_button.setColor(Color.rgb(10, 10, 10));
+      m_paint_joystick_button.setStyle(Paint.Style.FILL);
+
+      m_paint_arming_on_button = new Paint(Paint.ANTI_ALIAS_FLAG);
+      m_paint_arming_on_button.setColor(Color.rgb(0, 0, 230));
+      m_paint_arming_on_button.setStyle(Paint.Style.FILL);
+
+      m_paint_arming_off_button = new Paint(Paint.ANTI_ALIAS_FLAG);
+      m_paint_arming_off_button.setColor(Color.rgb(230, 0, 0));
+      m_paint_arming_off_button.setStyle(Paint.Style.FILL);
+
    }
 
    // ****************************************************************************************** //
@@ -218,8 +230,6 @@ public class Joystick_Controller_View extends View implements Runnable
       int measureHeight = MeasuredHeight(hHeasureSpec);
       int measureWidth = MeasuredWidth(wMeasureSpec);
 
-//        int d = Math.min(measure(wMeasureSpec), measure(hHeasureSpec));
-
       // -----------------------------------------------------------------------------------------
       // set background image
       setBackgroundResource(R.mipmap.joystick_controller_main);
@@ -228,33 +238,6 @@ public class Joystick_Controller_View extends View implements Runnable
       // must be called setMeasuredDimension
       // if not called, occurred run-time error !!!
       setMeasuredDimension(measureWidth, measureHeight);
-   }
-
-   // ****************************************************************************************** //
-   //
-   // void onMeasure(int wMeasureSpec, int hHeasureSpec)
-   //
-   // ****************************************************************************************** //
-   private int measure(int measureSpec)
-   {
-      int result = 0;
-
-      // Decode the measurement specifications.
-      int specMode = MeasureSpec.getMode(measureSpec);
-      int specSize = MeasureSpec.getSize(measureSpec);
-
-      if (specMode == MeasureSpec.UNSPECIFIED)
-      {
-         // Return a default size of 200 if no bounds are specified.
-         result = 200;
-      }
-      else
-      {
-         // As you want to fill the available space
-         // always return the full available bounds.
-         result = specSize;
-      }
-      return result;
    }
 
    // ****************************************************************************************** //
@@ -277,24 +260,87 @@ public class Joystick_Controller_View extends View implements Runnable
    {
       super.onSizeChanged(xNew, yNew, xOld, yOld);
 
-      double width_unit = (getWidth()) / 4;
-      double height_unit = (getHeight()) / 2;
+      double screen_width = getWidth();
+      double screen_height = getHeight();
 
-      int d = Math.min(xNew, yNew);
-      buttonRadius = (int) (d / 2 * BUTTONRADIUS);
-      joystickRadius = (int) (d / 2 * JOYSTICKRADIUS);
+      int height_top = 0;
+      int height_center = 0;
+      int height_bottom = 0;
+
+      int left_joystick_center = 0;
+      int arming_center = 0;
+      int right_joystick_center = 0;
+
+      // ----------------------------------------------------------------------------------------
+      int base_dimension = Math.min((int) (screen_width / 2), (int) screen_height);
+      m_joystick_button_Radius = (int) (base_dimension / 2 * BUTTONRADIUS);
+      m_joystick_Radius = (int) (base_dimension / 2 * JOYSTICKRADIUS);
+
+      height_center = (int) ((screen_height - m_joystick_Radius) - (screen_height * 0.1));
+      height_bottom = (int) (height_center + m_joystick_Radius);
+      height_top = (int) (height_center - m_joystick_Radius);
+
+      left_joystick_center = (int) ((screen_width / 4) * 1);
+      arming_center = (int) ((screen_width / 4) * 2);
+      right_joystick_center = (int) ((screen_width / 4) * 3);
+
+      m_arming_button_Radius = (int) ((right_joystick_center - left_joystick_center - (m_joystick_Radius * 2)) * BUTTONRADIUS);
+      m_arming_button_Radius = m_joystick_button_Radius;
+
+      // ----------------------------------------------------------------------------------------
+      m_left_joystick_centerX = left_joystick_center;
+      m_left_joystick_centerY = height_center;
+
+      m_right_joystick_centerX = right_joystick_center;
+      m_right_joystick_centerY = height_center;
 
       // before measure, get the center of view
-      left_xPosition = (int) width_unit;
-      left_yPosition = (int) (height_unit + joystickRadius - buttonRadius);
+      m_touch_left_joystick_positionX = (int) m_left_joystick_centerX;
+      m_touch_left_joystick_positionY = (int) (height_bottom - m_joystick_button_Radius);
 
-      right_xPosition = (int) width_unit * 3;
-      right_yPosition = (int) getHeight() / 2;
+      m_touch_right_joystick_positionX = (int) m_right_joystick_centerX;
+      m_touch_right_joystick_positionY = (int) m_right_joystick_centerY;
+
+      // ----------------------------------------------------------------------------------------
+      m_arming_button_offX = arming_center;
+      m_arming_button_offY = (height_bottom - m_arming_button_Radius);
+
+      m_arming_button_onX = m_arming_button_offX;
+      m_arming_button_onY = (height_top - m_arming_button_Radius);
+
+      m_touch_arming_button_positionX = (int) m_arming_button_offX;
+      m_touch_arming_button_positionY = (int) m_arming_button_offY;
+
+      m_arming_button_rect.left = (int) (m_touch_arming_button_positionX - m_arming_button_Radius);
+      m_arming_button_rect.right = (int) (m_touch_arming_button_positionX + m_arming_button_Radius);
+
+      m_arming_button_rect.top = (int) (m_touch_arming_button_positionY - m_arming_button_Radius);
+      m_arming_button_rect.bottom = (int) (m_touch_arming_button_positionY + m_arming_button_Radius);
+
+      // ----------------------------------------------------------------------------------------
+      exit_centerX = (screen_width * 0.08);
+      exit_centerY = (screen_width * 0.08);
+
+      exit_button_rect.left = (int) (exit_centerX - m_joystick_button_Radius);
+      exit_button_rect.right = (int) (exit_centerX + m_joystick_button_Radius);
+      exit_button_rect.top = (int) (exit_centerY - m_joystick_button_Radius);
+      exit_button_rect.bottom = (int) (exit_centerY + m_joystick_button_Radius);
+
+      // ----------------------------------------------------------------------------------------
+      left_joystick_move(m_touch_left_joystick_positionX, m_touch_left_joystick_positionY, false);
+      right_joystick_move(m_touch_right_joystick_positionX, m_touch_right_joystick_positionY, false);
 
       if (thread != null && (thread.isAlive() == false))
       {
          thread = new Thread(this);
          thread.start();
+      }
+
+      // ----------------------------------------------------------------------------------------
+      DroneRemoteControllerProtocol droneProtocol = m_MainActivity.getProtocol();
+      if (droneProtocol != null)
+      {
+         droneProtocol.reset_all();
       }
    }
 
@@ -309,62 +355,46 @@ public class Joystick_Controller_View extends View implements Runnable
    @Override
    public void onDraw(Canvas canvas)
    {
-      double width_unit = (getWidth()) / 4;
-      double height_unit = (getHeight()) / 2;
-
-      left_centerX = width_unit;
-      left_centerY = height_unit;
-
-      right_centerX = width_unit * 3;
-      right_centerY = height_unit;
-
-      width_unit = (getWidth()) / 12;
-      height_unit = (getHeight()) / 16;
-
-      exit_centerX = width_unit;
-      exit_centerY = height_unit * 2;
-
       // left
       // painting the main circle
-      canvas.drawCircle((int) left_centerX, (int) left_centerY, joystickRadius, mainCircle);
+      canvas.drawCircle((int) m_left_joystick_centerX, (int) m_left_joystick_centerY, m_joystick_Radius, m_paint_joystick_mainCircle);
       // painting the secondary circle
-      canvas.drawCircle((int) left_centerX, (int) left_centerY, joystickRadius / 2, secondaryCircle);
+      canvas.drawCircle((int) m_left_joystick_centerX, (int) m_left_joystick_centerY, m_joystick_Radius / 2, m_paint_joystick_secondaryCircle);
       // paint lines
-      canvas.drawLine((float) left_centerX, (float) left_centerY, (float) left_centerX, (float) (left_centerY - joystickRadius), verticalLine);
-      canvas.drawLine((float) (left_centerX - joystickRadius), (float) left_centerY, (float) (left_centerX + joystickRadius), (float) left_centerY, horizontalLine);
-      canvas.drawLine((float) left_centerX, (float) (left_centerY + joystickRadius), (float) left_centerX, (float) left_centerY, horizontalLine);
+      canvas.drawLine((float) m_left_joystick_centerX, (float) m_left_joystick_centerY, (float) m_left_joystick_centerX, (float) (m_left_joystick_centerY - m_joystick_Radius), m_paint_joystick_verticalLine);
+      canvas.drawLine((float) (m_left_joystick_centerX - m_joystick_Radius), (float) m_left_joystick_centerY, (float) (m_left_joystick_centerX + m_joystick_Radius), (float) m_left_joystick_centerY, m_paint_joystick_horizontalLine);
+      canvas.drawLine((float) m_left_joystick_centerX, (float) (m_left_joystick_centerY + m_joystick_Radius), (float) m_left_joystick_centerX, (float) m_left_joystick_centerY, m_paint_joystick_horizontalLine);
 
       // right
       // painting the main circle
-      canvas.drawCircle((int) right_centerX, (int) right_centerY, joystickRadius, mainCircle);
+      canvas.drawCircle((int) m_right_joystick_centerX, (int) m_right_joystick_centerY, m_joystick_Radius, m_paint_joystick_mainCircle);
       // painting the secondary circle
-      canvas.drawCircle((int) right_centerX, (int) right_centerY, joystickRadius / 2, secondaryCircle);
+      canvas.drawCircle((int) m_right_joystick_centerX, (int) m_right_joystick_centerY, m_joystick_Radius / 2, m_paint_joystick_secondaryCircle);
       // paint lines
-      canvas.drawLine((float) right_centerX, (float) right_centerY, (float) right_centerX, (float) (right_centerY - joystickRadius), verticalLine);
-      canvas.drawLine((float) (right_centerX - joystickRadius), (float) right_centerY, (float) (right_centerX + joystickRadius), (float) right_centerY, horizontalLine);
-      canvas.drawLine((float) right_centerX, (float) (right_centerY + joystickRadius), (float) right_centerX, (float) right_centerY, horizontalLine);
+      canvas.drawLine((float) m_right_joystick_centerX, (float) m_right_joystick_centerY, (float) m_right_joystick_centerX, (float) (m_right_joystick_centerY - m_joystick_Radius), m_paint_joystick_verticalLine);
+      canvas.drawLine((float) (m_right_joystick_centerX - m_joystick_Radius), (float) m_right_joystick_centerY, (float) (m_right_joystick_centerX + m_joystick_Radius), (float) m_right_joystick_centerY, m_paint_joystick_horizontalLine);
+      canvas.drawLine((float) m_right_joystick_centerX, (float) (m_right_joystick_centerY + m_joystick_Radius), (float) m_right_joystick_centerX, (float) m_right_joystick_centerY, m_paint_joystick_horizontalLine);
 
       // painting the move button
       // left
-      canvas.drawCircle(left_xPosition, left_yPosition, buttonRadius, button);
-      left_button_rect.left = (int) (left_xPosition - height_unit);
-      left_button_rect.right = (int) (left_xPosition + height_unit);
-      left_button_rect.top = (int) (left_yPosition - height_unit);
-      left_button_rect.bottom = (int) (left_yPosition + height_unit);
+      canvas.drawCircle(m_touch_left_joystick_positionX, m_touch_left_joystick_positionY, m_joystick_button_Radius, m_paint_joystick_button);
 
       // right
-      canvas.drawCircle(right_xPosition, right_yPosition, buttonRadius, button);
-      right_button_rect.left = (int) (right_xPosition - height_unit);
-      right_button_rect.right = (int) (right_xPosition + height_unit);
-      right_button_rect.top = (int) (right_yPosition - height_unit);
-      right_button_rect.bottom = (int) (right_yPosition + height_unit);
+      canvas.drawCircle(m_touch_right_joystick_positionX, m_touch_right_joystick_positionY, m_joystick_button_Radius, m_paint_joystick_button);
 
       // exit
-      canvas.drawCircle((int) exit_centerX, (int) exit_centerY, (float) height_unit, button);
-      exit_button_rect.left = (int) (exit_centerX - height_unit);
-      exit_button_rect.right = (int) (exit_centerX + height_unit);
-      exit_button_rect.top = (int) (exit_centerY - height_unit);
-      exit_button_rect.bottom = (int) (exit_centerY + height_unit);
+      canvas.drawCircle((int) exit_centerX, (int) exit_centerY, m_joystick_button_Radius, m_paint_joystick_button);
+
+      // armming
+      if (m_arming_button_enable == true || m_arming_button_fake_enable == true)
+      {
+         canvas.drawCircle((int) m_touch_arming_button_positionX, (int) m_touch_arming_button_positionY, m_arming_button_Radius, m_paint_arming_on_button);
+      }
+      else
+      {
+         canvas.drawCircle((int) m_touch_arming_button_positionX, (int) m_touch_arming_button_positionY, m_arming_button_Radius, m_paint_arming_off_button);
+      }
+
    }
 
     // ****************************************************************************************** //
@@ -406,40 +436,115 @@ public class Joystick_Controller_View extends View implements Runnable
    // public void left_joystick_move(int x, int y)
    //
    // ****************************************************************************************** //
-   public void left_joystick_move(int x, int y)
+   public void left_joystick_move(int x, int y, boolean screen_update)
    {
-      double abs = Math.sqrt((x - left_centerX) * (x - left_centerX) + (y - left_centerY) * (y - left_centerY));
-      if (abs > (joystickRadius - buttonRadius))
+      double abs = Math.sqrt((x - m_left_joystick_centerX) * (x - m_left_joystick_centerX) + (y - m_left_joystick_centerY) * (y - m_left_joystick_centerY));
+      if (abs > (m_joystick_Radius - m_joystick_button_Radius))
       {
-         left_xPosition = (int) ((((x - left_centerX) * (joystickRadius - buttonRadius)) / abs) + left_centerX);
-         left_yPosition = (int) ((((y - left_centerY) * (joystickRadius - buttonRadius)) / abs) + left_centerY);
+         m_touch_left_joystick_positionX = (int) ((((x - m_left_joystick_centerX) * (m_joystick_Radius - m_joystick_button_Radius)) / abs) + m_left_joystick_centerX);
+         m_touch_left_joystick_positionY = (int) ((((y - m_left_joystick_centerY) * (m_joystick_Radius - m_joystick_button_Radius)) / abs) + m_left_joystick_centerY);
       }
       else
       {
-         left_xPosition = x;
-         left_yPosition = y;
+         m_touch_left_joystick_positionX = x;
+         m_touch_left_joystick_positionY = y;
       }
-      invalidate();
+      m_left_joystick_button_rect.left = (int) (m_touch_left_joystick_positionX - m_joystick_button_Radius);
+      m_left_joystick_button_rect.right = (int) (m_touch_left_joystick_positionX + m_joystick_button_Radius);
+      m_left_joystick_button_rect.top = (int) (m_touch_left_joystick_positionY - m_joystick_button_Radius);
+      m_left_joystick_button_rect.bottom = (int) (m_touch_left_joystick_positionY + m_joystick_button_Radius);
+      if (screen_update == true)
+      {
+         invalidate();
+      }
    }
+
 
    // ****************************************************************************************** //
    //
    // public void right_joystick_move(int x, int y)
    //
    // ****************************************************************************************** //
-   public void right_joystick_move(int x, int y)
+   public void right_joystick_move(int x, int y, boolean screen_update)
    {
-      double abs = Math.sqrt((x - right_centerX) * (x - right_centerX) + (y - right_centerY) * (y - right_centerY));
-      if (abs > (joystickRadius - buttonRadius))
+      double abs = Math.sqrt((x - m_right_joystick_centerX) * (x - m_right_joystick_centerX) + (y - m_right_joystick_centerY) * (y - m_right_joystick_centerY));
+      if (abs > (m_joystick_Radius - m_joystick_button_Radius))
       {
-         right_xPosition = (int) ((x - right_centerX) * (joystickRadius - buttonRadius) / abs + right_centerX);
-         right_yPosition = (int) ((y - right_centerY) * (joystickRadius - buttonRadius) / abs + right_centerY);
+         m_touch_right_joystick_positionX = (int) ((x - m_right_joystick_centerX) * (m_joystick_Radius - m_joystick_button_Radius) / abs + m_right_joystick_centerX);
+         m_touch_right_joystick_positionY = (int) ((y - m_right_joystick_centerY) * (m_joystick_Radius - m_joystick_button_Radius) / abs + m_right_joystick_centerY);
       }
       else
       {
-         right_xPosition = x;
-         right_yPosition = y;
+         m_touch_right_joystick_positionX = x;
+         m_touch_right_joystick_positionY = y;
       }
+      m_right_joystick_button_rect.left = (int) (m_touch_right_joystick_positionX - m_joystick_button_Radius);
+      m_right_joystick_button_rect.right = (int) (m_touch_right_joystick_positionX + m_joystick_button_Radius);
+      m_right_joystick_button_rect.top = (int) (m_touch_right_joystick_positionY - m_joystick_button_Radius);
+      m_right_joystick_button_rect.bottom = (int) (m_touch_right_joystick_positionY + m_joystick_button_Radius);
+      if (screen_update == true)
+      {
+         invalidate();
+      }
+   }
+
+   // ****************************************************************************************** //
+   //
+   // public void armming_button_move(int x, int y, boolean screen_update)
+   //
+   // ****************************************************************************************** //
+   public void armming_button_move(int x, int y, boolean screen_update)
+   {
+      if (y < (int) (m_arming_button_onY + m_arming_button_Radius))
+      {
+         m_arming_button_fake_enable = true;
+      }
+      else
+      {
+         m_arming_button_fake_enable = false;
+      }
+
+      if (y > m_arming_button_offY)
+      {
+         m_touch_arming_button_positionY = (int) m_arming_button_offY;
+      }
+      else if (y < m_arming_button_onY)
+      {
+         m_touch_arming_button_positionY = (int) m_arming_button_onY;
+      }
+      else
+      {
+         m_touch_arming_button_positionY = y;
+      }
+      m_arming_button_rect.top = (int) (m_touch_arming_button_positionY - m_arming_button_Radius);
+      m_arming_button_rect.bottom = (int) (m_touch_arming_button_positionY + m_arming_button_Radius);
+
+      if (screen_update == true)
+      {
+         invalidate();
+      }
+   }
+
+   // ****************************************************************************************** //
+   //
+   // public void armming_button_finish(int x, int y, boolean screen_update)
+   //
+   // ****************************************************************************************** //
+   public void armming_button_finish(int x, int y)
+   {
+      m_arming_button_fake_enable = false;
+      if (y < (int) (m_arming_button_onY + m_arming_button_Radius))
+      {
+         m_touch_arming_button_positionY = (int) m_arming_button_onY;
+         m_arming_button_enable = true;
+      }
+      else
+      {
+         m_touch_arming_button_positionY = (int) m_arming_button_offY;
+         m_arming_button_enable = false;
+      }      
+      m_arming_button_rect.top = (int) (m_touch_arming_button_positionY - m_arming_button_Radius);
+      m_arming_button_rect.bottom = (int) (m_touch_arming_button_positionY + m_arming_button_Radius);
       invalidate();
    }
 
@@ -450,7 +555,12 @@ public class Joystick_Controller_View extends View implements Runnable
    // ****************************************************************************************** //
    public void left_joystick_default()
    {
-      left_xPosition = (int) left_centerX;
+      m_touch_left_joystick_positionX = (int) m_left_joystick_centerX;
+
+      m_left_joystick_button_rect.left = (int) (m_touch_left_joystick_positionX - m_joystick_button_Radius);
+      m_left_joystick_button_rect.right = (int) (m_touch_left_joystick_positionX + m_joystick_button_Radius);
+      m_left_joystick_button_rect.top = (int) (m_touch_left_joystick_positionY - m_joystick_button_Radius);
+      m_left_joystick_button_rect.bottom = (int) (m_touch_left_joystick_positionY + m_joystick_button_Radius);
       invalidate();
    }
 
@@ -461,8 +571,13 @@ public class Joystick_Controller_View extends View implements Runnable
    // ****************************************************************************************** //
    public void right_joystick_default()
    {
-      right_xPosition = (int) right_centerX;
-      right_yPosition = (int) right_centerY;
+      m_touch_right_joystick_positionX = (int) m_right_joystick_centerX;
+      m_touch_right_joystick_positionY = (int) m_right_joystick_centerY;
+
+      m_right_joystick_button_rect.left = (int) (m_touch_right_joystick_positionX - m_joystick_button_Radius);
+      m_right_joystick_button_rect.right = (int) (m_touch_right_joystick_positionX + m_joystick_button_Radius);
+      m_right_joystick_button_rect.top = (int) (m_touch_right_joystick_positionY - m_joystick_button_Radius);
+      m_right_joystick_button_rect.bottom = (int) (m_touch_right_joystick_positionY + m_joystick_button_Radius);
       invalidate();
    }
 
@@ -491,69 +606,97 @@ public class Joystick_Controller_View extends View implements Runnable
                exit_button_select = 0;
             }
 
-            if (left_button_rect.contains(x, y) == true)
+            if (m_left_joystick_button_rect.contains(x, y) == true)
             {
-               left_button_select = 0;
+               m_left_joystick_button_select = 0;
             }
 
-            if (right_button_rect.contains(x, y) == true)
+            if (m_right_joystick_button_rect.contains(x, y) == true)
             {
-               right_button_select = 0;
+               m_right_joystick_button_select = 0;
+            }
+
+            if (m_arming_button_rect.contains(x, y) == true)
+            {
+               m_arming_button_select = 0;
             }
 
             loopInterval = TOUCH_PROCESS_LOOP_INTERVAL;
-            Log.d(TAG, "ACTION_DOWN (" + exit_button_select + ", " + left_button_select + ", " + right_button_select + ")");
+//            Log.d(TAG, "ACTION_DOWN (" + exit_button_select + ", " + m_left_joystick_button_select + ", " + m_right_joystick_button_select + ")");
             break;
 
          case MotionEvent.ACTION_MOVE:
             // touch move
-            if (left_button_select > -1)
+            if (m_left_joystick_button_select > -1)
             {
-               pointerIndex = event.findPointerIndex(left_button_select);
+               pointerIndex = event.findPointerIndex(m_left_joystick_button_select);
                x = (int) (event.getX(pointerIndex));
                y = (int) (event.getY(pointerIndex));
-               left_joystick_move(x, y);
+               left_joystick_move(x, y, true);
             }
 
-            if (right_button_select > -1)
+            if (m_right_joystick_button_select > -1)
             {
-               pointerIndex = event.findPointerIndex(right_button_select);
+               pointerIndex = event.findPointerIndex(m_right_joystick_button_select);
                x = (int) (event.getX(pointerIndex));
                y = (int) (event.getY(pointerIndex));
-               right_joystick_move(x, y);
+               right_joystick_move(x, y, true);
+            }
+
+            if (m_arming_button_select > -1)
+            {
+               pointerIndex = event.findPointerIndex(m_arming_button_select);
+               x = (int) (event.getX(pointerIndex));
+               y = (int) (event.getY(pointerIndex));
+               armming_button_move(x, y, true);
             }
             break;
 
          case MotionEvent.ACTION_UP:
             // touch up by single
-            Log.d(TAG, "ACTION_UP ");
+//            Log.d(TAG, "ACTION_UP ");
             if (exit_button_select != -1)
             {
                if (thread != null && thread.isAlive())
                {
                   thread.interrupt();
                }
-               mActivity.switch_view(mActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
+               DroneRemoteControllerProtocol droneProtocol = m_MainActivity.getProtocol();
+               if (droneProtocol != null)
+               {
+                  droneProtocol.reset_all();
+               }
+               m_MainActivity.switch_view(m_MainActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
                exit_button_select = -1;
             }
 
-            if (left_button_select > -1)
+            if (m_left_joystick_button_select > -1)
             {
-               pointerIndex = event.findPointerIndex(left_button_select);
+               pointerIndex = event.findPointerIndex(m_left_joystick_button_select);
                x = (int) (event.getX(pointerIndex));
                y = (int) (event.getY(pointerIndex));
-               left_button_select = -1;
+               m_left_joystick_button_select = -1;
                left_joystick_default();
             }
 
-            if (right_button_select > -1)
+            if (m_right_joystick_button_select > -1)
             {
-               pointerIndex = event.findPointerIndex(right_button_select);
+               pointerIndex = event.findPointerIndex(m_right_joystick_button_select);
                x = (int) (event.getX(pointerIndex));
                y = (int) (event.getY(pointerIndex));
-               right_button_select = -1;
+               m_right_joystick_button_select = -1;
                right_joystick_default();
             }
+
+            if (m_arming_button_select > -1)
+            {
+               pointerIndex = event.findPointerIndex(m_arming_button_select);
+               x = (int) (event.getX(pointerIndex));
+               y = (int) (event.getY(pointerIndex));
+               m_arming_button_select = -1;
+               armming_button_finish(x, y);
+            }
+
             loopInterval = DEFAULT_LOOP_INTERVAL;
             break;
 
@@ -564,57 +707,83 @@ public class Joystick_Controller_View extends View implements Runnable
             x = (int) (event.getX(pointerIndex));
             y = (int) (event.getY(pointerIndex));
 
-            if (left_button_rect.contains(x, y) == true)
+            if (m_left_joystick_button_rect.contains(x, y) == true)
             {
-               left_button_select = 0;
+               m_left_joystick_button_select = 0;
             }
-            if (right_button_rect.contains(x, y) == true)
+            if (m_right_joystick_button_rect.contains(x, y) == true)
             {
-               right_button_select = 0;
+               m_right_joystick_button_select = 0;
+            }
+            if (m_arming_button_rect.contains(x, y) == true)
+            {
+               m_arming_button_select = 0;
             }
 
             pointerIndex = event.getPointerId(1);
             x = (int) (event.getX(pointerIndex));
             y = (int) (event.getY(pointerIndex));
-            if (left_button_rect.contains(x, y) == true)
+            if (m_left_joystick_button_rect.contains(x, y) == true)
             {
-               left_button_select = 1;
+               m_left_joystick_button_select = 1;
             }
 
-            if (right_button_rect.contains(x, y) == true)
+            if (m_right_joystick_button_rect.contains(x, y) == true)
             {
-               right_button_select = 1;
+               m_right_joystick_button_select = 1;
+            }
+            if (m_arming_button_rect.contains(x, y) == true)
+            {
+               m_arming_button_select = 1;
             }
 
-            Log.d(TAG, "ACTION_POINTER_DOWN (" + exit_button_select + ", " + left_button_select + ", " + right_button_select + ")");
+//            Log.d(TAG, "ACTION_POINTER_DOWN (" + exit_button_select + ", " + m_left_joystick_button_select + ", " + m_right_joystick_button_select + ")");
             break;
 
          case MotionEvent.ACTION_POINTER_UP:
+            pointerIndex = event.getPointerId(event.getActionIndex());
+//            Log.d(TAG, "ACTION_POINTER_UP : " + pointerIndex);
+
             // touch up by multi
-            if (exit_button_select != -1)
+            if (exit_button_select != -1 && pointerIndex == exit_button_select)
             {
-               mActivity.switch_view(mActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
+               DroneRemoteControllerProtocol droneProtocol = m_MainActivity.getProtocol();
+               if (droneProtocol != null)
+               {
+                  droneProtocol.reset_all();
+               }
+               m_MainActivity.switch_view(m_MainActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
                exit_button_select = -1;
             }
 
-            if (left_button_select > -1)
+            if (m_left_joystick_button_select > -1 && pointerIndex == m_left_joystick_button_select)
             {
-               pointerIndex = event.findPointerIndex(left_button_select);
+               pointerIndex = event.findPointerIndex(m_left_joystick_button_select);
                x = (int) (event.getX(pointerIndex));
                y = (int) (event.getY(pointerIndex));
-               left_button_select = -1;
+               m_left_joystick_button_select = -1;
                left_joystick_default();
             }
 
-            if (right_button_select > -1)
+            if (m_right_joystick_button_select > -1 && pointerIndex == m_right_joystick_button_select)
             {
-               pointerIndex = event.findPointerIndex(right_button_select);
+               pointerIndex = event.findPointerIndex(m_right_joystick_button_select);
                x = (int) (event.getX(pointerIndex));
                y = (int) (event.getY(pointerIndex));
-               right_button_select = -1;
+               m_right_joystick_button_select = -1;
                right_joystick_default();
             }
-            //                Log.d(TAG, "ACTION_POINTER_UP : " + pointerIndex);
+
+            if (m_arming_button_select > -1 && pointerIndex == m_arming_button_select)
+            {
+               pointerIndex = event.findPointerIndex(m_arming_button_select);
+               x = (int) (event.getX(pointerIndex));
+               y = (int) (event.getY(pointerIndex));
+               m_arming_button_select = -1;
+               armming_button_finish(x, y);
+            }
+
+//            Log.d(TAG, "ACTION_POINTER_UP : " + pointerIndex);
             break;
 
          default :
@@ -642,39 +811,64 @@ public class Joystick_Controller_View extends View implements Runnable
    // ****************************************************************************************** //
    public int valuechanged()
    {
-      int range = (int) (((joystickRadius * 2) - buttonRadius) * 0.866);
+      int x_start = (int) (m_left_joystick_centerX - m_joystick_Radius + m_joystick_button_Radius);
+      int x_end = (int) (m_left_joystick_centerX + m_joystick_Radius - m_joystick_button_Radius);
+      int x_width = x_end - x_start;
+      int x_pos = (m_touch_left_joystick_positionX - x_start);
 
-      Log.d(TAG, "radius (" + joystickRadius + ", " + buttonRadius + ")");
-      Log.d(TAG, "center (" + left_centerX + ", " + left_centerY + ")");
-      Log.d(TAG, "position (" + left_xPosition + ", " + left_yPosition + ")");
+      int y_start = (int) (m_left_joystick_centerY - m_joystick_Radius + m_joystick_button_Radius);
+      int y_end = (int) (m_left_joystick_centerY + m_joystick_Radius - m_joystick_button_Radius);
+      int y_width = y_end - y_start;
+      int y_pos = y_width - (m_touch_left_joystick_positionY - y_start);
 
-//      int vertial_value = 0;
-//      int horizontal_value = 0;
-//
-//      if ((int) left_centerY > left_yPosition)
-//      {
-//         Log.d(TAG, "value : " + (left_centerY - left_yPosition));
-//         Log.d(TAG, "total : " + ((joystickRadius - buttonRadius) * 2));
-//         vertial_value = (((int) left_centerY - left_yPosition) * 100) / ((joystickRadius - buttonRadius) * 2);
-//      }
-//      else
-//      {
-//         Log.d(TAG, "value : " + ((int) left_yPosition - left_centerY + joystickRadius));
-//         Log.d(TAG, "total : " + ((joystickRadius - buttonRadius) * 2));
-//         vertial_value = ((left_yPosition - (int) left_centerY + joystickRadius) * 100) / ((joystickRadius - buttonRadius) * 2);
-//      }
-//
-//      if ((int) left_centerX > left_xPosition)
-//      {
-//         horizontal_value = (((int) left_centerX - left_xPosition) * 100) / ((joystickRadius - buttonRadius) * 2);
-//      }
-//      else
-//      {
-//         horizontal_value = ((left_xPosition + (int) left_centerX + joystickRadius) * 100) / ((joystickRadius - buttonRadius) * 2);
-//      }
-//
-//      Log.d(TAG, "throttle : " + vertial_value);
-//      Log.d(TAG, "yaw      : " + horizontal_value);
+      double yaw_value = (((double) x_pos / (double) x_width) * 100.0) * 10.24;
+      double throttle_value = (((double) y_pos / (double) y_width) * 100.0) * 10.24;
+
+      x_start = (int) (m_right_joystick_centerX - m_joystick_Radius + m_joystick_button_Radius);
+      x_end = (int) (m_right_joystick_centerX + m_joystick_Radius - m_joystick_button_Radius);
+      x_width = x_end - x_start;
+      x_pos = (m_touch_right_joystick_positionX - x_start);
+
+      y_start = (int) (m_right_joystick_centerY - m_joystick_Radius + m_joystick_button_Radius);
+      y_end = (int) (m_right_joystick_centerY + m_joystick_Radius - m_joystick_button_Radius);
+      y_width = y_end - y_start;
+      y_pos = y_width - (m_touch_right_joystick_positionY - y_start);
+
+      double roll_value = (((double) x_pos / (double) x_width) * 100.0) * 10.24;
+      double pitch_value = (((double) y_pos / (double) y_width) * 100.0) * 10.24;
+
+      Log.d(TAG, "armming = " + m_arming_button_enable + ", t = " + (int) throttle_value + ", y = " + (int) yaw_value +
+                  ", r = " + (int) roll_value + ", p = " + (int) pitch_value);
+
+      DroneRemoteControllerProtocol droneProtocol = m_MainActivity.getProtocol();
+      UartService uartservice = m_MainActivity.getUartService();
+
+      if (uartservice == null)
+      {
+         droneProtocol.reset_all();
+         Toast.makeText(m_MainActivity, "Not connected the Drone BT Transmitter", Toast.LENGTH_SHORT).show();
+         m_MainActivity.switch_view(m_MainActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
+         return 0;
+      }
+
+      if (m_arming_button_enable == true)
+      {
+         droneProtocol.set_gear_value(ARMMING_ON_VALUE);
+      }
+      else
+      {
+         droneProtocol.set_gear_value(ARMMING_OFF_VALUE);
+      }
+
+      droneProtocol.set_throttle_value((int) throttle_value);
+      droneProtocol.set_yaw_value((int) yaw_value);
+      droneProtocol.set_roll_value((int) roll_value);
+      droneProtocol.set_pitch_value((int) pitch_value);
+
+      if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+      {
+         Toast.makeText(m_MainActivity, "Busy state !!!", Toast.LENGTH_SHORT).show();
+      }
       return 0;
    };
 

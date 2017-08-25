@@ -659,6 +659,27 @@ public class DroneRemoteControllerProtocol extends Object
         m_Send_Packet_Handler.sendEmptyMessageDelayed(0, m_Timer_duration);
     }
 
+   // ****************************************************************************************** //
+   //
+   // void reset_all()
+   //
+   // ****************************************************************************************** //
+   public void reset_all()
+   {
+      // default value
+      mChannelValue[SPEKTRUM_CHANNEL_ROLL] = SPEKTRUM_CHANNEL_ROLL_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_PITCH] = SPEKTRUM_CHANNEL_PITCH_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_YAW] = SPEKTRUM_CHANNEL_YAW_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_THROTTLE] = SPEKTRUM_CHANNEL_THROTTLE_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_GEAR] = SPEKTRUM_CHANNEL_GEAR_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_AUX_1] = SPEKTRUM_CHANNEL_AUX_1_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_AUX_2] = SPEKTRUM_CHANNEL_AUX_2_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_AUX_3] = SPEKTRUM_CHANNEL_AUX_3_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_AUX_4] = SPEKTRUM_CHANNEL_AUX_4_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_AUX_5] = SPEKTRUM_CHANNEL_AUX_5_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_AUX_6] = SPEKTRUM_CHANNEL_AUX_6_DEFAULT_VALUE;
+      mChannelValue[SPEKTRUM_CHANNEL_AUX_7] = SPEKTRUM_CHANNEL_AUX_7_DEFAULT_VALUE;
+   }
 
     // ****************************************************************************************** //
     //
