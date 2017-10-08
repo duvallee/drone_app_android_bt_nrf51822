@@ -26,8 +26,8 @@ public class Joystick_Controller_View extends View implements Runnable
 
    // ---------------------------------------------------------------------------------------------
    private final double RAD = 57.2957795;
-   public final static long DEFAULT_LOOP_INTERVAL = 3000; // 1000 ms
-   public final static long TOUCH_PROCESS_LOOP_INTERVAL = 100; // 100 ms
+   public final static long DEFAULT_LOOP_INTERVAL = 1000; // 1000 ms
+   public final static long TOUCH_PROCESS_LOOP_INTERVAL = 80; // 100 ms
 
    public final static double BUTTONRADIUS = 0.16;
    public final static double JOYSTICKRADIUS = 0.70;

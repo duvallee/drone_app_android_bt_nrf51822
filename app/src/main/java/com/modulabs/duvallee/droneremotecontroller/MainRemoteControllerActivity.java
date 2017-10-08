@@ -43,6 +43,8 @@ import android.widget.Toast;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -572,28 +574,38 @@ public class MainRemoteControllerActivity extends AppCompatActivity
             Log.d(TAG, "allowed for android.permission.BLUETOOTH_ADMIN");
         }
 
+        // -----------------------------------------------------------------------------------------
+        // android.Manifest.permission.ACCESS_FINE_LOCATION
         permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck== PackageManager.PERMISSION_DENIED)
+        if (permissionCheck == PackageManager.PERMISSION_DENIED)
         {
             Log.d(TAG, "denied for android.permission.ACCESS_FINE_LOCATION");
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
             {
-                // Display UI and wait for user interaction
+                Toast.makeText(this, "앱을 다시 설치하거나 어플리케이션 관리자에서 앱에 위치 권한을 수동으로 주어야 합니다.", Toast.LENGTH_LONG).show();
+                finish();
+                return;
             }
             else
             {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_LOCATION);
+
+                while (true)
+                {
+                    if (checkPermissionLocation() == true)
+                    {
+                        break;
+                    }
+                }
             }
         }
 
         permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
-        if (permissionCheck== PackageManager.PERMISSION_DENIED)
+        if (permissionCheck == PackageManager.PERMISSION_DENIED)
         {
             Log.d(TAG, "denied for android.permission.ACCESS_COARSE_LOCATION");
             Toast.makeText(this, "Denied COARSE_LOCATION permission for the Bluetooth", Toast.LENGTH_LONG).show();
-            finish();
-            return;
         }
         else
         {
@@ -648,6 +660,24 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         // ----------------------------------------------------------------------------------------
         // start handler after 3 second per 1 second ...
         mHandler.sendEmptyMessageDelayed(0, 3000);
+    }
+
+    // ****************************************************************************************** //
+    //
+    // checkPermissionLocation()
+    //
+    // ****************************************************************************************** //
+    private boolean checkPermissionLocation()
+    {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     // ****************************************************************************************** //
@@ -789,6 +819,13 @@ public class MainRemoteControllerActivity extends AppCompatActivity
             case REQUEST_PERMISSION_ENABLE_BT :
                 break;
             case REQUEST_PERMISSION_LOCATION :
+                if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                }
+                else
+                {
+                    Toast.makeText(this, "Permission denied for Location", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
 
