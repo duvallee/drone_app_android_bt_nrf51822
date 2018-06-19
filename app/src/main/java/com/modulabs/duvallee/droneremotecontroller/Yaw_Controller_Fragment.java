@@ -93,7 +93,7 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
                 }
                 droneProtocol.set_yaw_value(Value);
 
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
@@ -105,9 +105,9 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
 
         DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
 
-        int yaw_min = droneProtocol.get_yaw_min_value();
-        int yaw_value = droneProtocol.get_yaw_value();
-        int yaw_max = droneProtocol.get_yaw_max_value();
+        int yaw_min = droneProtocol.get_channel_min_value();
+        int yaw_value = droneProtocol.get_channel_default_value();
+        int yaw_max = droneProtocol.get_channel_max_value();
 
         m_yaw_seekbar_test.setRangeValues(yaw_min, yaw_max);
         m_yaw_seekbar_test.setValues(yaw_value);
@@ -150,7 +150,7 @@ public class Yaw_Controller_Fragment extends Fragment implements View.OnClickLis
                 }
 
                 droneProtocol.set_yaw_value(512);
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }

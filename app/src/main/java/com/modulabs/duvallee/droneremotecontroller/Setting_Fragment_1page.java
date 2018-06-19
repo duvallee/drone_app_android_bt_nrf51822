@@ -139,9 +139,9 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
                 }
             }
         });
-        m_throttle_min = droneProtocol.get_throttle_min_value();
-        m_throttle_value = droneProtocol.get_throttle_value();
-        m_throttle_max = droneProtocol.get_throttle_max_value();
+        m_throttle_min = droneProtocol.get_channel_min_value();
+        m_throttle_value = droneProtocol.get_channel_min_value();
+        m_throttle_max = droneProtocol.get_channel_max_value();
 
         m_throttle_seekbar_min_max.setRangeValues(m_throttle_min, m_throttle_max);
         m_throttle_seekbar_value.setRangeValues(m_throttle_min, m_throttle_max);
@@ -201,9 +201,9 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
             }
         });
 
-        m_yaw_min = droneProtocol.get_yaw_min_value();
-        m_yaw_value = droneProtocol.get_yaw_value();
-        m_yaw_max = droneProtocol.get_yaw_max_value();
+        m_yaw_min = droneProtocol.get_channel_min_value();
+        m_yaw_value = droneProtocol.get_channel_default_value();
+        m_yaw_max = droneProtocol.get_channel_max_value();
 
         m_yaw_seekbar_min_max.setRangeValues(m_yaw_min, m_yaw_max);
         m_yaw_seekbar_value.setRangeValues(m_yaw_min, m_yaw_max);
@@ -265,9 +265,9 @@ public class Setting_Fragment_1page extends Fragment implements View.OnClickList
             }
         });
 
-        m_pitch_min = droneProtocol.get_pitch_min_value();
-        m_pitch_value = droneProtocol.get_pitch_value();
-        m_pitch_max = droneProtocol.get_pitch_max_value();
+        m_pitch_min = droneProtocol.get_channel_min_value();
+        m_pitch_value = droneProtocol.get_channel_default_value();
+        m_pitch_max = droneProtocol.get_channel_max_value();
 
         m_pitch_seekbar_min_max.setRangeValues(m_pitch_min, m_pitch_max);
         m_pitch_seekbar_value.setRangeValues(m_pitch_min, m_pitch_max);

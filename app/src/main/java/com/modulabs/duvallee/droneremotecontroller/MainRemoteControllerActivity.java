@@ -116,7 +116,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     private int mDroneTransmitterConnectionStatus = UART_PROFILE_DISCONNECTED;
 
     private DroneRemoteControllerProtocol mDroneRemoteControllerProtocol = new DroneRemoteControllerProtocol(this);
-    private int mAliveCount = 0;
 
     private final int STATE_CONNECTED = 2;
 
@@ -244,14 +243,12 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     {
         if (mDroneTransmitterBtService == null)
         {
-            mDroneRemoteControllerProtocol.init_fifo();
             return null;
         }
         if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
         {
             return mDroneTransmitterBtService;
         }
-        mDroneRemoteControllerProtocol.init_fifo();
         return null;
     }
 
@@ -320,7 +317,7 @@ public class MainRemoteControllerActivity extends AppCompatActivity
     // ****************************************************************************************** //
     public void response_protocol(byte[] data)
     {
-        mDroneRemoteControllerProtocol.Response_Message(data);
+        // mDroneRemoteControllerProtocol.Response_Message(data);
     }
 
     // ****************************************************************************************** //
@@ -657,9 +654,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         // init service for UART
         service_init();
 
-        // ----------------------------------------------------------------------------------------
-        // start handler after 3 second per 1 second ...
-        mHandler.sendEmptyMessageDelayed(0, 3000);
     }
 
     // ****************************************************************************************** //
@@ -774,7 +768,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
         public void onServiceConnected(ComponentName className, IBinder rawBinder)
         {
             mDroneTransmitterBtService = ((UartService.LocalBinder) rawBinder).getService();
-            mDroneRemoteControllerProtocol.init_fifo();
             Log.d(TAG, "onServiceConnected mService = " + mDroneTransmitterBtService);
             if (mDroneTransmitterBtService.initialize() == false)
             {
@@ -880,47 +873,6 @@ public class MainRemoteControllerActivity extends AppCompatActivity
 //            // permissions this app might request
 //        }
     }
-
-    private Handler mHandler = new Handler()
-    {
-        @Override
-        // Handler events that received from UART service
-        public void handleMessage(Message msg)
-        {
-            if (mDroneTransmitterBtService == null)
-            {
-                if (mRemoteControllerStatus == 1)
-                {
-                    mRemoteControllerStatus = 0;
-                    update_view();
-                }
-                mAliveCount = 0;
-            }
-            else
-            {
-                if (mDroneTransmitterBtService.getStatus() == STATE_CONNECTED)
-                {
-                    if (mRemoteControllerStatus == 0)
-                    {
-                        mRemoteControllerStatus = 1;
-                        update_view();
-                    }
-                    mAliveCount++;
-                    mDroneRemoteControllerProtocol.Send_Alive_Message(mDroneTransmitterBtService, mAliveCount);
-                }
-                else
-                {
-                    if (mRemoteControllerStatus == 1)
-                    {
-                        mRemoteControllerStatus = 0;
-                        update_view();
-                    }
-                    mAliveCount = 0;
-                }
-            }
-            mHandler.sendEmptyMessageDelayed(0, 3000);
-        }
-    };
 
     // ---------------------------------------------------------------------------------------------
     //

@@ -152,7 +152,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                         return true;
                     }
 
-                    if (droneProtocol.get_gear_value() > 0 && droneProtocol.get_throttle_value() > 0)
+                    if (droneProtocol.get_ch1_value() > 0 && droneProtocol.get_throttle_value() > 0)
                     {
                         mFailSafeMode = true;
                         mThrottleHandler.sendEmptyMessageDelayed(0, 300);
@@ -161,8 +161,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     {
                         m_throttle_value = DEFAULT_THROTTLE_VALUE;
                         droneProtocol.set_throttle_value(m_throttle_value);
-                        droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
-                        if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                        droneProtocol.set_ch1_value(DEFAULT_GEAR_VALUE);
+                        if (droneProtocol.Send_Channel_Message() < 0)
                         {
                             Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                         }
@@ -212,9 +212,9 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                         return true;
                     }
 
-                    if ((m_throttle_value - m_throttle_level_unit) <= droneProtocol.get_throttle_min_value())
+                    if ((m_throttle_value - m_throttle_level_unit) <= droneProtocol.get_channel_min_value())
                     {
-                        m_throttle_value = droneProtocol.get_throttle_min_value();
+                        m_throttle_value = droneProtocol.get_channel_min_value();
                     }
                     else
                     {
@@ -224,7 +224,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     droneProtocol.set_throttle_value(m_throttle_value);
                     m_throttle_seekbar_test.setValues(m_throttle_value);
 
-                    if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                    if (droneProtocol.Send_Channel_Message() < 0)
                     {
                         Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                     }
@@ -273,9 +273,9 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                         return true;
                     }
 
-                    if ((m_throttle_value + m_throttle_level_unit) >= droneProtocol.get_throttle_max_value())
+                    if ((m_throttle_value + m_throttle_level_unit) >= droneProtocol.get_channel_max_value())
                     {
-                        m_throttle_value = droneProtocol.get_throttle_max_value();
+                        m_throttle_value = droneProtocol.get_channel_max_value();
                     }
                     else
                     {
@@ -285,7 +285,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     droneProtocol.set_throttle_value(m_throttle_value);
                     m_throttle_seekbar_test.setValues(m_throttle_value);
 
-                    if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                    if (droneProtocol.Send_Channel_Message() < 0)
                     {
                         Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                     }
@@ -332,16 +332,16 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
                 if (isChecked)
                 {
-                    droneProtocol.set_gear_value(DEFAULT_ARMING_VALUE);
+                    droneProtocol.set_ch1_value(DEFAULT_ARMING_VALUE);
                     m_arming_seekbar_test.setValues(DEFAULT_ARMING_VALUE);
                 }
                 else
                 {
-                    droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
+                    droneProtocol.set_ch1_value(DEFAULT_GEAR_VALUE);
                     m_arming_seekbar_test.setValues(DEFAULT_GEAR_VALUE);
                 }
 
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
@@ -386,9 +386,9 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                     main_activity.switch_view(main_activity.VIEW_MAIN_MENU_SCREEN_INDEX);
                     return;
                 }
-                droneProtocol.set_gear_value(Value);
+                droneProtocol.set_ch1_value(Value);
 
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
@@ -402,11 +402,11 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
 
         DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
 
-        int gear_min = droneProtocol.get_gear_min_value();
-        int gear_value = droneProtocol.get_gear_value();
-        int gear_max = droneProtocol.get_gear_max_value();
+        int gear_min = droneProtocol.get_channel_min_value();
+        int gear_value = droneProtocol.get_ch1_value();
+        int gear_max = droneProtocol.get_channel_max_value();
 
-        m_arming_seekbar_test.setRangeValues(droneProtocol.get_absolute_min_value(), droneProtocol.get_absolute_max_value());
+        m_arming_seekbar_test.setRangeValues(droneProtocol.get_channel_min_value(), droneProtocol.get_channel_max_value());
         m_arming_seekbar_test.setSelectedMinValue(gear_min);
         m_arming_seekbar_test.setSelectedMaxValue(gear_max);
         m_arming_seekbar_test.setValues(gear_value);
@@ -445,7 +445,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 m_throttle_value = Value;
                 droneProtocol.set_throttle_value(m_throttle_value);
 
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
@@ -456,11 +456,11 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
         LinearLayout throttle_Layout = (LinearLayout) view.findViewById(R.id.test_throttle_linear_layout);
         throttle_Layout.addView(m_throttle_seekbar_test);
 
-        int throttle_min = droneProtocol.get_throttle_min_value();
-        m_throttle_value = droneProtocol.get_throttle_value();
-        int throttle_max = droneProtocol.get_throttle_max_value();
+        int throttle_min = droneProtocol.get_channel_min_value();
+        m_throttle_value = droneProtocol.get_channel_min_value();
+        int throttle_max = droneProtocol.get_channel_max_value();
 
-        m_throttle_seekbar_test.setRangeValues(droneProtocol.get_absolute_min_value(), droneProtocol.get_absolute_max_value());
+        m_throttle_seekbar_test.setRangeValues(droneProtocol.get_channel_min_value(), droneProtocol.get_channel_max_value());
         m_throttle_seekbar_test.setSelectedMinValue(throttle_min);
         m_throttle_seekbar_test.setSelectedMaxValue(throttle_max);
 //        m_throttle_seekbar_test.setValues(m_throttle_value);
@@ -541,8 +541,8 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
             {
                 m_throttle_value = DEFAULT_THROTTLE_VALUE;
                 droneProtocol.set_throttle_value(m_throttle_value);
-                droneProtocol.set_gear_value(DEFAULT_GEAR_VALUE);
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                droneProtocol.set_ch1_value(DEFAULT_GEAR_VALUE);
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
@@ -556,7 +556,7 @@ public class Throttle_Controller_Fragment extends Fragment implements View.OnCli
                 m_throttle_value -= 10;
                 droneProtocol.set_throttle_value(m_throttle_value);
 
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }

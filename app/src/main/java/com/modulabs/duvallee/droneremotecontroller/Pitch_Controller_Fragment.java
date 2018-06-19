@@ -90,7 +90,7 @@ public class Pitch_Controller_Fragment extends Fragment implements View.OnClickL
                 }
                 droneProtocol.set_pitch_value(Value);
 
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }
@@ -102,9 +102,9 @@ public class Pitch_Controller_Fragment extends Fragment implements View.OnClickL
 
         DroneRemoteControllerProtocol droneProtocol = main_activity.getProtocol();
 
-        int pitch_min = droneProtocol.get_pitch_min_value();
-        int pitch_value = droneProtocol.get_pitch_value();
-        int pitch_max = droneProtocol.get_pitch_max_value();
+        int pitch_min = droneProtocol.get_channel_min_value();
+        int pitch_value = droneProtocol.get_channel_default_value();
+        int pitch_max = droneProtocol.get_channel_max_value();
 
         m_pitch_seekbar_test.setRangeValues(pitch_min, pitch_max);
         m_pitch_seekbar_test.setValues(pitch_value);
@@ -148,7 +148,7 @@ public class Pitch_Controller_Fragment extends Fragment implements View.OnClickL
                 }
 
                 droneProtocol.set_pitch_value(512);
-                if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+                if (droneProtocol.Send_Channel_Message() < 0)
                 {
                     Toast.makeText(main_activity, "Busy state !!!", Toast.LENGTH_SHORT).show();
                 }

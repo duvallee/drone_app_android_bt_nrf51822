@@ -33,7 +33,7 @@ public class Joystick_Controller_View extends View implements Runnable
    public final static double JOYSTICKRADIUS = 0.70;
 
    public final static int ARMMING_OFF_VALUE = 0;
-   public final static int ARMMING_ON_VALUE = 512;
+   public final static int ARMMING_ON_VALUE = 3072;
 
    // ---------------------------------------------------------------------------------------------
    // Left Joystick (top-bottom : throttle, left-right : rudder(yaw, dron rotation))
@@ -340,7 +340,7 @@ public class Joystick_Controller_View extends View implements Runnable
       DroneRemoteControllerProtocol droneProtocol = m_MainActivity.getProtocol();
       if (droneProtocol != null)
       {
-         droneProtocol.reset_all();
+         droneProtocol.reset_channel();
       }
    }
 
@@ -664,7 +664,7 @@ public class Joystick_Controller_View extends View implements Runnable
                DroneRemoteControllerProtocol droneProtocol = m_MainActivity.getProtocol();
                if (droneProtocol != null)
                {
-                  droneProtocol.reset_all();
+                  droneProtocol.reset_channel();
                }
                m_MainActivity.switch_view(m_MainActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
                exit_button_select = -1;
@@ -750,7 +750,7 @@ public class Joystick_Controller_View extends View implements Runnable
                DroneRemoteControllerProtocol droneProtocol = m_MainActivity.getProtocol();
                if (droneProtocol != null)
                {
-                  droneProtocol.reset_all();
+                  droneProtocol.reset_channel();
                }
                m_MainActivity.switch_view(m_MainActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
                exit_button_select = -1;
@@ -845,7 +845,7 @@ public class Joystick_Controller_View extends View implements Runnable
 
       if (uartservice == null)
       {
-         droneProtocol.reset_all();
+         droneProtocol.reset_channel();
          Toast.makeText(m_MainActivity, "Not connected the Drone BT Transmitter", Toast.LENGTH_SHORT).show();
          m_MainActivity.switch_view(m_MainActivity.VIEW_MAIN_MENU_SCREEN_INDEX);
          return 0;
@@ -853,11 +853,11 @@ public class Joystick_Controller_View extends View implements Runnable
 
       if (m_arming_button_enable == true)
       {
-         droneProtocol.set_gear_value(ARMMING_ON_VALUE);
+         droneProtocol.set_ch1_value(ARMMING_ON_VALUE);
       }
       else
       {
-         droneProtocol.set_gear_value(ARMMING_OFF_VALUE);
+         droneProtocol.set_ch1_value(ARMMING_OFF_VALUE);
       }
 
       droneProtocol.set_throttle_value((int) throttle_value);
@@ -865,7 +865,7 @@ public class Joystick_Controller_View extends View implements Runnable
       droneProtocol.set_roll_value((int) roll_value);
       droneProtocol.set_pitch_value((int) pitch_value);
 
-      if (droneProtocol.Send_Channel_Message(uartservice) < 0)
+      if (droneProtocol.Send_Channel_Message() < 0)
       {
          Toast.makeText(m_MainActivity, "Busy state !!!", Toast.LENGTH_SHORT).show();
       }
