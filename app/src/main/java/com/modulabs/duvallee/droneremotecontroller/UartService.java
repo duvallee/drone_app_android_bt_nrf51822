@@ -72,8 +72,8 @@ public class UartService extends Service
    // ----------------------------------------------------------------------------------------------------------
    // BlueNRG of the ST
    public static final UUID ST_BLUE_NRG_RX_SERVICE_UUID  = UUID.fromString("00000000-000E-11e1-9ab4-0002a5d5c51b");
-   public static final UUID ST_BLUE_NRG_RX_CHAR_UUID     = UUID.fromString("00000001-000E-11e1-ac36-0002a5d5c51b");
-   public static final UUID ST_BLUE_NRG_TX_CHAR_UUID     = UUID.fromString("00000002-000E-11e1-ac36-0002a5d5c51b");
+   public static final UUID ST_BLUE_NRG_TX_CHAR_UUID     = UUID.fromString("00000001-000E-11e1-ac36-0002a5d5c51b");
+   public static final UUID ST_BLUE_NRG_RX_CHAR_UUID     = UUID.fromString("00000002-000E-11e1-ac36-0002a5d5c51b");
 
 // Console Service
 //   #define COPY_CONSOLE_SERVICE_UUID(uuid_struct)           COPY_UUID_128(uuid_struct, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0x11, 0xe1, 0x9a, 0xb4, 0x00, 0x02, 0xa5, 0xd5, 0xc5, 0x1b)
@@ -474,7 +474,7 @@ public class UartService extends Service
         BluetoothGattCharacteristic RxChar = RxService.getCharacteristic(nRF51822_RX_CHAR_UUID);
         if (RxChar == null)
         {
-            RxChar = RxService.getCharacteristic(ST_BLUE_NRG_RX_CHAR_UUID);
+            RxChar = RxService.getCharacteristic(ST_BLUE_NRG_TX_CHAR_UUID);
             if (RxChar == null)
             {
                 showMessage("Rx charateristic not found!");
