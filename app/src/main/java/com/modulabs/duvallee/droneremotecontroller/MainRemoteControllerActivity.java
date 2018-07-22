@@ -918,16 +918,15 @@ public class MainRemoteControllerActivity extends AppCompatActivity
                     }
                 });
             }
-
-            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART))
-            {
-                showMessage("Device doesn't support UART. Disconnecting");
-                mDroneTransmitterBtService.disconnect();
-                mDroneTransmitterConnectionStatus = UART_PROFILE_DISCONNECTED;
-
-                mRemoteControllerStatus = 0;
-                update_view();
-            }
+//            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART))
+//            {
+//                showMessage("Device doesn't support UART. Disconnecting");
+//                mDroneTransmitterBtService.disconnect();
+//                mDroneTransmitterConnectionStatus = UART_PROFILE_DISCONNECTED;
+//
+//                mRemoteControllerStatus = 0;
+//                update_view();
+//            }
         }
     };
 
